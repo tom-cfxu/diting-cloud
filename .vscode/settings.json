@@ -1,0 +1,61 @@
+{
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "prettier.stylelintIntegration": true,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
+  "[javascript]": {
+    "editor.formatOnSave": false
+  },
+  "[json]": {
+    "editor.formatOnSave": false
+  },
+  "[jsonc]": {
+    "editor.formatOnSave": false
+  },
+  "files.watcherExclude": {
+    "**/.git/*/**": true,
+    "**/node_modules/*/**": true,
+    "**/dist/*/**": true,
+    "**/coverage/*/**": true,
+  },
+  "files.associations": {
+    "*.json": "jsonc",
+    ".prettierrc": "jsonc",
+    ".stylelintrc": "jsonc"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/node_modules":false,
+    "**/.editorconfig":true,
+    "**/.gitignore":true,
+    "**/.prettierignore":true,
+    "**/.prettierrc":true,
+    "**/e2e":true,
+    "**/karma.conf.js":true,
+    "**/LICENSE":true,
+    "**/README.md":true,
+    "**/README-zh_CN.md":true,
+    "**/browserslist":true,
+    "**/.stylelintrc":true,
+    "**/angular.json":false,
+    "**/package-lock.json":true,
+    "**/package.json":false,
+    "**/proxy.conf.json":true,
+    "**/scripts":true,
+    "**/_cli-tpl":true,
+  },
+  // Angular schematics 插件: https://marketplace.visualstudio.com/items?itemName=cyrilletuzi.angular-schematics
+  "ngschematics.schematics": [
+    "ng-alain"
+  ],
+  "explorer.compactFolders": false
+}

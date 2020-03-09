@@ -1,0 +1,106 @@
+<div nz-row nzGutter="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32}" nzType="flex" nzJustify="space-around"
+    nzAlign="top">
+    <div nz-col nzXs="24" nzXl="3">
+        <nz-card style="min-width: 200px" nzTitle="管理员名下DTU">
+            <nz-tree [nzData]="nodes" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
+        </nz-card>
+    </div>
+    <div nz-col nzXs="24" nzXl="20">
+        <div nz-row>
+            <div nz-col nzXs="24">
+                <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start"
+                    nzType="flex">
+                    <div nz-col nzXs="24" nzLg="2" style="margin-bottom: 1rem;">
+                        <button nzType="primary" (click)="isVisible = true;addOrEdit = true;formHeader='添加记录'" nz-button
+                            nzBlock><i nz-icon nzType="plus"> </i>
+                            添加</button>
+                    </div>
+                    <div nz-col nzXs="24" nzLg="2" style="margin-bottom: 1rem;">
+                        <button nzType="danger" (click)="deleteButton()" nz-button nzBlock><i nz-icon
+                                nzType="delete"></i>删除</button>
+                    </div>
+                    <div nz-col nzXs="24" nzLg="2" style="margin-bottom: 1rem;">
+                        <button nzType="default" (click)="st.reload();form.radioValue = '';form.id = ''" nz-button
+                            nzBlock><i nz-icon nzType="redo"></i>刷新</button>
+                    </div>
+                    <div nz-col nzXs="24" nzLg="3" style="margin-bottom: 1rem;">
+                        <button nzType="primary" (click)="isVisible2=true" nz-button nzBlock><i nz-icon
+                                nzType="upload"></i>导入Excel</button>
+                    </div>
+                    <div nz-col nzXs="24" nzLg="3" style="margin-bottom: 1rem;">
+                        <button nzType="primary" (click)="distributeButton()" nz-button nzBlock><i nz-icon
+                                nzType="select"></i>分配DTU</button>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div nz-row>
+            <nz-collapse>
+                <nz-collapse-panel [nzActive]="true" nzHeader="DTU列表">
+                    <st #st [columns]="columns" [data]="data" [loading]="http.loading" [pi]="pi" [ps]="ps"
+                        [page]="pages" [total]="total" (change)="change($event)" responsiveHideHeaderFooter></st>
+                </nz-collapse-panel>
+            </nz-collapse>
+        </div>
+
+    </div>
+    <nz-modal nzWidth="600" [(nzVisible)]="isVisible" [nzTitle]="formHeader" (nzOnCancel)="handleCancel(1)"
+        nzMaskClosable="false">
+        <div class="sf">
+            <sf #sf [schema]="schema" [ui]="ui" button="none"></sf>
+        </div>
+        <div *nzModalFooter>
+            <button nz-button type="button" (click)="handleCancel(1)">关闭</button>
+            <button *ngIf="addOrEdit" nz-button type="submit" [nzType]="'primary'" [disabled]="!sf.valid"
+                (click)="handleData(sf.value,'add')" [disabled]="!sf.valid" [nzLoading]="http.loading">添加</button>
+            <button *ngIf="!addOrEdit" nz-button type="submit" [nzType]="'primary'" [disabled]="!sf.valid"
+                (click)="handleData(sf.value,'edit')" [nzLoading]="http.loading">修改</button>
+        </div>
+    </nz-modal>
+    <nz-modal nzWidth="600" [(nzVisible)]="isVisible2" nzTitle="导入Excel" (nzOnCancel)="handleCancel(2)"
+        nzMaskClosable="false">
+        <div>
+            <sf #sf2 [schema]="schema2" [ui]="ui" button="none"></sf>
+        </div>
+        <div *nzModalFooter>
+            <button nz-button type="button" (click)="handleCancel(2)">关闭</button>
+            <button *ngIf="addOrEdit" nz-button type="submit" [nzType]="'primary'" (click)="upload(sf2.value)"
+                [nzLoading]="http.loading">导入</button>
+        </div>
+    </nz-modal>
+    <nz-modal nzWidth="600" [(nzVisible)]="isVisible3" nzTitle="选择管理员进行DTU分配" (nzOnCancel)="handleCancel(3)"
+        nzMaskClosable="false">
+        <div>
+            <sf #sf3 [schema]="schema3" [ui]="ui" button="none"></sf>
+        </div>
+        <!-- <div class="sf">
+            <form #form>
+                <nz-form-item nzFlex>
+                    <nz-form-label nzSpan="6" nzFor="radio" nzRequired>分配:</nz-form-label>
+                    <nz-form-control nzSpan="12">
+                        <nz-radio-group name="radio" [(ngModel)]="form.radioValue">
+                            <label nz-radio nzValue="0">所选DTU</label>
+                            <label nz-radio nzValue="1">全部DTU</label>
+                        </nz-radio-group>
+                    </nz-form-control>
+                </nz-form-item>
+                <nz-form-item nzFlex>
+                    <nz-form-label nzSpan="6" nzFor="userName">分配到管理员:</nz-form-label>
+                    <nz-form-control nzSpan="12">
+                        <nz-tree-select [nzDefaultExpandAll]="true" name="userName" [nzNodes]="nodes1"
+                            [(ngModel)]="form.id" nzPlaceHolder="请选择管理员" (ngModelChange)="onChang($event)">
+                        </nz-tree-select>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+        </div> -->
+        <div *nzModalFooter>
+            <button nz-button type="button" (click)="handleCancel(3)">关闭</button>
+            <button nz-button type="submit" [nzType]="'primary'" (click)="distribute(form.value)"
+                [nzLoading]="http.loading">分配</button>
+        </div>
+    </nz-modal>
+
+</div>

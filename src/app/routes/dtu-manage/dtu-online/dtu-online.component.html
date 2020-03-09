@@ -1,0 +1,47 @@
+<div nz-row nzGutter="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32}" nzType="flex" nzJustify="space-around"
+  nzAlign="top">
+  <div nz-col nzXs="24" nzXl="3">
+    <nz-card nzTitle="管理员名下DTU" style="min-width:50px;">
+      <nz-tree [nzData]="nodes" nzShowLine (nzClick)="nzEvent($event)"> </nz-tree>
+    </nz-card>
+  </div>
+  <div nz-col nzXs="24" nzXl="20">
+    <div nz-row>
+      <div nz-col nzXs="24">
+        <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start" nzType="flex">
+          <!-- <div nz-col nzXs="24" nzLg="3" style="margin-bottom: 1rem;">
+            <button nzType="primary" nz-button nzBlock><i nz-icon nzType="plus"> </i>
+              添加</button>
+          </div> -->
+          <!-- <div nz-col nzXs="24" nzLg="2" style="margin-bottom: 1rem;">
+            <button nzType="danger" nz-button nzBlock><i nz-icon nzType="delete"></i>删除</button>
+          </div> -->
+          <div nz-col nzXs="24" nzLg="2" style="margin-bottom: 1rem;">
+            <button nzType="default" (click)="st.reload()" nz-button nzBlock><i nz-icon nzType="redo"></i>刷新</button>
+          </div>
+        </div>
+      </div>
+      <div nz-col nzXs="24">
+        <nz-collapse id="scroll">
+          <nz-collapse-panel [nzActive]="true" nzHeader="DTU列表">
+            <st #st [data]="data" [pi]="pi" [expand]="expand" [loading]="http.loading" [page]="pages" [ps]="ps"
+              [total]="total" (change)="change($event)" [columns]="columns" expandAccordion>
+              <ng-template #expand>
+                <st #st2 [data]="data2" [loading]="http.loading" [columns]="columns2">
+                </st>
+              </ng-template>
+            </st>
+          </nz-collapse-panel>
+        </nz-collapse>
+      </div>
+    </div>
+  </div>
+</div>
+<div nz-row nzGutter="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32}" style="margin-top:40px">
+  <nz-collapse #prop id="prop">
+    <nz-collapse-panel [nzActive]="true" nzHeader="属性列表">
+      <st #st3 [data]="data3" [columns]="columns3" [loading]="http.loading"></st>
+    </nz-collapse-panel>
+  </nz-collapse>
+  <a (click)="scroll()">查看</a>
+</div>

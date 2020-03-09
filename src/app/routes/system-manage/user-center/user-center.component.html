@@ -1,0 +1,16 @@
+<!-- <button class="btn" routerLink="/home/system_manage/user_manage" nz-button nzType="primary"><i nz-icon
+  nzType="rollback" nzTheme="outline"></i>返回</button> -->
+<div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 24, lg: 32, xl: 32, xxl: 32 }">
+  <div nz-col nzSx="24" [nzMd]="{offset:3}" style="margin-bottom: 1rem">
+    <sv-container labelWidth="150" col="1" title="管理员信息">
+      <sv label="ID">{{user.id}}</sv>
+      <sv label="姓名">{{user.username}}</sv>
+      <sv label="角色" type="danger">{{user.roleName}}</sv>
+    </sv-container>
+  </div>
+</div>
+
+<div nz-col nzSx="24">
+  <sf #sf [schema]="schema" [button]="{reset:'刷新'}" [ui]="ui" (formReset)="getUserInfo()" (formSubmit)="submit($event)">
+  </sf>
+</div>
