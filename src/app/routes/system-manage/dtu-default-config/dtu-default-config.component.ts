@@ -106,34 +106,34 @@ export class DtuDefaultConfigComponent implements OnInit {
     {
       title: 'DTU编号',
       index: 'gatewayNumber',
-      width: 100,
+      width: 400,
       className: 'text-nowrap,text-truncate'
     },
     {
       title: '默认配置',
-      width: 120,
+      width: 150,
       index: 'registerContent',
       render: 'registerContent'
     },
     {
       title: '所属管理员',
       index: 'userName',
-      width: 100,
+      width: 150,
     },
     {
       title: '分配管理员',
       index: 'handlerName',
-      width: 100,
+      width: 150,
     },
     {
       title: '启用时间',
       index: 'startTime',
-      width: 100,
+      width: 200,
     },
     {
       title: '终止时间',
       index: 'endTime',
-      width: 100,
+      width: 200,
     },
     {
       title: '注册',

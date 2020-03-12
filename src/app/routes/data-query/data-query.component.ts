@@ -1,10 +1,10 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { STChange, STPage, STColumn, STComponent } from '@delon/abc';
 import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
 import { SFSchema, } from '@delon/form';
-
+declare var G2: any;
 @Component({
   selector: 'app-data-query',
   templateUrl: './data-query.component.html',
@@ -132,9 +132,8 @@ export class DataQueryComponent implements OnInit {
       console.log(res);
     })
   }
-  // 趋势图
-  visitData: any[] = [];
-
+  // G2图表
+  chartData: any[] = [];
   // 监听变化
   change(ret: STChange) {
     if (ret.type === 'pi' || ret.type === 'ps') {
@@ -175,7 +174,7 @@ export class DataQueryComponent implements OnInit {
   getData() {
     const url = this.require.api.getMySelection;
     this.require.post(url).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       switch (res.code) {
         case "10005":
           const data = res.data;
@@ -215,10 +214,12 @@ export class DataQueryComponent implements OnInit {
   }
   ngOnInit() {
     this.getData();
-    this.visitData = [
-      {
-
-      }
-    ]
+    for (let i = 0; i < 20; i += 1) {
+      this.chartData.push({
+        x: (new Date().getTime()) + (1000 * 60 * 30 * i),
+        y1: Math.floor(Math.random() * 100) + 1000,
+        y2: Math.floor(Math.random() * 100) + 10,
+      });
+    }
   }
 }

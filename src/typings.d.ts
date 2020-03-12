@@ -7,4 +7,10 @@ declare var G2: any;
 declare var DataSet: any;
 declare var Slider: any;
 declare var BMapGL: any;
-declare var BMap: any;
+declare var common: {
+    initMap(): void;
+    snowStyle: any;
+    darkStyle: any;
+    purpleStyle: any;
+    whiteStyle: any
+};

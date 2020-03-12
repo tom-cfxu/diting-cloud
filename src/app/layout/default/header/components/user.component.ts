@@ -66,7 +66,6 @@ export class HeaderUserComponent {
     this.http.post(url, body, null, options).subscribe((res) => {
       // console.log(res);
       this.router.navigateByUrl(this.tokenService.login_url!);
-      console.log(this.tokenService.login_url!)
       this.notification.info(`注销成功`, ``, { nzDuration: 1000 })
       this.tokenService.clear();
     }, (err) => {

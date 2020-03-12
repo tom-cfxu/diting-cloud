@@ -40,6 +40,7 @@ export class ApiPortService {
   public uploadDtuExcel = this.host + '/api/v1.0/uploadDtuExcel' // 上传所属DTU Excel文件
   public userEdit = this.host + '/api/v1.0/userEdit' // 修改管理员信息
   public getUserInfo = this.host + '/api/v1.0/getUserInfo' //获取管理员信息
+  public getAllGateways = this.host + '/api/v1.0/getAllGateways' //获取所有DTU
   public options = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
   }

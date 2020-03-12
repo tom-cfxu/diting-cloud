@@ -52,12 +52,13 @@ export class BinSendComponent implements OnInit {
   }
   columns: STColumn[] = [
     {
-      type: 'checkbox'
+      type: 'checkbox',
+      width: 50,
     },
     {
       title: 'ID',
       index: 'id',
-      width: 20,
+      width: 100,
       sort: {
         compare: (a, b) => a.id - b.id,
       },
@@ -65,52 +66,53 @@ export class BinSendComponent implements OnInit {
     {
       title: '现文件名',
       index: 'nfilename',
-      // width: 300,
+      width: 500,
       className: 'text-nowrap,text-truncate'
     },
     {
       title: '原文件名',
       index: 'ofilename',
+      width: 450,
       className: 'text-nowrap,text-truncate'
-    },
-    {
-      title: '描述',
-      index: 'description',
-      width: 200
     },
     {
       title: '创建时间',
       index: 'createTime',
-      width: 150
+      width: 300
 
     },
     {
       title: '创建人员',
       index: 'createUser',
-      width: 120
+      width: 150
 
     },
     {
       title: '拥有',
       index: 'owner',
-      width: 100
+      width: 75
 
+    },
+    {
+      title: '描述',
+      index: 'description',
+      width: 75
     },
     {
       title: '协议版本',
       index: 'protocolVersion',
-      width: 100
+      width: 75
     },
     {
       title: '驱动版本',
       index: 'driverVersion',
-      width: 100
+      width: 75
 
     },
     {
       title: '文件版本',
       index: 'fileVersion',
-      width: 100
+      width: 75
     },
   ];
   // DTU列表

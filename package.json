@@ -47,7 +47,10 @@
     "rxjs": "~6.4.0",
     "screenfull": "^5.0.2",
     "tslib": "^1.11.1",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.9.1",
+    "@antv/data-set": "^0.10.2",
+    "@antv/g2": "^3.5.11",
+    "@antv/g2-plugin-slider": "^2.1.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.803.25",

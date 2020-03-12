@@ -57,67 +57,66 @@ export class DtuDistributionComponent implements OnInit {
   // 表格数据
   columns: STColumn[] = [
     {
-      title: '选中',
-      index: '',
       type: 'checkbox',
-      width: 45,
+      width: 50
     },
     {
       title: '序号',
       index: 'id',
-      width: 100,
+      width: 50,
       sort: { compare: (a, b) => a.id - b.id }
     },
     {
       title: 'DTU编号',
       index: 'gatewayNumber',
-      className: 'text-nowrap,text-truncate'
+      width: 450,
+      // className: 'text-nowrap,text-truncate'
     },
     {
       title: '管理人员',
       index: 'userName',
-      width: 100,
+      width: 150,
     },
     {
       title: '操作人员',
       index: 'handlerName',
-      width: 100,
+      width: 150,
     },
     {
       title: '创建时间',
       index: 'createTime',
-      width: 100,
+      width: 200,
     },
     {
       title: '启用开始时间',
       index: 'startTime',
-      width: 100
+      width: 200
     },
     {
       title: '启用结束时间',
       index: 'endTime',
-      width: 100
+      width: 200
     },
     {
       title: '注册',
       index: 'register',
       type: 'tag',
       tag: TAG,
-      width: 50
+      width: 100
     },
     {
       title: '报警',
       index: 'alarmPush',
       type: 'tag',
       tag: TAG,
-      width: 50
+      width: 100
     },
     {
       title: '扫码策略',
       index: 'scanPolicy',
       type: 'tag',
       tag: TAG,
-      width: 250,
+      width: 100,
     },
     // {
     //   title: '默认注册内容',
@@ -125,7 +124,7 @@ export class DtuDistributionComponent implements OnInit {
     // },
     {
       title: '操作',
-      width: 200,
+      width: 100,
       buttons: [
         {
           text: '编辑',
@@ -244,11 +243,6 @@ export class DtuDistributionComponent implements OnInit {
 
 
   }
-  // // 清空表单
-  // clean() {
-  //   this.form.radioValue = '';
-  //   this.form.id = ''
-  // }
   // 上传表单配置项
   schema2: SFSchema = {
     properties: {

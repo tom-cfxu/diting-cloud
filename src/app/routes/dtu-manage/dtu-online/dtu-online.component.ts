@@ -18,7 +18,7 @@ export class DtuOnlineComponent implements OnInit {
   data = [] // 保存表格信息
   nodes: NzTreeNodeOptions[] = [];// 节点数据
   pi = 1; // 表格页码
-  ps = 5;// 表格每页数量
+  ps = 10;// 表格每页数量
   total; // 总数据数量
   adminId;
   // 分页配置
@@ -27,21 +27,15 @@ export class DtuOnlineComponent implements OnInit {
     showSize: true,
     showQuickJumper: true,
     front: false,
-    pageSizes: [5, 10, 20, 30, 40, 50],
+    pageSizes: [10, 20, 30, 40, 50],
     placement: 'center'
   }
   // 每列项详细
   columns: STColumn[] = [
-    // {
-    //   type: 'checkbox',
-    //   // title: '',
-    //   // index: '',
-    //   width: 10,
-    // },
     {
       title: '序号',
       index: 'id',
-      width: 80,
+      width: 100,
       // className: 'text-nowrap,text-truncate',
       sort: {
         compare: (a, b) => a.id - b.id,
@@ -50,7 +44,7 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: 'DTU编号',
       index: 'gatewayNumber',
-      width: 100,
+      width: 300,
       // className: 'text-nowrap,text-truncate'
 
     },
@@ -74,7 +68,7 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: '详细地址',
       index: 'detailLocate',
-      width: 100,
+      width: 150,
     },
     {
       title: '经度',
@@ -85,18 +79,18 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: '纬度',
       index: 'locateY',
-      width: 50,
+      width: 100,
       // className: 'text-nowrap,text-truncate'
     },
     {
       title: '状态',
       index: 'status',
-      width: 50,
+      width: 100,
     },
     {
       title: '注册时间',
       index: 'createTime',
-      width: 100,
+      width: 150,
     },
   ]
   // 子表格配置
@@ -150,6 +144,7 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: 'ID',
       index: 'id',
+      width: 100,
       sort: {
         compare: (a, b) => a.id - b.id,
       },
@@ -157,65 +152,66 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: '类型',
       index: 'propertyType',
-
+      width: 100,
     },
     {
       title: '区域',
       index: 'propertySection',
-
+      width: 100,
     },
     {
       title: '地址',
       index: 'propertyAddress',
-
+      width: 100,
     },
     {
       title: '描述',
       index: 'propertyDesc',
-
+      width: 100,
     },
     {
       title: '单位',
       index: 'propertyUnit',
-
+      width: 100,
     },
     {
       title: '读写',
       index: 'propertyRW',
-
+      width: 100,
     },
     {
       title: 'dtu区域',
       index: 'dtuSection',
-
+      width: 100,
     },
     {
       title: 'dtu地址',
       index: 'dtuAddress',
-
+      width: 100,
     },
     {
       title: '上传模式',
       index: 'uploadMode',
-
+      width: 100,
     },
     {
       title: '上传参数一',
       index: 'uploadParam1',
-
+      width: 100,
     },
     {
       title: '上传参数二',
       index: 'uploadParam2',
-
+      width: 100,
     },
     {
       title: '上传参数三',
       index: 'uploadParam3',
-
+      width: 100,
     },
     {
       title: '加入自选',
+      width: 100,
       buttons: [
         {
           text: '加入自选',

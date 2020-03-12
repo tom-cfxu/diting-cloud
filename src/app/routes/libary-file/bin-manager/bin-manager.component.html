@@ -1,17 +1,17 @@
 <div nz-row>
   <div nz-col nzXs="24">
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start" nzType="flex">
-      <div nz-col nzXs="24" nzLg="4" nzXl="2" style="margin-bottom: 1rem;">
+      <div nz-col nzXs="24" nzLg="4" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
         <nz-upload nzAction="https://jsonplaceholder.typicode.com/posts/" nzBlock>
           <div nz-row nzXs="24" nzBlock>
             <button nzType="primary" nz-button nzBlock><i nz-icon nzType="upload"></i>上传文件</button>
           </div>
         </nz-upload>
       </div>
-      <div nz-col nzXs="24" nzLg="3" nzXl="2" style="margin-bottom: 1rem;">
+      <div nz-col nzXs="24" nzLg="3" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
         <button nzType="danger" (click)="deletueButton()" nz-button nzBlock><i nz-icon nzType="delete"></i>删除</button>
       </div>
-      <div nz-col nzXs="24" nzLg="3" nzXl="2" style="margin-bottom: 1rem;">
+      <div nz-col nzXs="24" nzLg="3" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
         <button nzType="default" (click)="st.reload()" nz-button nzBlock><i nz-icon nzType="redo"></i>刷新</button>
       </div>
     </div>
@@ -20,7 +20,8 @@
     <nz-collapse>
       <nz-collapse-panel nzHeader="文件列表" nzActive="true">
         <st #st [data]="data" [columns]="columns" [pi]="pi" [ps]="ps" [page]="pages" [total]="total"
-          [loading]="http.loading" (change)="change($event)" responsiveHideHeaderFooter>
+          [loading]="http.loading" virtualScroll [scroll]="{ x: '1300px',y:'240px'}" (change)="change($event)"
+          responsiveHideHeaderFooter>
         </st>
       </nz-collapse-panel>
     </nz-collapse>

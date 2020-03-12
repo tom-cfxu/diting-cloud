@@ -13,7 +13,7 @@ export class PasswordFormComponent implements OnInit {
   ) { }
   ui = {
     spanLabel: 6,
-    spanControl: 4
+    spanControl: 6
   }
   schema: SFSchema = {
     required: ['oldpw', 'newpw', 'rpNewpw'],
