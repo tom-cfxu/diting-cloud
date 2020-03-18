@@ -121,7 +121,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
     }
-    this.markerCluster = new BMapLib.MarkerClusterer(this.map, { markers: this.markers }) //添加类聚合
+    // this.markerCluster = new BMapLib.MarkerClusterer(this.map, { markers: this.markers }) //添加类聚合
   }
   ngOnInit() {
     this.map = new BMap.Map('map_container');

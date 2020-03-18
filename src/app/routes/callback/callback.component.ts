@@ -22,18 +22,18 @@ export class CallbackComponent implements OnInit {
     // this.mockModel();
   }
 
-  // private mockModel() {
-  //   const info = {
-  //     token: '123456789',
-  //     name: 'cipchk',
-  //     email: `${this.type}@${this.type}.com`,
-  //     id: 10000,
-  //     time: +new Date(),
-  //   };
-  //   this.settingsSrv.setUser({
-  //     ...this.settingsSrv.user,
-  //     ...info,
-  //   });
-  //   this.socialService.callback(info);
-  // }
+  private mockModel() {
+    const info = {
+      token: '123456789',
+      name: 'cipchk',
+      email: `${this.type}@${this.type}.com`,
+      id: 10000,
+      time: +new Date(),
+    };
+    this.settingsSrv.setUser({
+      ...this.settingsSrv.user,
+      ...info,
+    });
+    this.socialService.callback(info);
+  }
 }

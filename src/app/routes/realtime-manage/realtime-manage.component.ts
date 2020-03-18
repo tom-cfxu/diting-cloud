@@ -159,7 +159,7 @@ export class RealtimeManageComponent implements OnInit {
           text: '编辑',
           click: (e) => {
             this.isVisible = true;
-            let properties = this.schema.properties;
+            const properties: any = this.schema.properties;
             properties.dtuId.default = e.dtuId;
             properties.uuid.default = e.uuid;
             properties.region.default = e.region;

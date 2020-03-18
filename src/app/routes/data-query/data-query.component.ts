@@ -170,7 +170,7 @@ export class DataQueryComponent implements OnInit {
       return 0;
     }
   }
-  //获取数据
+  // 获取数据
   getData() {
     const url = this.require.api.getMySelection;
     this.require.post(url).subscribe((res: any) => {

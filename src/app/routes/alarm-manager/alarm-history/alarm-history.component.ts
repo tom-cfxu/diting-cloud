@@ -84,7 +84,7 @@ export class AlarmHistoryComponent implements OnInit {
       // console.log(this.checked2)
     }
   }
-  //请求主数据
+  // 请求主数据
   getData() {
     const body = this.require.encodeObject({
       page: this.pi,
