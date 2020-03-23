@@ -3,7 +3,7 @@ import { STChange, STPage, STColumn, STComponent } from '@delon/abc';
 import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
-import { SFSchema, } from '@delon/form';
+import { SFSchema, FormProperty, PropertyGroup, SFDateWidgetSchema, } from '@delon/form';
 declare var G2: any;
 @Component({
   selector: 'app-data-query',
@@ -17,6 +17,7 @@ export class DataQueryComponent implements OnInit {
   data = []; // 保存表格信息
   pi = 1; // 表格页码
   ps = 5;// 表格每页数量
+  gatewayNumber = ""; //保存趋势图标题
   @ViewChild('st', { static: false }) st: STComponent;
   // 分页配置
   checked = [];// 选择1
@@ -26,6 +27,8 @@ export class DataQueryComponent implements OnInit {
     pageSizes: [5, 10, 20, 30, 40, 50],
     placement: 'center'
   }
+  // G2图表
+  chartData: any[] = [];
   // 自选列表配置
   columns: STColumn[] = [
     {
@@ -105,35 +108,57 @@ export class DataQueryComponent implements OnInit {
     properties: {
       startTime: {
         type: 'string',
-        title: '起始时间',
-        format: 'date-time',
+        title: '起始-结束时间',
+        ui: {
+          widget: 'date',
+          end: 'endTime', showTime: true
+        } as SFDateWidgetSchema,
       },
       endTime: {
         type: 'string',
-        title: '结束时间',
-        format: 'date-time',
+        ui: {
+          widget: 'date',
+          // end: 'endTime',
+          showTime: true,
+          // validator: (value: any) => { return [{ keyword: 'required', message: '起始-结束时间不能超过1天！' }] }
+        }
       },
     }
   };
   // 提交搜索
   submit(value) {
-    const startTime = this.require.moment(value.startTime).format('YYYY-MM-DD HH:mm:ss')
-    const endTime = this.require.moment(value.endTime).format('YYYY-MM-DD HH:mm:ss')
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 })
     }
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids')
     const body = ids + '&' + this.require.encodeObject({
-      startTime,
-      endTime,
+      startTime: value.startTime,
+      endTime: value.endTime,
     })
-    this.require.post(url, body).subscribe((res) => {
-      console.log(res);
+    this.require.post(url, body).subscribe((res: any) => {
+      switch (res.code) {
+        case '10005':
+          console.log(res)
+          if (res.data.data.length > 0) {
+            this.gatewayNumber = res.data.data[0].gatewayNumber;
+            const data = res.data.data[0].historyData;
+            this.chartData = data.map((e) => {
+              return {
+                'x': Date.parse(e.time),
+                'y1': e.ND6 == null ? "0.0" : e.ND6
+              }
+            })
+          } else {
+            this.require.message.info('数据为空', { nzDuration: 1000 })
+          }
+          console.log(this.chartData)
+          break;
+        default:
+          break;
+      }
     })
   }
-  // G2图表
-  chartData: any[] = [];
   // 监听变化
   change(ret: STChange) {
     if (ret.type === 'pi' || ret.type === 'ps') {
@@ -170,7 +195,7 @@ export class DataQueryComponent implements OnInit {
       return 0;
     }
   }
-  // 获取数据
+  // 获取历史数据
   getData() {
     const url = this.require.api.getMySelection;
     this.require.post(url).subscribe((res: any) => {
@@ -207,19 +232,21 @@ export class DataQueryComponent implements OnInit {
           break;
         default:
           console.log(res)
+          break;
       }
     }, (err) => {
 
     })
   }
+
   ngOnInit() {
     this.getData();
-    for (let i = 0; i < 20; i += 1) {
-      this.chartData.push({
-        x: (new Date().getTime()) + (1000 * 60 * 30 * i),
-        y1: Math.floor(Math.random() * 100) + 1000,
-        y2: Math.floor(Math.random() * 100) + 10,
-      });
-    }
+    // for (let i = 0; i < 20; i += 1) {
+    // this.chartData.push({
+    //   x: (new Date().getTime()) + (1000 * 60 * 30 * i),
+    //   y1: Math.floor(Math.random() * 100) + 1000,
+    //   y2: Math.floor(Math.random() * 100) + 10,
+    // });
+    // }
   }
 }

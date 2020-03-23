@@ -140,7 +140,7 @@ export class DefaultInterceptor implements HttpInterceptor {
         this.goTo('/passport/login');
         break;
       case 404:
-        this.goTo('/passport/login');
+        // this.goTo('/passport/login');
         break;
       case 403:
       case 500:

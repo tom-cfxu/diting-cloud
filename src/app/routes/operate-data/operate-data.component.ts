@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SFSchema } from '@delon/form';
+import { SFSchema, SFDateWidgetSchema, FormProperty, PropertyGroup } from '@delon/form';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { STPage, STChange, STColumn } from '@delon/abc';
@@ -33,10 +33,6 @@ export class OperateDataComponent implements OnInit {
       sort: { compare: (a, b) => a.dtuId - b.dtuId, }
     },
     {
-      title: '时间',
-      index: 'time',
-    },
-    {
       title: '状态',
       index: 'status',
     },
@@ -44,6 +40,10 @@ export class OperateDataComponent implements OnInit {
       title: '值',
       index: 'value',
     },
+    {
+      title: '时间',
+      index: 'time',
+    }
   ]
   // 查询表单
   schema: SFSchema = {
@@ -51,32 +51,32 @@ export class OperateDataComponent implements OnInit {
     properties: {
       startTime: {
         type: 'string',
-        title: '起始时间',
-        format: 'date-time',
+        title: '起始-结束时间',
+        ui: { widget: 'date', end: 'endTime', showTime: true } as SFDateWidgetSchema,
       },
       endTime: {
         type: 'string',
-        title: '结束时间',
-        format: 'date-time',
+        ui: {
+          widget: 'date',
+          end: 'endTime',
+          showTime: true,
+          disabledDate: (current) => console.log(current)
+        }
       },
     }
   };
   //提交查询
   submit(value) {
-    this.value = value
-    this.getData();
-  }
-  getData() {
-    const startTime = this.require.moment(this.value.startTime).format('YYYY-MM-DD HH:mm:ss')
-    const endTime = this.require.moment(this.value.endTime).format('YYYY-MM-DD HH:mm:ss')
+    // console.log(value)
     const url = this.require.api.getOperateData;
     const body = this.require.encodeObject({
       rows: this.ps,
-      startTime,
-      endTime,
+      startTime: value.startTime,
+      endTime: value.endTime,
     });
+    console.log(body)
     this.require.post(url, body).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       const data = res.data;
       this.pi = parseInt(data.page);
       if (data.rows.length > 0) {
