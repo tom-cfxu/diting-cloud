@@ -84,7 +84,6 @@ export class AlarmProcessComponent implements OnInit {
       this.getData();
     } else if (ret.type === 'checkbox') {
       this.checked = ret.checkbox.map(e => e.id)
-      // console.log(this.checked2)
     }
   }
   //请求主数据

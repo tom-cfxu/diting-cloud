@@ -10,7 +10,7 @@
     <nz-collapse>
       <nz-collapse-panel nzHeader="DTU配置列表" nzActive="true">
         <st #st [columns]="columns" [data]="data" [loading]="http.loading" [pi]="pi" [ps]="ps" [page]="pages"
-          [total]="total" (change)="change($event)" virtualScroll [scroll]="{ x: '1300px',y:'240px'}"
+          [total]="total" virtualScroll virtualItemSize="20" [scroll]="{x:'1300px',y:'600px'}" (change)="change($event)"
           responsiveHideHeaderFooter>
           <ng-template #registerContent st-row="registerContent" let-item let-index="index" let-column="column">
             <nz-tag *ngIf="item.registerContent==null" [nzColor]="''">暂无</nz-tag>

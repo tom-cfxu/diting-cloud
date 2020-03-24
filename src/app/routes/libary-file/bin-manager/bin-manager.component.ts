@@ -107,6 +107,7 @@ export class BinManagerComponent implements OnInit {
             this.require.post(this.deleteUrl, body).subscribe((res: any) => {
               switch (res.code) {
                 case '10005':
+                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
                   this.getData();
                   break;
                 default:
@@ -143,6 +144,7 @@ export class BinManagerComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
+                if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
                 this.getData();
                 break;
               default:

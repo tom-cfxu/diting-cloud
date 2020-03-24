@@ -3,12 +3,11 @@ import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { STColumn, STPage, STChange, STColumnTag } from '@delon/abc';
-import { SFSchema, SFComponent, SFRadioWidgetSchema, SFTextWidgetSchema, SFGridSchema, SFUploadWidgetSchema } from '@delon/form'
+import { SFSchema, SFComponent, SFRadioWidgetSchema, SFTextWidgetSchema, SFGridSchema, SFUploadWidgetSchema, SFDateWidgetSchema } from '@delon/form'
 import { NzMessageService } from 'ng-zorro-antd';
 import { delay } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiService } from '@core/api.service';
-import * as moment from 'moment'
 
 // 表格配置项
 const TAG: STColumnTag = {
@@ -118,10 +117,6 @@ export class DtuDistributionComponent implements OnInit {
       tag: TAG,
       width: 100,
     },
-    // {
-    //   title: '默认注册内容',
-    //   index: 'registerContent',
-    // },
     {
       title: '操作',
       width: 100,
@@ -134,11 +129,11 @@ export class DtuDistributionComponent implements OnInit {
             this.addOrEdit = false;
             this.schema.properties.id.default = e.id;
             this.schema.properties.gatewayNumber.default = e.gatewayNumber;
-            const startTime = moment(e.startTime).format();
-            const endTime = moment(e.endTime).format();
+            const startTime = e.startTime;
+            const endTime = e.endTime;
             if (startTime !== 'Invalid date' && endTime !== 'Invalid date') {
-              this.schema.properties.startTime.default = moment(e.startTime).format();
-              this.schema.properties.endTime.default = moment(e.endTime).format();
+              this.schema.properties.startTime.default = e.startTime;
+              this.schema.properties.endTime.default = e.endTime;
             } else {
               this.schema.properties.startTime.default = null;
               this.schema.properties.endTime.default = null;
@@ -159,6 +154,7 @@ export class DtuDistributionComponent implements OnInit {
             this.require.post(this.deleteUrl, body).subscribe((res: any) => {
               switch (res.code) {
                 case '10005':
+                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
                   this.getData();
                   break;
                 default:
@@ -211,15 +207,18 @@ export class DtuDistributionComponent implements OnInit {
       },
       startTime: {
         type: 'string',
-        title: '开始时间',
-        format: 'date-time',
-        default: null,
+        title: '起始-结束时间',
+        ui: {
+          widget: 'date',
+          end: 'endTime', showTime: true
+        } as SFDateWidgetSchema,
       },
       endTime: {
         type: 'string',
-        title: '停止时间',
-        format: 'date-time',
-        default: null,
+        ui: {
+          widget: 'date',
+          showTime: true,
+        }
       },
       alarmPush: {
         type: 'string',
@@ -271,8 +270,28 @@ export class DtuDistributionComponent implements OnInit {
   }
   // 分配DTU
   schema3: SFSchema = {
+    required: ['check', 'node'],
     properties: {
-
+      check: {
+        type: 'string',
+        title: '分配',
+        ui: {
+          widget: 'radio',
+          asyncData: () => of([{ label: '所选DTU', value: '0' }, { label: '全部DTU', value: '1' }]).pipe(delay(100)),
+          change: (e) => console.log(e),
+        } as SFRadioWidgetSchema,
+        default: ''
+      },
+      node: {
+        type: 'string',
+        title: '分配到管理员',
+        enum: [],
+        ui: {
+          widget: 'tree-select',
+          defaultExpandAll: true
+        },
+        default: ''
+      }
     }
   }
 
@@ -376,6 +395,7 @@ export class DtuDistributionComponent implements OnInit {
   }
   // st表格监听
   change(ret: STChange) {
+    // console.log(ret);
     if (ret.type === "checkbox") {
       this.checked = ret.checkbox.map(e => e.id)
     }
@@ -412,8 +432,8 @@ export class DtuDistributionComponent implements OnInit {
   handleData(value, mode) {
     let url;
     let body;
-    const startTime = moment(value.startTime).format('YYYY-MM-DD HH:mm:ss')
-    const endTime = moment(value.endTime).format('YYYY-MM-DD HH:mm:ss')
+    const startTime = value.startTime;
+    const endTime = value.endTime;
     switch (mode) {
       case 'edit':
         url = this.require.api.editAdminDtu;//编辑url
@@ -456,10 +476,7 @@ export class DtuDistributionComponent implements OnInit {
   upload(value) {
     console.log(value)
   }
-  // 分配DTU管理员监听
-  onChang(event) {
-    // this.form.id = event;
-  }
+
   // 递归删除多余的节点
   deleteNodes(obj) {
     delete obj.name;
@@ -480,7 +497,6 @@ export class DtuDistributionComponent implements OnInit {
   }
   // 分配DTU请求
   distribute() {
-    // console.log(this.form)
   }
 
   // 删除记录按钮
@@ -494,6 +510,7 @@ export class DtuDistributionComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
+                if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
                 this.getData();
                 break;
               default:
@@ -514,7 +531,12 @@ export class DtuDistributionComponent implements OnInit {
   distributeButton() {
     this.nodes1 = [this.deleteNodes(this.nodes[0])];
     this.isVisible3 = true;
-    // console.log(this.checked)
+    this.schema3.properties.node.enum = this.nodes1;
+    this.schema3.properties.node.default = this.adminId;
+    this.sf3.refreshSchema();
+    console.log(this.nodes1)
+    // console.log(this.adminId)
+    console.log(this.schema3.properties.node.enum)
   }
 
   ngOnInit() {

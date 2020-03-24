@@ -2,10 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { STColumn, STPage, STChange, STColumnTag } from '@delon/abc';
 import { RequireService } from '@core/require';
-import { SFComponent, SFSchema, SFGridSchema, SFTextWidgetSchema, SFRadioWidgetSchema } from '@delon/form';
+import { SFComponent, SFSchema, SFGridSchema, SFTextWidgetSchema, SFRadioWidgetSchema, SFDateWidgetSchema } from '@delon/form';
 import { of } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import * as moment from 'moment'
 // 表格配置项
 const TAG: STColumnTag = {
   0: { text: '否', color: '' },
@@ -58,14 +57,21 @@ export class DtuDefaultConfigComponent implements OnInit {
       },
       startTime: {
         type: 'string',
-        title: '开始时间',
-        format: 'date-time',
+        title: '开始-结束时间',
+        ui: {
+          widget: 'date',
+          end: 'endTime',
+          showTime: true
+        } as SFDateWidgetSchema,
         default: '',
       },
       endTime: {
         type: 'string',
         title: '停止时间',
-        format: 'date-time',
+        ui: {
+          widget: 'date',
+          showTime: true,
+        },
         default: '',
       },
       alarmPush: {
@@ -164,14 +170,14 @@ export class DtuDefaultConfigComponent implements OnInit {
         {
           text: '编辑',
           click: (e) => {
-            const startTime = moment(e.startTime).format();
-            const endTime = moment(e.endTime).format();
+            const startTime = e.startTime;
+            const endTime = e.endTime;
             this.isVisible = true;
             this.schema.properties.id.default = e.id;
             this.schema.properties.gatewayNumber.default = e.gatewayNumber;
             if (startTime !== 'Invalid date' && endTime !== 'Invalid date') {
-              this.schema.properties.startTime.default = moment(e.startTime).format();
-              this.schema.properties.endTime.default = moment(e.endTime).format();
+              this.schema.properties.startTime.default = e.startTime;
+              this.schema.properties.endTime.default = e.endTime;
             } else {
               this.schema.properties.startTime.default = null;
               this.schema.properties.endTime.default = null;
@@ -248,8 +254,8 @@ export class DtuDefaultConfigComponent implements OnInit {
   // 提交修改
   editDataApi(value) {
     const url = this.require.api.editAdminDtu;
-    const startTime = moment(value.startTime).format('YYYY-MM-DD HH:mm:ss')
-    const endTime = moment(value.endTime).format('YYYY-MM-DD HH:mm:ss')
+    const startTime = value.startTime;
+    const endTime = value.endTime;
     const body = this.require.encodeObject({
       gatewayNumber: value.gatewayNumber,
       id: value.id,

@@ -1,12 +1,12 @@
 <div nz-row>
   <div nz-col nzXs="24">
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start" nzType="flex">
-      <div nz-col nzXs="24" nzLg="3" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
+      <div nz-col nzXs="24" nzLg="3" nzXl="3" style="margin-bottom: 1rem;">
         <button nzType="primary" nz-button (click)="addDtuBUtton()" nzBlock><i nz-icon nzType="cloud-server"
             nzTheme="outline"></i>
           添加DTU</button>
       </div>
-      <div nz-col nzXs="24" nzLg="3" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
+      <div nz-col nzXs="24" nzLg="3" nzXl="3" style="margin-bottom: 1rem;">
         <button nzType="primary" (click)="binSend()" nz-button nzBlock><i nz-icon nzType="cloud-download"
             nzTheme="outline"></i>
           开始下发</button>
@@ -20,8 +20,8 @@
     <nz-collapse>
       <nz-collapse-panel nzHeader="文件列表" nzActive="true">
         <st #st [data]="data" [columns]="columns" [pi]="pi" [ps]="ps" [page]="pages" [total]="total"
-          [loading]="http.loading" (change)="change($event)" virtualScroll [scroll]="{ x: '1300px',y:'240px'}"
-          responsiveHideHeaderFooter>
+          [loading]="http.loading" (change)="change($event)" virtualScroll virtualItemSize="20"
+          [scroll]="{ x: '1300px',y:'240px'}" responsiveHideHeaderFooter>
         </st>
       </nz-collapse-panel>
     </nz-collapse>

@@ -67,7 +67,7 @@ export class HeaderUserComponent {
       switch (res.code) {
         case '10005':
           this.router.navigateByUrl(this.tokenService.login_url!);
-          // this.notification.info(`注销成功`, ``, { nzDuration: 1000 })
+          this.notification.info(`注销成功`, ``, { nzDuration: 1000 })
           this.tokenService.clear();
       }
     }, (err) => {

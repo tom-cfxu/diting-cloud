@@ -29,7 +29,8 @@
     </div>
     <div *nzModalFooter>
       <button nz-button nzType="default" (click)="handleCancel()">关闭</button>
-      <button nz-button nzType="primary" (click)="addUserApi(sf.value)" [nzLoading]="http.loading">提交</button>
+      <button nz-button nzType="primary" [disabled]="!sf.valid" (click)="addUserApi(sf.value)"
+        [nzLoading]="http.loading">提交</button>
     </div>
   </nz-modal>
 </div>

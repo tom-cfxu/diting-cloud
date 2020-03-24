@@ -97,6 +97,18 @@ export class DtuOnlineComponent implements OnInit {
   data2 = [];// 保存表格信息
   columns2: STColumn[] = [
     {
+      title: '操作',
+      buttons: [
+        {
+          text: '查看设备属性',
+          type: 'link',
+          click: (e: any) => {
+            this.getPropertiesWithEquip(e.equipId);
+          }
+        }
+      ]
+    },
+    {
       title: 'ID',
       index: 'id',
       sort: {
@@ -122,24 +134,25 @@ export class DtuOnlineComponent implements OnInit {
       index: 'equipProtocol',
 
     },
-    {
-      title: '操作',
-      buttons: [
-        {
-          text: '查看设备属性',
-          type: 'link',
-          click: (e: any) => {
-            this.getPropertiesWithEquip(e.equipId);
-          }
-        }
-      ]
-    },
   ];
   // 属性表格设置
   data3 = [];
   columns3: STColumn[] = [
     {
-      type: 'checkbox'
+      title: '操作',
+      width: 100,
+      buttons: [
+        {
+          text: '加入自选',
+          // type: 'link',
+          // pop: true,
+          // popTitle: '确定添加到自选吗?',
+          click: (e) => {
+            // console.log(e)
+            this.addToMySelection(e.id)
+          }
+        }
+      ]
     },
     {
       title: 'ID',
@@ -209,24 +222,7 @@ export class DtuOnlineComponent implements OnInit {
       index: 'uploadParam3',
       width: 100,
     },
-    {
-      title: '加入自选',
-      width: 100,
-      buttons: [
-        {
-          text: '加入自选',
-          type: 'link',
-          pop: true,
-          popTitle: '确定添加到自选吗?',
-          click: (e) => {
-            // console.log(e)
-            this.addToMySelection(e.id)
-          }
-        }
-      ]
-    },
   ];
-  // 请求管理员节点
   // 递归修改节点名称
   edit(obj) {
     obj.title = obj.name;
@@ -235,7 +231,6 @@ export class DtuOnlineComponent implements OnInit {
       Object.keys(obj).forEach((key) => {
         const arr = [];
         obj.selected = obj.additionalParameters.itemSelected;
-        // tslint:disable-next-line: forin
         for (const i in obj.additionalParameters.children) {
           arr.push(obj.additionalParameters.children[i])
           this.edit(obj.additionalParameters.children[i]);
@@ -248,14 +243,12 @@ export class DtuOnlineComponent implements OnInit {
     }
     return obj;
   }
-  // 获取父子节点
+  // 请求管理员名下DTU节点
   getNode() {
     const url = this.require.api.loadAdminTreeData;
     this.require.post(url).subscribe((res: any) => {
       const data = res.data.adminTreeData;
-
       let obj;
-      // tslint:disable-next-line: forin
       for (const i in data) {
         obj = data[i];
       }
@@ -328,7 +321,7 @@ export class DtuOnlineComponent implements OnInit {
       this.require.post(url, body).subscribe((res: any) => {
         switch (res.code) {
           case '10005':
-            console.log(res);
+            // console.log(res);
             const data = res.data;
             if (data.list.length > 0) {
               this.data2 = data.list.map((e) => {

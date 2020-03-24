@@ -76,12 +76,11 @@ export class AlarmHistoryComponent implements OnInit {
   // 监听变化
   change(ret: STChange) {
     if (ret.type === 'pi' || ret.type === 'ps') {
-      this.pi = ret.pi;
+      this.pi = this.pi > 1 ? ret.pi : 1;
       this.ps = ret.ps;
       this.getData();
     } else if (ret.type === 'checkbox') {
       this.checked = ret.checkbox.map(e => e.id)
-      // console.log(this.checked2)
     }
   }
   // 请求主数据
@@ -91,7 +90,7 @@ export class AlarmHistoryComponent implements OnInit {
       rows: this.ps,
     })
     this.require.post(this.url, body).subscribe((res: any) => {
-      console.log(res)
+      // console.log(res)
       switch (res.code) {
         case "10005":
           const data = res.data;

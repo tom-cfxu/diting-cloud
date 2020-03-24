@@ -4,7 +4,6 @@ import { NzMessageService, NzModalService } from 'ng-zorro-antd';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { SFComponent, SFSchema } from '@delon/form';
-import { format } from 'url';
 
 @Component({
   selector: 'app-user-manage',
@@ -92,6 +91,7 @@ export class UserManageComponent implements OnInit {
             this.require.post(deleteUrl, body).subscribe((res: any) => {
               switch (res.code) {
                 case '10005':
+                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
                   this.getData();
                   break;
                 default:
@@ -119,7 +119,12 @@ export class UserManageComponent implements OnInit {
       email: {
         type: 'string',
         title: '邮箱',
-        format: 'email'
+        format: 'email',
+        ui: {
+          errors: {
+            'required': '必填项'
+          }
+        }
       },
       phone: {
         type: 'string',
@@ -139,6 +144,7 @@ export class UserManageComponent implements OnInit {
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
+          // console.log(res)
           const data = res.data;
           this.pi = data.page;
           this.total = data.records;
@@ -151,6 +157,7 @@ export class UserManageComponent implements OnInit {
                 phone: e.phone,
               }
             })
+            return;
           } else {
             this.data = [];
             this.message.info('数据为空', { nzDuration: 1000 })
