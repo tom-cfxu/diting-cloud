@@ -60,23 +60,23 @@ export class OperateDataComponent implements OnInit {
           widget: 'date',
           end: 'endTime',
           showTime: true,
-          disabledDate: (current) => console.log(current)
         }
       },
     }
   };
   //提交查询
   submit(value) {
-    // console.log(value)
+    const start = Date.parse(value.startTime);
+    const end = Date.parse(value.endTime);
+    let day = (end - start) / (1000 * 60 * 60 * 24);
+    if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
     const url = this.require.api.getOperateData;
     const body = this.require.encodeObject({
       rows: this.ps,
       startTime: value.startTime,
       endTime: value.endTime,
     });
-    console.log(body)
     this.require.post(url, body).subscribe((res: any) => {
-      // console.log(res)
       const data = res.data;
       this.pi = parseInt(data.page);
       if (data.rows.length > 0) {

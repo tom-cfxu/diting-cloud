@@ -1,8 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
-// import * as common from 'src/assets/common.js';
-// declare var BMap: any;
 import * as mapvgl from 'mapvgl';
 import { resolve } from 'url';
 declare var BMap: any;

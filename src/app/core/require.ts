@@ -3,9 +3,8 @@ import { ITokenService, DA_SERVICE_TOKEN } from '@delon/auth';
 import { _HttpClient, SettingsService } from '@delon/theme';
 import { ApiPortService } from './api-port.service';
 import { LoginControllerService } from './login-controller.service';
-import { StartupService } from './startup/startup.service';
 import { NzMessageService, NzModalService } from 'ng-zorro-antd';
-import * as moment from 'moment'
+// import * as moment from 'moment'
 
 @Injectable({ providedIn: 'root' })
 export class RequireService {
@@ -68,7 +67,7 @@ export class RequireService {
         uniques = uniques;
         return uniques;
     }
-    public moment = moment;
+    // public moment = moment;
     // 主界面获取用户信息
     public getUserInfo() {
         const url = this.api.getUserInfo;

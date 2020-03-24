@@ -130,6 +130,10 @@ export class DataQueryComponent implements OnInit {
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 })
     }
+    const start = Date.parse(value.startTime);
+    const end = Date.parse(value.endTime);
+    let day = (end - start) / (1000 * 60 * 60 * 24);
+    if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids')
     const body = ids + '&' + this.require.encodeObject({
