@@ -42,13 +42,17 @@
                             [nzButtonStyle]="'solid'">
                             <label nz-radio-button nzValue="range">范围查询</label>
                             <label nz-radio-button nzValue="date">按天查询</label>
-                            <label nz-radio-button nzValue="week">按周查询</label>
-                            <label nz-radio-button nzValue="month">按月查询</label>
+                            <!-- <label nz-radio-button nzValue="week">按周查询</label> -->
+                            <!-- <label nz-radio-button nzValue="month">按月查询</label> -->
                         </nz-radio-group>
                     </div>
                     <sf #sf2 mode="search" [button]="{search:'查询'}" [loading]="http.loading" [schema]="schema2"
                         (formSubmit)="submit2($event)">
                     </sf>
+                    <div nz-row>
+                        <st #st2 [header]="'设备编号：'+gatewayNumber2" [data]="data2" [columns]="columns2"
+                            [loading]="http.loading" responsiveHideHeaderFooter></st>
+                    </div>
                 </nz-tab>
             </nz-tabset>
         </nz-card>

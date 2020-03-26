@@ -286,7 +286,7 @@ export class BinSendComponent implements OnInit {
   // 开始下发
   binSend() {
     if (this.checked.length > 0 && this.checked3.length > 0) {
-      console.log(this.checked, this.checked3)
+      // console.log(this.checked, this.checked3)
       this.api.modalService.confirm({
         nzTitle: '确认下发?',
         nzOnOk: () => {
@@ -308,7 +308,6 @@ export class BinSendComponent implements OnInit {
     }
     const result = this.require.deteleObject(this.arr);
     this.data3 = result;
-    // this.arr.push(rr;
   }
   // 添加dtu按钮
   addDtuBUtton() {

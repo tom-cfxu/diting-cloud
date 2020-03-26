@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { STColumn, STChange, STPage } from '@delon/abc';
+import { STColumn, STChange, STPage, XlsxService, } from '@delon/abc';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { ApiService } from '@core/api.service';
+import { SFSchema, SFUploadWidgetSchema, SFGridSchema } from '@delon/form';
 @Component({
   selector: 'app-bin-manager',
   templateUrl: './bin-manager.component.html',
@@ -10,15 +11,16 @@ import { ApiService } from '@core/api.service';
 })
 export class BinManagerComponent implements OnInit {
   // 构造函数
-  constructor(private http: _HttpClient, private require: RequireService, private api: ApiService) { }
+  constructor(private http: _HttpClient, private xlsx: XlsxService, private require: RequireService, private api: ApiService) { }
   // 文件列表数据
   deleteUrl = this.require.api.binDelete;// 删除bin文件接口
   data = [] // 保存表格信息
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
   total; // 总数据数量
-  // 分页配置
+  isVisible = false; //上传文件弹出框的显示 
   checked = [];// 选择1
+  // 分页配置
   pages: STPage = {
     total: '',
     showSize: true,
@@ -30,62 +32,7 @@ export class BinManagerComponent implements OnInit {
   columns: STColumn[] = [
     {
       type: 'checkbox',
-      width: 50,
-    },
-    {
-      title: 'ID',
-      index: 'id',
       width: 100,
-      sort: {
-        compare: (a, b) => a.id - b.id,
-      },
-    },
-    {
-      title: '现文件名',
-      index: 'nfilename',
-      width: 500,
-      className: 'text-nowrap,text-truncate'
-    },
-    {
-      title: '原文件名',
-      index: 'ofilename',
-      width: 450,
-      className: 'text-nowrap,text-truncate'
-    },
-    {
-      title: '创建时间',
-      index: 'createTime',
-      width: 300,
-    },
-    {
-      title: '创建人员',
-      index: 'createUser',
-      width: 150,
-    },
-    {
-      title: '拥有',
-      index: 'owner',
-      width: 75,
-    },
-    {
-      title: '描述',
-      index: 'description',
-      width: 75,
-    },
-    {
-      title: '协议版本',
-      index: 'protocolVersion',
-      width: 75,
-    },
-    {
-      title: '驱动版本',
-      index: 'driverVersion',
-      width: 75,
-    },
-    {
-      title: '文件版本',
-      index: 'fileVersion',
-      width: 75,
     },
     {
       title: '操作',
@@ -121,7 +68,109 @@ export class BinManagerComponent implements OnInit {
         }
       ]
     },
+
+    {
+      title: 'ID',
+      index: 'id',
+      width: 100,
+      sort: {
+        compare: (a, b) => a.id - b.id,
+      },
+    },
+    {
+      title: '现文件名',
+      index: 'nfilename',
+      width: 300,
+      className: 'text-nowrap,text-truncate'
+    },
+    {
+      title: '原文件名',
+      index: 'ofilename',
+      width: 300,
+      className: 'text-nowrap,text-truncate'
+    },
+    {
+      title: '创建时间',
+      index: 'createTime',
+      width: 200,
+    },
+    {
+      title: '创建人员',
+      index: 'createUser',
+      width: 75,
+    },
+    {
+      title: '拥有',
+      index: 'owner',
+      width: 75,
+    },
+    {
+      title: '描述',
+      index: 'description',
+      width: 50,
+    },
+    {
+      title: '协议版本',
+      index: 'protocolVersion',
+      width: 50,
+    },
+    {
+      title: '驱动版本',
+      index: 'driverVersion',
+      width: 50,
+    },
+    {
+      title: '文件版本',
+      index: 'fileVersion',
+      width: 50,
+    },
+
   ];
+  // 上传文件配置
+  schema: SFSchema = {
+    properties: {
+      file: {
+        type: 'string',
+        title: '添加文件',
+        ui: {
+          widget: 'upload',
+          action: '/upload',
+          resReName: 'resource_id',
+          urlReName: 'url',
+          type: 'drag',
+          hint: ' ',
+          spanControl: 12,
+        } as SFUploadWidgetSchema,
+      },
+      driverVersion: {
+        type: 'string',
+        title: '驱动版本',
+        ui: {
+          widget: 'number',
+          // spanControl: 12,
+        } as SFGridSchema,
+        default: '',
+      },
+      protocolVersion: {
+        type: 'string',
+        title: '协议版本',
+        ui: {
+          widget: 'number',
+          // spanControl: 12,
+        } as SFGridSchema,
+        default: '',
+      },
+      upLoadType: {
+        type: 'string',
+        title: '上传类型',
+        enum: ['共有', '私有'],
+        ui: {
+          widget: 'radio'
+        },
+        default: '共有'
+      }
+    }
+  }
   // 监听变化
   change(ret: STChange) {
     if (ret.type === 'pi' || ret.type === 'ps') {
@@ -130,7 +179,6 @@ export class BinManagerComponent implements OnInit {
       this.getData();
     } else if (ret.type === 'checkbox') {
       this.checked = ret.checkbox.map(e => e.id)
-      // console.log(this.checked2)
     }
   }
   // 删除文件列表
@@ -200,6 +248,13 @@ export class BinManagerComponent implements OnInit {
     }, (err) => {
 
     })
+  }
+  // 上传bin文件
+  upload() {
+    this.isVisible = true;
+  }
+  handleCancel() {
+    this.isVisible = false;
   }
   // 下载文件请求
   download(id) {

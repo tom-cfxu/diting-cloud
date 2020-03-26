@@ -12,15 +12,18 @@ declare var G2: any;
   templateUrl: './data-query.component.html',
   styles: []
 })
+
 export class DataQueryComponent implements OnInit {
   constructor(private require: RequireService, private http: _HttpClient, private api: ApiService) { }
   getMySelection = this.require.api.getMySelection;
   deleteUrl = this.require.api.selectionDelete;
   data = []; // 保存表格信息
+  data2 = []; // 保存报表数据
   pi = 1; // 表格页码
   ps = 5;// 表格每页数量
   total;
   gatewayNumber = ""; //保存趋势图标题
+  gatewayNumber2 = ""; //保存报表标题
   radioValue = "range";// 报表查询方式
   @ViewChild('st', { static: false }) st: STComponent;
   // 分页配置
@@ -107,6 +110,17 @@ export class DataQueryComponent implements OnInit {
       ]
     },
   ];
+  // 报表配置
+  columns2: STColumn[] = [
+    {
+      title: '时间',
+      index: 'x',
+    },
+    {
+      title: 'ND6',
+      index: 'y',
+    }
+  ];
   @ViewChild('sf2', { static: false }) sf2: SFComponent;
   // 查询表单
   schema: SFSchema = {
@@ -129,13 +143,8 @@ export class DataQueryComponent implements OnInit {
       },
     }
   };
-  // 查询表单
-  // ui = {
-  //   spanLabel: 6,
-  //   spanControl: 12,
-  // }
+  // 查询报表
   schema2: SFSchema = {
-    // required: ['startTime', 'endTime'],
     properties: {
       date: {
         type: 'string',
@@ -145,24 +154,24 @@ export class DataQueryComponent implements OnInit {
           hidden: true,
         } as SFDateWidgetSchema,
       },
-      week: {
-        type: 'string',
-        title: '选择周',
-        format: 'week',
-        ui: {
-          placeholder: '选择周',
-          hidden: true,
-        }
-      },
-      month: {
-        type: 'string',
-        title: '选择月',
-        format: 'month',
-        ui: {
-          placeholder: '选择月',
-          hidden: true,
-        }
-      },
+      // week: {
+      //   type: 'string',
+      //   title: '选择周',
+      //   format: 'week',
+      //   ui: {
+      //     placeholder: '选择周',
+      //     hidden: true,
+      //   }
+      // },
+      // month: {
+      //   type: 'string',
+      //   title: '选择月',
+      //   format: 'month',
+      //   ui: {
+      //     placeholder: '选择月',
+      //     hidden: true,
+      //   }
+      // },
       startTime: {
         type: 'string',
         title: '起始-结束时间',
@@ -187,27 +196,27 @@ export class DataQueryComponent implements OnInit {
       case 'range':
         this.schema2.properties.startTime.ui['hidden'] = false;
         this.schema2.properties.date.ui['hidden'] = true;
-        this.schema2.properties.week.ui['hidden'] = true;
-        this.schema2.properties.month.ui['hidden'] = true;
+        // this.schema2.properties.week.ui['hidden'] = true;
+        // this.schema2.properties.month.ui['hidden'] = true;
         break;
       case 'date':
         this.schema2.properties.startTime.ui['hidden'] = true;
         this.schema2.properties.date.ui['hidden'] = false;
-        this.schema2.properties.week.ui['hidden'] = true;
-        this.schema2.properties.month.ui['hidden'] = true;
+        // this.schema2.properties.week.ui['hidden'] = true;
+        // this.schema2.properties.month.ui['hidden'] = true;
         break;
-      case 'week':
-        this.schema2.properties.startTime.ui['hidden'] = true;
-        this.schema2.properties.date.ui['hidden'] = true;
-        this.schema2.properties.week.ui['hidden'] = false;
-        this.schema2.properties.month.ui['hidden'] = true;
-        break;
-      case 'month':
-        this.schema2.properties.startTime.ui['hidden'] = true;
-        this.schema2.properties.date.ui['hidden'] = true;
-        this.schema2.properties.week.ui['hidden'] = true;
-        this.schema2.properties.month.ui['hidden'] = false;
-        break;
+      // case 'week':
+      //   this.schema2.properties.startTime.ui['hidden'] = true;
+      //   this.schema2.properties.date.ui['hidden'] = true;
+      //   this.schema2.properties.week.ui['hidden'] = false;
+      //   this.schema2.properties.month.ui['hidden'] = true;
+      //   break;
+      // case 'month':
+      //   this.schema2.properties.startTime.ui['hidden'] = true;
+      //   this.schema2.properties.date.ui['hidden'] = true;
+      //   // this.schema2.properties.week.ui['hidden'] = true;
+      //   this.schema2.properties.month.ui['hidden'] = false;
+      //   break;
     }
     this.sf2.refreshSchema();
   }
@@ -229,7 +238,7 @@ export class DataQueryComponent implements OnInit {
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          console.log(res)
+          // console.log(res)
           if (res.data.data.length > 0) {
             this.gatewayNumber = res.data.data[0].gatewayNumber;
             const data = res.data.data[0].historyData;
@@ -259,29 +268,58 @@ export class DataQueryComponent implements OnInit {
     }
     const startTime = value.startTime;
     const endTime = value.endTime;
-    const week = value.week;
-    const month = value.month;
+    // const week = value.week;
+    // const month = value.month;
     const date = value.date;
     let body = ids + '&';
     if (startTime && endTime) {
+      const start = Date.parse(startTime);
+      const end = Date.parse(endTime);
+      let day = (end - start) / (1000 * 60 * 60 * 24);
+      if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
       body += this.require.encodeObject({
         startTime,
         endTime
       })
-    } else if (week) {
-      // console.log(this.require.moment().subtract(week+7-1, 'days').format('YY-ww'))
-    } else if (date) {
+      // } else if (week) {
+      //   // console.log(this.require.moment().subtract(week+7-1, 'days').format('YY-ww'))
+    }
+    else if (date) {
       body += this.require.encodeObject({
         startTime: this.require.moment(date).format('YYYY-MM-DD 00:00:00'),
         endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59')
       })
-    } else if (month) {
-      body += this.require.encodeObject({
-        startTime: this.require.moment(month).format('YYYY-MM-DD 00:00:00'),
-        endTime: this.require.moment(month).add(1, 'months').format('YYYY-MM-DD 00:00:00')
-      })
     }
+    // else if (month) {
+    //   body += this.require.encodeObject({
+    //     startTime: this.require.moment(month).format('YYYY-MM-DD 00:00:00'),
+    //     endTime: this.require.moment(month).add(1, 'months').format('YYYY-MM-DD 00:00:00')
+    //   })
+    // }
     console.log(body);
+    this.require.post(url, body).subscribe((res: any) => {
+      switch (res.code) {
+        case '10005':
+          // console.log(res)
+          if (res.data.data.length > 0) {
+            this.gatewayNumber2 = res.data.data[0].gatewayNumber;
+            const data = res.data.data[0].historyData;
+            this.data2 = data.map((e) => {
+              return {
+                x: e.time,
+                y: e.ND6 == null ? "null" : e.ND6
+              }
+            })
+          } else {
+            this.data2 = [];
+            this.gatewayNumber2 = '';
+            this.require.message.info('数据为空', { nzDuration: 1000 })
+          }
+          break;
+        default:
+          break;
+      }
+    })
   }
   // 监听变化
   change(ret: STChange) {
