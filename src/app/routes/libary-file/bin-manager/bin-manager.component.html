@@ -30,11 +30,24 @@
 <nz-modal nzWidth="600" [(nzVisible)]="isVisible" nzTitle="上传bin文件" (nzOnCancel)="handleCancel()"
   nzMaskClosable="false">
   <div>
+    <div>
+      <!-- <nz-form-label [nzSpan]="5">添加文件</nz-form-label> -->
+      <nz-upload nzType="drag" [(nzFileList)]="fileList" nzAccept=".bin" [nzBeforeUpload]="beforeUpload">
+        <p class="ant-upload-drag-icon">
+          <i nz-icon nzType="inbox"></i>
+        </p>
+        <p class="ant-upload-text">添加文件</p>
+        <p class="ant-upload-hint">
+        </p>
+        <!-- <button nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button> -->
+      </nz-upload>
+    </div>
+
     <sf #sf [schema]="schema" [ui]="ui" button="none"></sf>
   </div>
   <div *nzModalFooter>
     <button nz-button type="button" (click)="handleCancel()">关闭</button>
-    <button nz-button type="submit" [disabled]="!sf.valid" [nzType]="'primary'" (click)="upload(sf.value)"
+    <button nz-button type="submit" [disabled]="!sf.valid" [nzType]="'primary'" (click)="submit(sf.value)"
       [nzLoading]="http.loading">上传</button>
   </div>
 </nz-modal>

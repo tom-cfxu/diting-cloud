@@ -3,7 +3,9 @@ import { STColumn, STChange, STPage, XlsxService, } from '@delon/abc';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { ApiService } from '@core/api.service';
+// import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SFSchema, SFUploadWidgetSchema, SFGridSchema } from '@delon/form';
+import { UploadFile } from 'ng-zorro-antd';
 @Component({
   selector: 'app-bin-manager',
   templateUrl: './bin-manager.component.html',
@@ -12,6 +14,8 @@ import { SFSchema, SFUploadWidgetSchema, SFGridSchema } from '@delon/form';
 export class BinManagerComponent implements OnInit {
   // 构造函数
   constructor(private http: _HttpClient, private xlsx: XlsxService, private require: RequireService, private api: ApiService) { }
+  // validateForm: FormGroup;
+  fileList: UploadFile[] = [];
   // 文件列表数据
   deleteUrl = this.require.api.binDelete;// 删除bin文件接口
   data = [] // 保存表格信息
@@ -29,6 +33,7 @@ export class BinManagerComponent implements OnInit {
     pageSizes: [10, 20, 30, 40, 50],
     placement: 'center'
   }
+  // 表格数据
   columns: STColumn[] = [
     {
       type: 'checkbox',
@@ -126,22 +131,33 @@ export class BinManagerComponent implements OnInit {
     },
 
   ];
+  // 阻止默认上传
+  beforeUpload = (file: UploadFile): boolean => {
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
   // 上传文件配置
   schema: SFSchema = {
+    required: ['driverVersion', 'protocolVersion', 'upLoadType'],
     properties: {
-      file: {
-        type: 'string',
-        title: '添加文件',
-        ui: {
-          widget: 'upload',
-          action: '/upload',
-          resReName: 'resource_id',
-          urlReName: 'url',
-          type: 'drag',
-          hint: ' ',
-          spanControl: 12,
-        } as SFUploadWidgetSchema,
-      },
+      // file: {
+      //   type: 'array',
+      //   title: '添加文件',
+      //   ui: {
+      //     widget: 'upload',
+      //     type: 'drag',
+      //     accept: '.bin',
+      //     headers: { 'Content-Type': 'multipart/form-data' },
+      //     // change: (args) => { console.log(args) },
+      //     fileList: this.fileList,
+      //     beforeUpload: (file: UploadFile, fileList: UploadFile[]): boolean => {
+      //       this.fileList = this.fileList.concat(file);
+      //       return false;
+      //     },
+      //     hint: ' ',
+      //     spanControl: 12,
+      //   } as SFUploadWidgetSchema,
+      // },
       driverVersion: {
         type: 'string',
         title: '驱动版本',
@@ -168,7 +184,8 @@ export class BinManagerComponent implements OnInit {
           widget: 'radio'
         },
         default: '共有'
-      }
+      },
+
     }
   }
   // 监听变化
@@ -252,6 +269,17 @@ export class BinManagerComponent implements OnInit {
   // 上传bin文件
   upload() {
     this.isVisible = true;
+  }
+  // 上传请求
+  submit(value) {
+    console.log(value);
+    console.log(this.fileList)
+    const formData = new FormData();
+    // tslint:disable-next-line:no-any
+    this.fileList.forEach((file: any) => {
+      formData.append('files[]', file);
+    });
+    console.log(formData)
   }
   handleCancel() {
     this.isVisible = false;
