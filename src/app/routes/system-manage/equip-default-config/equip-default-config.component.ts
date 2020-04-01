@@ -8,7 +8,7 @@ import { _HttpClient } from '@delon/theme';
   styles: []
 })
 export class EquipDefaultConfigComponent implements OnInit {
-  constructor(private require: RequireService, private http: _HttpClient, ) { }
+  constructor(private require: RequireService, public http: _HttpClient, ) { }
   data = [] // 保存表格信息
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量

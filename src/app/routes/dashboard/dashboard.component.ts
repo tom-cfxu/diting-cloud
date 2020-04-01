@@ -1,22 +1,21 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
-import * as mapvgl from 'mapvgl';
-import { resolve } from 'url';
+// import * as mapvgl from 'mapvgl';
+// import { resolve } from 'url';
 declare var BMap: any;
 declare var BMapLib: any;
-declare var BMap: any;
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.less'],
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
-  constructor(private http: _HttpClient, private require: RequireService) { }
+  constructor(public http: _HttpClient, private require: RequireService) { }
   // 创建地图实例
   map;
   point;
-  //创建MapVGL图层管理器
+  // 创建MapVGL图层管理器
   view;
   data = [];
   dtuData = [];
@@ -28,8 +27,10 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   markers = [];
   // 判断是否数字
   isNumber(val) {
-    var regPos = /^\d+(\.\d+)?$/; //非负浮点数
-    var regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; //负浮点数
+    // tslint:disable-next-line: prefer-const
+    let regPos = /^\d+(\.\d+)?$/; // 非负浮点数
+    // tslint:disable-next-line: prefer-const
+    let regNeg = /^(-(([0-9]+\.[0-9]*[1-9][0-9]*)|([0-9]*[1-9][0-9]*\.[0-9]+)|([0-9]*[1-9][0-9]*)))$/; // 负浮点数
     if (regPos.test(val) || regNeg.test(val)) {
       return true;
     } else {
@@ -71,23 +72,28 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }
     })
   }
-  //设置信息窗口样式相关配置
+  // 设置信息窗口样式相关配置
+  // tslint:disable-next-line: member-ordering
   opts = {
     width: 380,     // 信息窗口宽度
     height: 220,     // 信息窗口高度
-    title: `<h1>DTU信息</h1>`, //信息窗口标题
+    title: `<h1>DTU信息</h1>`, // 信息窗口标题
     enableMessage: false // 设置允许信息窗发送短息
   };
   // 开启窗口信息
   openInfo(content, e) {
-    var p = e.target;
-    var point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
-    var infoWindow = new BMap.InfoWindow(content, this.opts);  // 创建信息窗口对象 
-    this.map.openInfoWindow(infoWindow, point); //开启信息窗口
+    // tslint:disable-next-line: prefer-const
+    let p = e.target;
+    // tslint:disable-next-line: prefer-const
+    let point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
+    // tslint:disable-next-line: prefer-const
+    let infoWindow = new BMap.InfoWindow(content, this.opts);  // 创建信息窗口对象 
+    this.map.openInfoWindow(infoWindow, point); // 开启信息窗口
   }
   // 监听标注点击
   addClickHandler(content, marker) {
-    let that = this;
+    const that = this;
+    // tslint:disable-next-line: only-arrow-functions
     marker.addEventListener("click", function (e) {
       that.openInfo(content, e)
     }
@@ -95,18 +101,18 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
   }
   // 创建标注、类聚合、信息窗口,并添加到地图中
   showInfo(arr) {
-    if (typeof (arr) == "undefined") {
+    if (typeof (arr) === "undefined") {
       return;
     }
     for (const data of arr) {
 
       if (this.isNumber(data.locateX) && this.isNumber(data.locateY)) {
-        let point = new BMap.Point(data.locateX, data.locateY); //创建坐标点
-        let marker = new BMap.Marker(point);//创建标注
+        const point = new BMap.Point(data.locateX, data.locateY); // 创建坐标点
+        const marker = new BMap.Marker(point);// 创建标注
         this.markers.push(marker);
-        this.map.addOverlay(marker) //将标注添加到地图中;
-        //窗口内容
-        let content = `
+        this.map.addOverlay(marker) // 将标注添加到地图中;
+        // 窗口内容
+        const content = `
           省:${data.provinceName}
           <br>市:${data.cityName}
           <br>县:${data.areaName}
@@ -119,7 +125,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
       }
 
     }
-    this.markerCluster = new BMapLib.MarkerClusterer(this.map, { markers: this.markers }) //添加类聚合
+    this.markerCluster = new BMapLib.MarkerClusterer(this.map, { markers: this.markers }) // 添加类聚合
   }
   ngOnInit() {
     this.map = new BMap.Map('map_container');

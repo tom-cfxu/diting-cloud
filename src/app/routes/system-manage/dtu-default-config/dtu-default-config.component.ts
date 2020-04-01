@@ -16,7 +16,7 @@ const TAG: STColumnTag = {
   styles: []
 })
 export class DtuDefaultConfigComponent implements OnInit {
-  constructor(private http: _HttpClient, private require: RequireService) { }
+  constructor(public http: _HttpClient, private require: RequireService) { }
   data = []; // 保存表格信息
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
@@ -58,6 +58,7 @@ export class DtuDefaultConfigComponent implements OnInit {
       startTime: {
         type: 'string',
         title: '开始-结束时间',
+        // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           widget: 'date',
           end: 'endTime',

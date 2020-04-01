@@ -7,7 +7,7 @@ export class GenderPipe implements PipeTransform {
 
   transform(value): any {
     if (!value) return value;
-    return value == 1 ? "男" : "女";
+    return value === 1 ? "男" : "女";
   }
 
 }

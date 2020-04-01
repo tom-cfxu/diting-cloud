@@ -12,7 +12,7 @@ import { ApiService } from '@core/api.service';
 export class AlarmHistoryComponent implements OnInit {
 
 
-  constructor(private require: RequireService, private api: ApiService, private http: _HttpClient) { }
+  constructor(private require: RequireService, private api: ApiService, public http: _HttpClient) { }
   url = this.require.api.getAlarmHistory;
   data = [] // 保存表格信息
   pi = 1; // 表格页码

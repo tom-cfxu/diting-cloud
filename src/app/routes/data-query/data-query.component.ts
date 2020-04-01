@@ -14,7 +14,7 @@ declare var G2: any;
 })
 
 export class DataQueryComponent implements OnInit {
-  constructor(private require: RequireService, private http: _HttpClient, private api: ApiService) { }
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
   getMySelection = this.require.api.getMySelection;
   deleteUrl = this.require.api.selectionDelete;
   data = []; // 保存表格信息
@@ -22,8 +22,8 @@ export class DataQueryComponent implements OnInit {
   pi = 1; // 表格页码
   ps = 5;// 表格每页数量
   total;
-  gatewayNumber = ""; //保存趋势图标题
-  gatewayNumber2 = ""; //保存报表标题
+  gatewayNumber = ""; // 保存趋势图标题
+  gatewayNumber2 = ""; // 保存报表标题
   radioValue = "range";// 报表查询方式
   @ViewChild('st', { static: false }) st: STComponent;
   // 分页配置
@@ -55,7 +55,7 @@ export class DataQueryComponent implements OnInit {
             this.require.post(this.deleteUrl, body).subscribe((res: any) => {
               switch (res.code) {
                 case '10005':
-                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                  if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
                   this.getData();
                   break;
                 default:
@@ -131,7 +131,7 @@ export class DataQueryComponent implements OnInit {
         ui: {
           widget: 'date',
           end: 'endTime', showTime: true
-        } as SFDateWidgetSchema,
+        }
       },
       endTime: {
         type: 'string',
@@ -149,9 +149,10 @@ export class DataQueryComponent implements OnInit {
         type: 'string',
         title: '选择日期',
         format: 'date',
+        // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           hidden: true,
-        } as SFDateWidgetSchema,
+        }
       },
       // week: {
       //   type: 'string',
@@ -176,15 +177,17 @@ export class DataQueryComponent implements OnInit {
         title: '起始-结束时间',
         ui: {
           widget: 'date',
-          end: 'endTime', showTime: true,
+          end: 'endTime',
+          showTime: true,
           hidden: false,
-        } as SFDateWidgetSchema,
+        },
       },
       endTime: {
         type: 'string',
         ui: {
           widget: 'date',
           showTime: true,
+          hidden: true,
         }
       },
     }
@@ -193,16 +196,16 @@ export class DataQueryComponent implements OnInit {
   searchBy(e) {
     switch (this.radioValue) {
       case 'range':
+        // tslint:disable-next-line: no-string-literal
         this.schema2.properties.startTime.ui['hidden'] = false;
+        // tslint:disable-next-line: no-string-literal
         this.schema2.properties.date.ui['hidden'] = true;
-        // this.schema2.properties.week.ui['hidden'] = true;
-        // this.schema2.properties.month.ui['hidden'] = true;
         break;
       case 'date':
+        // tslint:disable-next-line: no-string-literal
         this.schema2.properties.startTime.ui['hidden'] = true;
+        // tslint:disable-next-line: no-string-literal
         this.schema2.properties.date.ui['hidden'] = false;
-        // this.schema2.properties.week.ui['hidden'] = true;
-        // this.schema2.properties.month.ui['hidden'] = true;
         break;
       // case 'week':
       //   this.schema2.properties.startTime.ui['hidden'] = true;
@@ -226,7 +229,7 @@ export class DataQueryComponent implements OnInit {
     }
     const start = Date.parse(value.startTime);
     const end = Date.parse(value.endTime);
-    let day = (end - start) / (1000 * 60 * 60 * 24);
+    const day = (end - start) / (1000 * 60 * 60 * 24);
     if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids')
@@ -244,7 +247,7 @@ export class DataQueryComponent implements OnInit {
             this.chartData = data.map((e) => {
               return {
                 'x': Date.parse(e.time),
-                'y1': e.ND6 == null ? "0.0" : e.ND6
+                'y1': e.ND6 === null ? "0.0" : e.ND6
               }
             })
           } else {
@@ -274,7 +277,7 @@ export class DataQueryComponent implements OnInit {
     if (startTime && endTime) {
       const start = Date.parse(startTime);
       const end = Date.parse(endTime);
-      let day = (end - start) / (1000 * 60 * 60 * 24);
+      const day = (end - start) / (1000 * 60 * 60 * 24);
       if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
       body += this.require.encodeObject({
         startTime,
@@ -306,7 +309,7 @@ export class DataQueryComponent implements OnInit {
             this.data2 = data.map((e) => {
               return {
                 x: e.time,
-                y: e.ND6 == null ? "null" : e.ND6
+                y: e.ND6 === null ? "null" : e.ND6
               }
             })
           } else {
@@ -341,7 +344,7 @@ export class DataQueryComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
-                if (this.total % this.ps == 1 && this.pi > 1 || this.checked.length == (this.total % this.ps)) this.pi--;
+                if (this.total % this.ps === 1 && this.pi > 1 || this.checked.length === (this.total % this.ps)) this.pi--;
                 this.getData();
                 this.checked = [];
                 break;

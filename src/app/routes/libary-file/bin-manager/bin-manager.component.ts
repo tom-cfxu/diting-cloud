@@ -25,7 +25,7 @@ import { UploadFile } from 'ng-zorro-antd';
 })
 export class BinManagerComponent implements OnInit {
   // 构造函数
-  constructor(private http: _HttpClient, private fb: FormBuilder, private el: ElementRef, private xlsx: XlsxService, private require: RequireService, private api: ApiService) { }
+  constructor(public http: _HttpClient, private fb: FormBuilder, private require: RequireService, private api: ApiService) { }
   validateForm: FormGroup;
   @ViewChild('sf', { static: false }) private sf: SFComponent;
   deleteUrl = this.require.api.binDelete;// 删除bin文件接口
@@ -34,7 +34,7 @@ export class BinManagerComponent implements OnInit {
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
   total; // 总数据数量
-  isVisible = false; //上传文件弹出框的显示 
+  isVisible = false; // 上传文件弹出框的显示 
   checked = [];// 选择1
   // 分页配置
   pages: STPage = {
@@ -54,6 +54,7 @@ export class BinManagerComponent implements OnInit {
     return false;
   };
   // 表格数据
+  // tslint:disable-next-line: member-ordering
   columns: STColumn[] = [
     {
       type: 'checkbox',
@@ -75,21 +76,22 @@ export class BinManagerComponent implements OnInit {
               text: '删除',
               type: 'del',
               click: (e) => {
-                let body;
+                let body: string;
                 if (e.id) {
                   body = this.require.encodeString([e.id], 'ids');
                 }
                 this.require.post(this.deleteUrl, body).subscribe((res: any) => {
                   switch (res.code) {
                     case '10005':
-                      if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                      // tslint:disable-next-line: triple-equals
+                      if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
                       this.getData();
                       break;
                     default:
                       console.log(res);
                       break;
                   }
-                }, (err) => {
+                }, () => {
 
                 })
               }
@@ -157,6 +159,7 @@ export class BinManagerComponent implements OnInit {
 
   ];
   // 上传文件配置
+  // tslint:disable-next-line: member-ordering
   schema: SFSchema = {
     required: ['driverVersion', 'protocolVersion', 'upLoadType'],
     properties: {
@@ -202,7 +205,7 @@ export class BinManagerComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
-                if (this.total % this.ps == 1 && this.pi > 1 || this.checked.length == (this.total % this.ps)) this.pi--;
+                if (this.total % this.ps === 1 && this.pi > 1 || this.checked.length === (this.total % this.ps)) this.pi--;
                 this.getData();
                 this.checked = [];
                 break;
@@ -210,7 +213,7 @@ export class BinManagerComponent implements OnInit {
                 console.log(res);
                 break;
             }
-          }, (err) => {
+          }, () => {
 
           })
         },
@@ -256,13 +259,13 @@ export class BinManagerComponent implements OnInit {
         default:
           console.log(res)
       }
-    }, (err) => {
+    }, () => {
 
     })
   }
   // 上传请求
   sumbit(value) {
-    let formData = new FormData();
+    const formData = new FormData();
     this.fileList.forEach((file: any) => {
       formData.append('file', file);
     });
@@ -273,7 +276,7 @@ export class BinManagerComponent implements OnInit {
     formData.append('token', this.require.tokenService.get().token);
     const header: HttpHeaders = new HttpHeaders();
     header.set('Content-Type', 'multipart/form-data');
-    this.http.post(url, formData, null, { headers: header }).subscribe((res: any) => {
+    this.http.post(url, formData, null, { headers: header }).subscribe(() => {
       this.getData();
       this.handleCancel();
     })
@@ -296,7 +299,7 @@ export class BinManagerComponent implements OnInit {
         default:
           console.log(res)
       }
-    }, (err) => {
+    }, () => {
 
     })
   }

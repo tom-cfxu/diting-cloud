@@ -14,9 +14,9 @@ import { ApiService } from '@core/api.service';
 })
 export class BinSendComponent implements OnInit {
   // 构造函数
-  constructor(private http: _HttpClient, private api: ApiService, private require: RequireService) { }
+  constructor(public http: _HttpClient, private api: ApiService, private require: RequireService) { }
   private destroy$ = new Subject();
-  isVisible = false //显示隐藏弹出框;
+  isVisible = false // 显示隐藏弹出框;
   @ViewChild('st', { static: false }) st: STComponent;
   @ViewChild('st2', { static: false }) st2: STComponent;
   @ViewChild('st3', { static: false }) st3: STComponent;
@@ -255,6 +255,8 @@ export class BinSendComponent implements OnInit {
       ]
     }
   ]
+
+  arr = [];
   // 监听表1变化
   change(ret: STChange) {
     if (ret.type === 'pi' || ret.type === 'ps') {
@@ -281,8 +283,6 @@ export class BinSendComponent implements OnInit {
       this.checked3 = ret.checkbox.map(e => e.id)
     }
   }
-
-  arr = [];
   // 开始下发
   binSend() {
     if (this.checked.length > 0 && this.checked3.length > 0) {
@@ -393,10 +393,5 @@ export class BinSendComponent implements OnInit {
   ngOnInit() {
     this.getData();
     this.getDtus();
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

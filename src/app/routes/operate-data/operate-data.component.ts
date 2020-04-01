@@ -11,7 +11,7 @@ import { STPage, STChange, STColumn } from '@delon/abc';
 })
 export class OperateDataComponent implements OnInit {
 
-  constructor(private http: _HttpClient, private require: RequireService) { }
+  constructor(public http: _HttpClient, private require: RequireService) { }
   data = [];
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
@@ -52,6 +52,7 @@ export class OperateDataComponent implements OnInit {
       startTime: {
         type: 'string',
         title: '起始-结束时间',
+        // tslint:disable-next-line: no-object-literal-type-assertion
         ui: { widget: 'date', end: 'endTime', showTime: true } as SFDateWidgetSchema,
       },
       endTime: {
@@ -64,11 +65,11 @@ export class OperateDataComponent implements OnInit {
       },
     }
   };
-  //提交查询
+  // 提交查询
   submit(value) {
     const start = Date.parse(value.startTime);
     const end = Date.parse(value.endTime);
-    let day = (end - start) / (1000 * 60 * 60 * 24);
+    const day = (end - start) / (1000 * 60 * 60 * 24);
     if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
     const url = this.require.api.getOperateData;
     const body = this.require.encodeObject({
@@ -78,6 +79,7 @@ export class OperateDataComponent implements OnInit {
     });
     this.require.post(url, body).subscribe((res: any) => {
       const data = res.data;
+      // tslint:disable-next-line: radix
       this.pi = parseInt(data.page);
       if (data.rows.length > 0) {
         this.data = data.rows.map((e) => {

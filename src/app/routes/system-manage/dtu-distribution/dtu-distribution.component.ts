@@ -32,7 +32,7 @@ const TAG: STColumnTag = {
 })
 export class DtuDistributionComponent implements OnInit {
   // 构建类
-  constructor(private http: _HttpClient,
+  constructor(public http: _HttpClient,
     private message: NzMessageService,
     private require: RequireService,
     private api: ApiService) { }
@@ -100,7 +100,7 @@ export class DtuDistributionComponent implements OnInit {
                 this.require.post(this.deleteUrl, body).subscribe((res: any) => {
                   switch (res.code) {
                     case '10005':
-                      if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                      if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
                       this.getData();
                       break;
                     default:
@@ -216,6 +216,7 @@ export class DtuDistributionComponent implements OnInit {
       startTime: {
         type: 'string',
         title: '起始-结束时间',
+        // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           widget: 'date',
           end: 'endTime', showTime: true
@@ -240,6 +241,7 @@ export class DtuDistributionComponent implements OnInit {
       scanPolicy: {
         type: 'string',
         title: '扫码策略',
+        // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           widget: 'radio',
           asyncData: () => of([{ label: '无', value: 0 }, { label: '扫码关注', value: 1 }]).pipe(delay(100)),
@@ -259,6 +261,7 @@ export class DtuDistributionComponent implements OnInit {
     return false;
   };
   // 上传表单配置项
+  // tslint:disable-next-line: member-ordering
   schema2: SFSchema = {
     required: ['userName'],
     properties: {
@@ -271,12 +274,14 @@ export class DtuDistributionComponent implements OnInit {
     }
   }
   // 分配DTU
+  // tslint:disable-next-line: member-ordering
   schema3: SFSchema = {
     required: ['mode', 'userId'],
     properties: {
       mode: {
         type: 'string',
         title: '分配',
+        // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           widget: 'radio',
           asyncData: () => of([{ label: '所选DTU', value: '1' }, { label: '全部DTU', value: '2' }]).pipe(delay(100)),
@@ -304,6 +309,7 @@ export class DtuDistributionComponent implements OnInit {
       Object.keys(obj).forEach((key) => {
         const arr = [];
         obj.selected = obj.additionalParameters.itemSelected;
+        // tslint:disable-next-line: forin
         for (const i in obj.additionalParameters.children) {
           arr.push(obj.additionalParameters.children[i])
           this.edit(obj.additionalParameters.children[i]);
@@ -323,6 +329,7 @@ export class DtuDistributionComponent implements OnInit {
       const data = res.data.adminTreeData;
 
       let obj;
+      // tslint:disable-next-line: forin
       for (const i in data) {
         obj = data[i];
       }
@@ -421,7 +428,7 @@ export class DtuDistributionComponent implements OnInit {
           this.sf.refreshSchema();
         }, 500)
         break;
-      case 2: //关闭上传excel
+      case 2: // 关闭上传excel
         this.isVisible2 = false;
         this.fileList = [];
         break;
@@ -439,7 +446,7 @@ export class DtuDistributionComponent implements OnInit {
     const endTime = value.endTime;
     switch (mode) {
       case 'edit':
-        url = this.require.api.editAdminDtu;//编辑url
+        url = this.require.api.editAdminDtu;// 编辑url
         body = this.require.encodeObject({
           gatewayNumber: value.gatewayNumber,
           id: value.id,
@@ -450,7 +457,7 @@ export class DtuDistributionComponent implements OnInit {
         })
         break;
       case 'add':
-        url = this.require.api.addAdminDtu;//添加url
+        url = this.require.api.addAdminDtu;// 添加url
         body = this.require.encodeObject({
           gatewayNumber: value.gatewayNumber,
           userName: value.userName,
@@ -515,6 +522,7 @@ export class DtuDistributionComponent implements OnInit {
     if (obj.additionalParameters) {
       Object.keys(obj).forEach((key) => {
         delete obj.additionalParameters;
+        // tslint:disable-next-line: forin
         for (const i in obj.children) {
           this.deleteNodes(obj.children[i]);
         }
@@ -551,7 +559,7 @@ export class DtuDistributionComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
-                if (this.total % this.ps == 1 && this.pi > 1 || this.checked.length == (this.total % this.ps)) this.pi--;
+                if (this.total % this.ps === 1 && this.pi > 1 || this.checked.length === (this.total % this.ps)) this.pi--;
                 this.getData();
                 this.checked = [];
                 break;

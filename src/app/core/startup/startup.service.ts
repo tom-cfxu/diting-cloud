@@ -34,7 +34,7 @@ export class StartupService {
     private injector: Injector,
     private require: RequireService,
     private api: ApiPortService,
-    private http: _HttpClient,
+    public http: _HttpClient,
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }

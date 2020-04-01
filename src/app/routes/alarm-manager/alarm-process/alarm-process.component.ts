@@ -12,7 +12,7 @@ import { ApiService } from '@core/api.service';
 })
 export class AlarmProcessComponent implements OnInit {
   constructor(
-    private http: _HttpClient,
+    public http: _HttpClient,
     private require: RequireService,
     private api: ApiService
   ) { }
@@ -91,7 +91,7 @@ export class AlarmProcessComponent implements OnInit {
 
 
   ]
-  //报警处理
+  // 报警处理
   alarmProcess(alarmProcess, uuid) {
     const url = this.require.api.alarmProcess;
     const body = this.require.encodeObject({
@@ -112,7 +112,7 @@ export class AlarmProcessComponent implements OnInit {
       this.checked = ret.checkbox.map(e => e.id)
     }
   }
-  //请求主数据
+  // 请求主数据
   getData() {
     // this.require.post('http://mengxuegu.com:7300/mock/5d8ed6df993a01623de5b51b/api/v1.0/getAllAlarm').subscribe((res: any) => {
     //   const data = res.data;

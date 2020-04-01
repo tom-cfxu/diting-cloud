@@ -13,7 +13,7 @@ export class RequireService {
         public settingsService: SettingsService,
         public api: ApiPortService,
         public loginApi: LoginControllerService,
-        private http: _HttpClient,
+        public http: _HttpClient,
         public message: NzMessageService,
         public modal: NzModalService
     ) { }

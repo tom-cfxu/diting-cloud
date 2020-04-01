@@ -22,13 +22,13 @@ export class UserManageComponent implements OnInit {
   // 构建函数 注入依赖
   constructor(
     private message: NzMessageService,
-    private http: _HttpClient,
+    public http: _HttpClient,
     private require: RequireService
   ) {
   }
   // 视图view
   @ViewChild('sf', { static: false }) sf: SFComponent
-  isVisible = false; //显示隐藏对话框
+  isVisible = false; // 显示隐藏对话框
   data = [] // 保存表格信息
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
@@ -73,7 +73,7 @@ export class UserManageComponent implements OnInit {
             this.require.post(deleteUrl, body).subscribe((res: any) => {
               switch (res.code) {
                 case '10005':
-                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                  if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
                   this.getData();
                   break;
                 default:
@@ -173,7 +173,7 @@ export class UserManageComponent implements OnInit {
       console.log(err);
     })
   }
-  //关闭对话框
+  // 关闭对话框
   handleCancel() {
     this.isVisible = false;
     setTimeout(() => {

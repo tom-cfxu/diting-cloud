@@ -14,7 +14,7 @@ import { _HttpClient } from '@delon/theme';
 export class ExceptionTriggerComponent {
   types = [401, 403, 404, 500];
 
-  constructor(private http: _HttpClient) {}
+  constructor(protected http: _HttpClient) { }
 
   go(type: number) {
     this.http.get(`/api/${type}`).subscribe();

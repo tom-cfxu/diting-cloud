@@ -37,8 +37,8 @@
   </nz-collapse>
 </div>
 
-<nz-modal [(nzVisible)]="isVisible" [nzFooter]="modalFooter" nzTitle="选择要下发的DTU" (nzOnCancel)="handleCancel()"
-  nzOkText="添加" (nzOnOk)="addDtuApi()" nzCancelText="关闭" nzWidth="80%">
+<nz-modal [(nzVisible)]="isVisible" nzTitle="选择要下发的DTU" (nzOnCancel)="handleCancel()" nzOkText="添加"
+  (nzOnOk)="addDtuApi()" nzCancelText="关闭" nzWidth="80%">
   <div style="margin-bottom: 1rem;">
     <button nz-button (click)="st1.reload()"><i nz-icon nzType="redo"> </i>
       刷新</button>

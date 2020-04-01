@@ -16,7 +16,7 @@ import { RequireService } from '@core/require';
 })
 export class WechatComponent implements OnInit {
   constructor(
-    private http: _HttpClient,
+    public http: _HttpClient,
     private modalService: NzModalService,
     private require: RequireService,
     private message: NzMessageService,
@@ -25,8 +25,8 @@ export class WechatComponent implements OnInit {
   }
   data = [] // 保存表格信息
   wxUser: any = {
-    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoY0XoKeqiaIeZ7jFue6a1FuZn7OjHkxAo7MCGiaTd1sgBepBwzCCFiciafBrehaKq2fJ8efcyRo30p5Q/132' //默认头像地址
-  }; //保存查看对象
+    avatarUrl: 'https://wx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoY0XoKeqiaIeZ7jFue6a1FuZn7OjHkxAo7MCGiaTd1sgBepBwzCCFiciafBrehaKq2fJ8efcyRo30p5Q/132' // 默认头像地址
+  }; // 保存查看对象
   isVisible = false; // 是否显示对话框
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
@@ -99,7 +99,7 @@ export class WechatComponent implements OnInit {
     },
 
   ];
-  //隐藏对话框
+  // 隐藏对话框
   handleCancel() {
     this.isVisible = false;
   }

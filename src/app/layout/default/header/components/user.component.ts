@@ -48,7 +48,7 @@ export class HeaderUserComponent {
     public settings: SettingsService,
     private router: Router,
     private loginApi: LoginControllerService,
-    private http: _HttpClient,
+    public http: _HttpClient,
     private notification: NzNotificationService,
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
   ) { }

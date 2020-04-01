@@ -15,7 +15,7 @@ const TAG: STColumnTag = {
   styles: []
 })
 export class RealtimeManageComponent implements OnInit {
-  constructor(private require: RequireService, private http: _HttpClient, private api: ApiService) { }
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
   data = [];// 保存当前数据
   isVisible = false; // 是否显示添加/编辑对话框
   // 分页配置
