@@ -57,24 +57,6 @@ export class UserManageComponent implements OnInit {
     //   type: 'checkbox'
     // },
     {
-      title: 'ID',
-      index: 'id',
-      sort: { compare: (a, b) => a.id - b.id }
-    },
-    {
-      title: '用户名',
-      index: 'username',
-      // sort: { compare: (a, b) => a.username.length - b.username.length }
-    },
-    {
-      title: '邮箱',
-      index: 'email'
-    },
-    {
-      title: '电话号码',
-      index: 'phone'
-    },
-    {
       title: '操作',
       buttons: [
         {
@@ -102,7 +84,26 @@ export class UserManageComponent implements OnInit {
           }
         }
       ]
-    }
+    },
+    {
+      title: 'ID',
+      index: 'id',
+      sort: { compare: (a, b) => a.id - b.id }
+    },
+    {
+      title: '用户名',
+      index: 'username',
+      // sort: { compare: (a, b) => a.username.length - b.username.length }
+    },
+    {
+      title: '邮箱',
+      index: 'email'
+    },
+    {
+      title: '电话号码',
+      index: 'phone'
+    },
+
   ];
   // 添加管理员表单数据
   ui = {

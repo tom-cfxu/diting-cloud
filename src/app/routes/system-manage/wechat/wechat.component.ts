@@ -48,6 +48,18 @@ export class WechatComponent implements OnInit {
     //   type: 'checkbox'
     // },
     {
+      title: '操作',
+      buttons: [
+        {
+          text: '查看',
+          click: (e) => {
+            this.isVisible = true;
+            this.wxUser = e;
+          }
+        }
+      ]
+    },
+    {
       title: 'ID',
       index: 'id',
       sort: { compare: (a, b) => a.id - b.id }
@@ -85,18 +97,7 @@ export class WechatComponent implements OnInit {
       title: '电话号码',
       index: 'cellphone'
     },
-    {
-      title: '操作',
-      buttons: [
-        {
-          text: '查看',
-          click: (e) => {
-            this.isVisible = true;
-            this.wxUser = e;
-          }
-        }
-      ]
-    },
+
   ];
   //隐藏对话框
   handleCancel() {
@@ -112,28 +113,36 @@ export class WechatComponent implements OnInit {
     })
     // 发送请求
     this.require.post(url, body).subscribe((res: any) => {
-      console.log(res);
-      const data = res.data;
-      this.pi = data.page;
-      this.total = data.records;
-      if (data.rows.length > 0) {
-        this.message.success('成功!', { nzDuration: 1000 });
-        this.data = data.rows.map((e) => {
-          return {
-            id: e.id,
-            nickName: e.nickName,
-            gender: e.gender,
-            city: e.city,
-            province: e.province,
-            country: e.country,
-            avatarUrl: e.avatarUrl,
-            cellphone: e.cellphone
+      // console.log(res);
+      switch (res.code) {
+        case "10005":
+          const data = res.data;
+          this.pi = data.page;
+          this.total = data.records;
+          if (data.rows.length > 0) {
+            // this.message.success('成功!', { nzDuration: 1000 });
+            this.data = data.rows.map((e) => {
+              return {
+                id: e.id,
+                nickName: e.nickName,
+                gender: e.gender,
+                city: e.city,
+                province: e.province,
+                country: e.country,
+                avatarUrl: e.avatarUrl,
+                cellphone: e.cellphone
+              }
+            });
+          } else {
+            this.data = [];
+            this.message.info('数据为空', { nzDuration: 1000 })
           }
-        });
-      } else {
-        this.data = [];
-        this.message.info('数据为空', { nzDuration: 1000 })
+          break;
+        default:
+          console.log(res);
+          break;
       }
+
     }, (err) => {
 
     })

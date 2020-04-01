@@ -104,6 +104,32 @@ export class DtuDefaultConfigComponent implements OnInit {
       width: 50,
     },
     {
+      title: '操作',
+      width: 100,
+      buttons: [
+        {
+          text: '编辑',
+          click: (e) => {
+            const startTime = e.startTime;
+            const endTime = e.endTime;
+            this.isVisible = true;
+            this.schema.properties.id.default = e.id;
+            this.schema.properties.gatewayNumber.default = e.gatewayNumber;
+            if (startTime !== 'Invalid date' && endTime !== 'Invalid date') {
+              this.schema.properties.startTime.default = e.startTime;
+              this.schema.properties.endTime.default = e.endTime;
+            } else {
+              this.schema.properties.startTime.default = null;
+              this.schema.properties.endTime.default = null;
+            }
+            this.schema.properties.alarmPush.default = e.alarmPush;
+            this.schema.properties.scanPolicy.default = e.scanPolicy;
+            this.sf.refreshSchema();
+          }
+        },
+      ],
+    },
+    {
       title: '序号',
       index: 'id',
       width: 100,
@@ -163,32 +189,7 @@ export class DtuDefaultConfigComponent implements OnInit {
       tag: TAG
     },
 
-    {
-      title: '操作',
-      width: 100,
-      buttons: [
-        {
-          text: '编辑',
-          click: (e) => {
-            const startTime = e.startTime;
-            const endTime = e.endTime;
-            this.isVisible = true;
-            this.schema.properties.id.default = e.id;
-            this.schema.properties.gatewayNumber.default = e.gatewayNumber;
-            if (startTime !== 'Invalid date' && endTime !== 'Invalid date') {
-              this.schema.properties.startTime.default = e.startTime;
-              this.schema.properties.endTime.default = e.endTime;
-            } else {
-              this.schema.properties.startTime.default = null;
-              this.schema.properties.endTime.default = null;
-            }
-            this.schema.properties.alarmPush.default = e.alarmPush;
-            this.schema.properties.scanPolicy.default = e.scanPolicy;
-            this.sf.refreshSchema();
-          }
-        },
-      ],
-    }
+
   ];
   // 关闭对话框
   handleCancel() {

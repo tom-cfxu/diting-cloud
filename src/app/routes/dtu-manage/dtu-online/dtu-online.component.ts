@@ -262,7 +262,7 @@ export class DtuOnlineComponent implements OnInit {
   // 节点点击
   nzEvent(event: NzFormatEmitEvent): void {
     this.pi = 1;
-    this.ps = 5;
+    this.ps = 10;
     this.adminId = event.node.key;
     this.getData()
   }

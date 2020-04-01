@@ -78,8 +78,8 @@ export class DefaultInterceptor implements HttpInterceptor {
     if ((ev.status >= 200 && ev.status < 300) || ev.status === 401) {
       return;
     } else if (ev.status === 0) {
-      this.notification.error(`token过期`, `请重新登录`);
-      this.goTo('/passport/login');
+      // this.notification.error(`token过期`, `请重新登录`);
+      // this.goTo('/passport/login');
     } else {
       this.notification.error(`请求失败 ${ev.status}`, errortext, ERRTIME);
     }
@@ -116,6 +116,12 @@ export class DefaultInterceptor implements HttpInterceptor {
             break;
           case "40002":
             break;
+          case "40004":
+            this.notification.error(`登录已过期，请重新登录`, ``);
+            //清空 token 信息
+            (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
+            this.goTo('/passport/login');
+            break
           case "10003":
           case "10004":
           case "10007":
@@ -126,7 +132,6 @@ export class DefaultInterceptor implements HttpInterceptor {
           case "10012":
           case "40001":
           case "40003":
-          case "40004":
           case "40005":
           case "40006":
             this.notification.error(`错误码:${res.code}`, `${this.isNull(res.msg) ? `错误类型:${responsetext}` : '提示:' + res.msg}`, ERRTIME)
@@ -134,26 +139,20 @@ export class DefaultInterceptor implements HttpInterceptor {
         }
         break;
       case 401:
-        this.notification.error(`登录已过期，请重新登录`, ``);
-        // 清空 token 信息
-        (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
-        this.goTo('/passport/login');
         break;
       case 404:
-        // this.goTo('/passport/login');
-        break;
       case 403:
       case 500:
-        const errortext = CODEMESSAGE[ev.status] || ev.statusText;
-        this.notification.error(`请求失败 ${ev.status}`, errortext, ERRTIME);
+        // const errortext = CODEMESSAGE[ev.status] || ev.statusText;
+        // this.notification.error(`请求失败 ${ev.status}`, errortext, ERRTIME);
         // this.goTo(`/exception/${ev.status}`);
         // this.goTo('/passport/login');
         break;
       default:
         if (ev instanceof HttpErrorResponse) {
           console.warn('未可知错误，大部分是由于后端不支持CORS或无效配置引起', ev);
-          this.notification.error(`登录过期`, `请重新登录`, TIME)
-          this.goTo('/passport/login');
+          // this.notification.error(`登录过期`, `请重新登录`, TIME)
+          // this.goTo('/passport/login');
           return throwError(ev);
         }
         break;

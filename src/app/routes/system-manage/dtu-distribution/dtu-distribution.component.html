@@ -69,11 +69,27 @@
     <nz-modal nzWidth="600" [(nzVisible)]="isVisible2" nzTitle="导入Excel" (nzOnCancel)="handleCancel(2)"
         nzMaskClosable="false">
         <div>
-            <sf #sf2 [schema]="schema2" [ui]="ui" button="none"></sf>
+            <form nz-form>
+                <nz-form-item>
+                    <nz-form-label [nzSpan]="6" nzRequired>添加文件</nz-form-label>
+                    <nz-form-control [nzSpan]="18">
+                        <nz-upload class="import-excel" nzAccept=".xls,.xlsx,.xltx" nzCustomRequest="request($event)"
+                            [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload" nzSize="10240" nzLimit="1"
+                            nzType="drag">
+                            <p class="ant-upload-drag-icon">
+                                <i nz-icon nzType="inbox"></i>
+                            </p>
+                            <p class="ant-upload-text">点击或拖拽来添加文件</p>
+                            <p class="ant-upload-hint"></p>
+                        </nz-upload>
+                    </nz-form-control>
+                </nz-form-item>
+            </form>
+            <sf #sf2 [schema]="schema2" button="none"></sf>
         </div>
         <div *nzModalFooter>
             <button nz-button type="button" (click)="handleCancel(2)">关闭</button>
-            <button *ngIf="addOrEdit" nz-button type="submit" [disabled]="!sf2.valid" [nzType]="'primary'"
+            <button nz-button type="submit" [disabled]="!sf2.valid||(fileList.length===0)" [nzType]="'primary'"
                 (click)="upload(sf2.value)" [nzLoading]="http.loading">导入</button>
         </div>
     </nz-modal>

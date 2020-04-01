@@ -1,23 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { STColumn, STChange, STPage, XlsxService, } from '@delon/abc';
 import { _HttpClient } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { ApiService } from '@core/api.service';
-// import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { SFSchema, SFUploadWidgetSchema, SFGridSchema } from '@delon/form';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { SFSchema, SFComponent, } from '@delon/form';
+import { HttpHeaders } from '@angular/common/http';
 import { UploadFile } from 'ng-zorro-antd';
 @Component({
   selector: 'app-bin-manager',
   templateUrl: './bin-manager.component.html',
-  styles: []
+  styles: [`
+    .upload{
+      outline:none;
+      margin:0;
+      color:rgba(0, 0, 0, 0.65);
+      text-align:center;
+      cursor: pointer;
+      display: table;
+      touch-action: manipulation;
+      width: 100%;
+    }
+  `]
 })
 export class BinManagerComponent implements OnInit {
   // 构造函数
-  constructor(private http: _HttpClient, private xlsx: XlsxService, private require: RequireService, private api: ApiService) { }
-  // validateForm: FormGroup;
-  fileList: UploadFile[] = [];
-  // 文件列表数据
+  constructor(private http: _HttpClient, private fb: FormBuilder, private el: ElementRef, private xlsx: XlsxService, private require: RequireService, private api: ApiService) { }
+  validateForm: FormGroup;
+  @ViewChild('sf', { static: false }) private sf: SFComponent;
   deleteUrl = this.require.api.binDelete;// 删除bin文件接口
+
   data = [] // 保存表格信息
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
@@ -33,6 +45,14 @@ export class BinManagerComponent implements OnInit {
     pageSizes: [10, 20, 30, 40, 50],
     placement: 'center'
   }
+
+  // 手动上传配置
+  fileList: UploadFile[] = [];
+  beforeUpload = (file: UploadFile): boolean => {
+    this.fileList = [];
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
   // 表格数据
   columns: STColumn[] = [
     {
@@ -44,32 +64,37 @@ export class BinManagerComponent implements OnInit {
       width: 100,
       buttons: [
         {
-          text: '下载',
-          type: 'link',
-          click: (e) => { this.download(e.id) }
-        },
-        {
-          text: '删除',
-          type: 'del',
-          click: (e) => {
-            let body;
-            if (e.id) {
-              body = this.require.encodeArray([e.id], 'ids');
-            }
-            this.require.post(this.deleteUrl, body).subscribe((res: any) => {
-              switch (res.code) {
-                case '10005':
-                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
-                  this.getData();
-                  break;
-                default:
-                  console.log(res);
-                  break;
-              }
-            }, (err) => {
+          text: '操作',
+          children: [
+            {
+              text: '下载',
+              type: 'link',
+              click: (e) => { this.download(e.id) }
+            },
+            {
+              text: '删除',
+              type: 'del',
+              click: (e) => {
+                let body;
+                if (e.id) {
+                  body = this.require.encodeString([e.id], 'ids');
+                }
+                this.require.post(this.deleteUrl, body).subscribe((res: any) => {
+                  switch (res.code) {
+                    case '10005':
+                      if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                      this.getData();
+                      break;
+                    default:
+                      console.log(res);
+                      break;
+                  }
+                }, (err) => {
 
-            })
-          }
+                })
+              }
+            }
+          ]
         }
       ]
     },
@@ -131,50 +156,17 @@ export class BinManagerComponent implements OnInit {
     },
 
   ];
-  // 阻止默认上传
-  beforeUpload = (file: UploadFile): boolean => {
-    this.fileList = this.fileList.concat(file);
-    return false;
-  };
   // 上传文件配置
   schema: SFSchema = {
     required: ['driverVersion', 'protocolVersion', 'upLoadType'],
     properties: {
-      // file: {
-      //   type: 'array',
-      //   title: '添加文件',
-      //   ui: {
-      //     widget: 'upload',
-      //     type: 'drag',
-      //     accept: '.bin',
-      //     headers: { 'Content-Type': 'multipart/form-data' },
-      //     // change: (args) => { console.log(args) },
-      //     fileList: this.fileList,
-      //     beforeUpload: (file: UploadFile, fileList: UploadFile[]): boolean => {
-      //       this.fileList = this.fileList.concat(file);
-      //       return false;
-      //     },
-      //     hint: ' ',
-      //     spanControl: 12,
-      //   } as SFUploadWidgetSchema,
-      // },
       driverVersion: {
         type: 'string',
         title: '驱动版本',
-        ui: {
-          widget: 'number',
-          // spanControl: 12,
-        } as SFGridSchema,
-        default: '',
       },
       protocolVersion: {
         type: 'string',
         title: '协议版本',
-        ui: {
-          widget: 'number',
-          // spanControl: 12,
-        } as SFGridSchema,
-        default: '',
       },
       upLoadType: {
         type: 'string',
@@ -205,12 +197,14 @@ export class BinManagerComponent implements OnInit {
         nzTitle: '删除提示',
         nzContent: '确定删除所选的记录吗?',
         nzOnOk: () => {
-          const body = this.require.encodeArray(this.checked, 'ids');
+          const body = this.require.encodeString(this.checked, 'ids');
+          console.log(body);
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
-                if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                if (this.total % this.ps == 1 && this.pi > 1 || this.checked.length == (this.total % this.ps)) this.pi--;
                 this.getData();
+                this.checked = [];
                 break;
               default:
                 console.log(res);
@@ -266,23 +260,28 @@ export class BinManagerComponent implements OnInit {
 
     })
   }
-  // 上传bin文件
-  upload() {
-    this.isVisible = true;
-  }
   // 上传请求
-  submit(value) {
-    console.log(value);
-    console.log(this.fileList)
-    const formData = new FormData();
-    // tslint:disable-next-line:no-any
+  sumbit(value) {
+    let formData = new FormData();
     this.fileList.forEach((file: any) => {
-      formData.append('files[]', file);
+      formData.append('file', file);
     });
-    console.log(formData)
+    formData.append('driverVersion', value.driverVersion);
+    formData.append('protocolVersion', value.protocolVersion);
+    formData.append('upLoadType', value.upLoadType);
+    const url = this.require.api.upload;
+    formData.append('token', this.require.tokenService.get().token);
+    const header: HttpHeaders = new HttpHeaders();
+    header.set('Content-Type', 'multipart/form-data');
+    this.http.post(url, formData, null, { headers: header }).subscribe((res: any) => {
+      this.getData();
+      this.handleCancel();
+    })
   }
   handleCancel() {
     this.isVisible = false;
+    this.fileList = [];
+    this.sf.refreshSchema();
   }
   // 下载文件请求
   download(id) {
@@ -304,6 +303,11 @@ export class BinManagerComponent implements OnInit {
 
   ngOnInit() {
     this.getData()
+    this.validateForm = this.fb.group({
+      userName: [null, [Validators.required]],
+      password: [null, [Validators.required]],
+      remember: [true]
+    });
   }
 
 }

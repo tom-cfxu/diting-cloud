@@ -32,6 +32,10 @@ export class RequireService {
         const options = Options || { headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' } };
         return this.http.post(url, body, param, options);
     }
+    // 数组转,字符串 //[1,2] =>str=1,2
+    public encodeString(arr: Array<string>, str) {
+        return `${str}=${arr.join(',')}`
+    }
     // 数组转&字符串 //[1,2] => str=1&str=2
     public encodeArray(arr: Array<string>, str) {
         return arr.map((e) => `${str}=${e}`).join('&')
@@ -72,7 +76,7 @@ export class RequireService {
     public getUserInfo() {
         const url = this.api.getUserInfo;
         this.post(url, null).subscribe((res: any) => {
-            console.log(res)
+            // console.log(res)
             const data = res.data;
             const user: any = {
                 id: data.id,

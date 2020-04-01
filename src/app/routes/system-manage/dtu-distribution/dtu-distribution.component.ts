@@ -4,10 +4,11 @@ import { RequireService } from '@core/require';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { STColumn, STPage, STChange, STColumnTag } from '@delon/abc';
 import { SFSchema, SFComponent, SFRadioWidgetSchema, SFTextWidgetSchema, SFGridSchema, SFUploadWidgetSchema, SFDateWidgetSchema } from '@delon/form'
-import { NzMessageService } from 'ng-zorro-antd';
+import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { delay } from 'rxjs/operators';
 import { of } from 'rxjs';
 import { ApiService } from '@core/api.service';
+import { HttpHeaders } from '@angular/common/http';
 
 // 表格配置项
 const TAG: STColumnTag = {
@@ -58,6 +59,63 @@ export class DtuDistributionComponent implements OnInit {
     {
       type: 'checkbox',
       width: 50
+    },
+    {
+      title: '操作',
+      width: 100,
+      buttons: [
+        {
+          text: '操作',
+          children: [
+            {
+              text: '编辑',
+              click: (e) => {
+                this.formHeader = '编辑记录';
+                this.isVisible = true;
+                this.addOrEdit = false;
+                this.schema.properties.id.default = e.id;
+                this.schema.properties.gatewayNumber.default = e.gatewayNumber;
+                const startTime = e.startTime;
+                const endTime = e.endTime;
+                if (startTime !== 'Invalid date' && endTime !== 'Invalid date') {
+                  this.schema.properties.startTime.default = e.startTime;
+                  this.schema.properties.endTime.default = e.endTime;
+                } else {
+                  this.schema.properties.startTime.default = null;
+                  this.schema.properties.endTime.default = null;
+                }
+                this.schema.properties.alarmPush.default = e.alarmPush;
+                this.schema.properties.scanPolicy.default = e.scanPolicy;
+                this.sf.refreshSchema();
+              },
+            },
+            {
+              text: '删除',
+              type: 'del',
+              click: (e) => {
+                let body;
+                if (e.id) {
+                  body = this.require.encodeArray([e.id], 'ids');
+                }
+                this.require.post(this.deleteUrl, body).subscribe((res: any) => {
+                  switch (res.code) {
+                    case '10005':
+                      if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                      this.getData();
+                      break;
+                    default:
+                      console.log(res);
+                      break;
+                  }
+                }, (err) => {
+
+                })
+              },
+            },
+          ]
+        },
+
+      ]
     },
     {
       title: '序号',
@@ -117,59 +175,9 @@ export class DtuDistributionComponent implements OnInit {
       tag: TAG,
       width: 100,
     },
-    {
-      title: '操作',
-      width: 100,
-      buttons: [
-        {
-          text: '编辑',
-          click: (e) => {
-            this.formHeader = '编辑记录';
-            this.isVisible = true;
-            this.addOrEdit = false;
-            this.schema.properties.id.default = e.id;
-            this.schema.properties.gatewayNumber.default = e.gatewayNumber;
-            const startTime = e.startTime;
-            const endTime = e.endTime;
-            if (startTime !== 'Invalid date' && endTime !== 'Invalid date') {
-              this.schema.properties.startTime.default = e.startTime;
-              this.schema.properties.endTime.default = e.endTime;
-            } else {
-              this.schema.properties.startTime.default = null;
-              this.schema.properties.endTime.default = null;
-            }
-            this.schema.properties.alarmPush.default = e.alarmPush;
-            this.schema.properties.scanPolicy.default = e.scanPolicy;
-            this.sf.refreshSchema();
-          },
-        },
-        {
-          text: '删除',
-          type: 'del',
-          click: (e) => {
-            let body;
-            if (e.id) {
-              body = this.require.encodeArray([e.id], 'ids');
-            }
-            this.require.post(this.deleteUrl, body).subscribe((res: any) => {
-              switch (res.code) {
-                case '10005':
-                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
-                  this.getData();
-                  break;
-                default:
-                  console.log(res);
-                  break;
-              }
-            }, (err) => {
 
-            })
-          },
-        },
-      ]
-    }
   ]
-  formHeader;
+  formHeader;// 添加/编辑对话框标题
   isVisible = false; // 是否显示添加/编辑对话框
   isVisible2 = false; // 是否显示上传对话框
   isVisible3 = false; // 是否显示分配dtu对话框
@@ -242,27 +250,21 @@ export class DtuDistributionComponent implements OnInit {
 
 
   }
+  // 手动上传配置
+  fileList: UploadFile[] = [];
+  beforeUpload = (file: UploadFile): boolean => {
+    // console.log(file)
+    this.fileList = [];
+    this.fileList = this.fileList.concat(file);
+    return false;
+  };
   // 上传表单配置项
   schema2: SFSchema = {
+    required: ['userName'],
     properties: {
-      upload: {
-        type: 'string',
-        title: '添加文件',
-        ui: {
-          widget: 'upload',
-          action: '/upload',
-          resReName: 'resource_id',
-          urlReName: 'url',
-          type: 'drag',
-          hint: ' ',
-        } as SFUploadWidgetSchema,
-      },
       userName: {
         type: 'string',
         title: '添加dtu到',
-        ui: {
-          spanControl: 12,
-        } as SFGridSchema,
         default: '',
         readOnly: true
       }
@@ -270,19 +272,19 @@ export class DtuDistributionComponent implements OnInit {
   }
   // 分配DTU
   schema3: SFSchema = {
-    required: ['check', 'node'],
+    required: ['mode', 'userId'],
     properties: {
-      check: {
+      mode: {
         type: 'string',
         title: '分配',
         ui: {
           widget: 'radio',
-          asyncData: () => of([{ label: '所选DTU', value: '0' }, { label: '全部DTU', value: '1' }]).pipe(delay(100)),
-          change: (e) => console.log(e),
+          asyncData: () => of([{ label: '所选DTU', value: '1' }, { label: '全部DTU', value: '2' }]).pipe(delay(100)),
+          // change: (e) => console.log(e),
         } as SFRadioWidgetSchema,
-        default: ''
+        default: '1'
       },
-      node: {
+      userId: {
         type: 'string',
         title: '分配到管理员',
         enum: [],
@@ -294,7 +296,6 @@ export class DtuDistributionComponent implements OnInit {
       }
     }
   }
-
   // 递归修改节点名称
   edit(obj) {
     obj.title = obj.name;
@@ -359,6 +360,7 @@ export class DtuDistributionComponent implements OnInit {
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
+          // console.log(res)
           const data = res.data;
           this.pi = data.page;
           this.total = data.records;
@@ -419,10 +421,11 @@ export class DtuDistributionComponent implements OnInit {
           this.sf.refreshSchema();
         }, 500)
         break;
-      case 2:
+      case 2: //关闭上传excel
         this.isVisible2 = false;
+        this.fileList = [];
         break;
-      case 3:
+      case 3:// 关闭分配
         this.isVisible3 = false;
         break;
     }
@@ -474,7 +477,33 @@ export class DtuDistributionComponent implements OnInit {
   }
   // 导入excel请求
   upload(value) {
-    console.log(value)
+    const formData = new FormData();
+    this.fileList.forEach((file: any) => {
+      formData.append('file', file);
+    });
+    formData.append('upload_userid', value.userName);
+    const url = this.require.api.uploadDtuExcel;
+    formData.append('token', this.require.tokenService.get().token);
+    const header: HttpHeaders = new HttpHeaders();
+    header.set('Content-Type', 'multipart/form-data');
+
+    this.http.post(url, formData, null, { headers: header }).subscribe((res: any) => {
+      switch (res.code) {
+        case '10005':
+          this.getData();
+          this.handleCancel(2);
+          break;
+        default:
+          console.log(res)
+          this.fileList = [];
+          break;
+      }
+
+    }, (err) => {
+      console.log(err)
+    })
+
+
   }
 
   // 递归删除多余的节点
@@ -496,10 +525,22 @@ export class DtuDistributionComponent implements OnInit {
     return obj;
   }
   // 分配DTU请求
-  distribute() {
+  distribute(value) {
+    const url = this.require.api.distributeDtus;
+    let body = this.require.encodeArray(this.checked, 'ids');
+    body += '&' + this.require.encodeObject({
+      mode: value.mode,
+      userId: value.userId,
+      oldUserId: this.adminId,
+    })
+    this.require.post(url, body).subscribe((res) => {
+      // console.log(res);
+      this.handleCancel(3);
+      this.getData();
+    })
   }
 
-  // 删除记录按钮
+  // 删除多选记录按钮
   deleteButton() {
     if (this.checked.length > 0) {
       this.api.modalService.confirm({
@@ -510,8 +551,9 @@ export class DtuDistributionComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
-                if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                if (this.total % this.ps == 1 && this.pi > 1 || this.checked.length == (this.total % this.ps)) this.pi--;
                 this.getData();
+                this.checked = [];
                 break;
               default:
                 console.log(res);
@@ -529,14 +571,15 @@ export class DtuDistributionComponent implements OnInit {
   }
   // 分配DTU按钮
   distributeButton() {
+    if (this.checked.length === 0) {
+      return this.api.message.info('未选中DTU!')
+    }
+    // console.log(this.checked)
     this.nodes1 = [this.deleteNodes(this.nodes[0])];
     this.isVisible3 = true;
-    this.schema3.properties.node.enum = this.nodes1;
-    this.schema3.properties.node.default = this.adminId;
+    this.schema3.properties.userId.enum = this.nodes1;
+    this.schema3.properties.userId.default = this.adminId;
     this.sf3.refreshSchema();
-    console.log(this.nodes1)
-    // console.log(this.adminId)
-    console.log(this.schema3.properties.node.enum)
   }
 
   ngOnInit() {

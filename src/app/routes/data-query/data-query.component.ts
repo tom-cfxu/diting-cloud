@@ -42,6 +42,34 @@ export class DataQueryComponent implements OnInit {
       type: 'checkbox'
     },
     {
+      title: '操作',
+      buttons: [
+        {
+          text: '删除',
+          type: 'del',
+          click: (e) => {
+            let body;
+            if (e.id) {
+              body = this.require.encodeArray([e.id], 'ids');
+            }
+            this.require.post(this.deleteUrl, body).subscribe((res: any) => {
+              switch (res.code) {
+                case '10005':
+                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                  this.getData();
+                  break;
+                default:
+                  console.log(res);
+                  break;
+              }
+            }, (err) => {
+
+            })
+          }
+        }
+      ]
+    },
+    {
       title: 'DTU编号',
       index: 'id',
       sort: {
@@ -79,35 +107,6 @@ export class DataQueryComponent implements OnInit {
     {
       title: '属性单位',
       index: 'propertyUnit',
-
-    },
-    {
-      title: '操作',
-      buttons: [
-        {
-          text: '删除',
-          type: 'del',
-          click: (e) => {
-            let body;
-            if (e.id) {
-              body = this.require.encodeArray([e.id], 'ids');
-            }
-            this.require.post(this.deleteUrl, body).subscribe((res: any) => {
-              switch (res.code) {
-                case '10005':
-                  if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
-                  this.getData();
-                  break;
-                default:
-                  console.log(res);
-                  break;
-              }
-            }, (err) => {
-
-            })
-          }
-        }
-      ]
     },
   ];
   // 报表配置
@@ -342,8 +341,9 @@ export class DataQueryComponent implements OnInit {
           this.require.post(this.deleteUrl, body).subscribe((res: any) => {
             switch (res.code) {
               case '10005':
-                if (this.total % this.ps == 1 && this.pi > 1) this.pi--;
+                if (this.total % this.ps == 1 && this.pi > 1 || this.checked.length == (this.total % this.ps)) this.pi--;
                 this.getData();
+                this.checked = [];
                 break;
               default:
                 console.log(res);

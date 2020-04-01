@@ -34,9 +34,26 @@ export class AlarmProcessComponent implements OnInit {
   columns: STColumn[] = [
     {
       title: 'checkbox',
-      index: 'uuid',
+      // index: 'uuid',
       type: 'checkbox',
 
+    },
+    {
+      title: '报警处理',
+      // index: 'alarmProcess',
+      buttons: [{
+        text: '操作',
+        children: [
+          {
+            text: '确认报警',
+            click: record => this.alarmProcess('确认报警', record.uuid),
+          },
+          {
+            text: '删除报警',
+            click: record => this.alarmProcess('删除报警', record.uuid),
+          },
+        ]
+      }]
     },
     {
       title: 'DTUID',
@@ -68,14 +85,23 @@ export class AlarmProcessComponent implements OnInit {
       index: 'value',
     },
     {
-      title: '报警处理',
-      index: 'alarmProcess',
-    },
-    {
       title: '报警处理时间',
       index: 'alarmProcessTime',
     },
+
+
   ]
+  //报警处理
+  alarmProcess(alarmProcess, uuid) {
+    const url = this.require.api.alarmProcess;
+    const body = this.require.encodeObject({
+      alarmProcess,
+      uuid
+    })
+    this.require.post(url, body).subscribe((res: any) => {
+      console.log(res)
+    })
+  }
   // 监听变化
   change(ret: STChange) {
     if (ret.type === 'pi' || ret.type === 'ps') {
@@ -88,6 +114,29 @@ export class AlarmProcessComponent implements OnInit {
   }
   //请求主数据
   getData() {
+    // this.require.post('http://mengxuegu.com:7300/mock/5d8ed6df993a01623de5b51b/api/v1.0/getAllAlarm').subscribe((res: any) => {
+    //   const data = res.data;
+    //   // if (data.list !== null && data.list.length > 0) {
+    //   this.data = data.map((e) => {
+    //     return {
+    //       dtuId: e.dtuId,
+    //       regionType: e.regionType,
+    //       uuid: e.uuid,
+    //       desc: e.desc,
+    //       alarmType: e.alarmType,
+    //       alarmStartTime: e.alarmStartTime,
+    //       value: e.value,
+    //       alarmProcess: e.alarmProcess,
+    //       alarmProcessTime: e.alarmProcessTime,
+    //       fileVersion: e.fileVersion,
+    //     }
+    //   })
+    //   // } else {
+    //   //   this.api.message.info('数据为空', { nzDuration: 1000 })
+    //   // }
+    // }, (err) => {
+    //   console.log(err)
+    // })
     this.require.post(this.url).subscribe((res: any) => {
       switch (res.code) {
         case "10005":

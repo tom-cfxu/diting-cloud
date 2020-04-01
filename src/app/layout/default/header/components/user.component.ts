@@ -2,7 +2,6 @@ import { Component, Inject, ChangeDetectionStrategy } from '@angular/core';
 import { Router } from '@angular/router';
 import { SettingsService, } from '@delon/theme';
 import { DA_SERVICE_TOKEN, ITokenService } from '@delon/auth';
-import { UrlApiService } from '@core/url-api.service';
 // tslint:disable-next-line: no-duplicate-imports
 import { _HttpClient } from '@delon/theme';
 import { LoginControllerService } from '@core/login-controller.service';

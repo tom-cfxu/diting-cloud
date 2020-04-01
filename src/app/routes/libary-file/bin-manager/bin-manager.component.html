@@ -3,7 +3,8 @@
   <div nz-col nzXs="24">
     <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start" nzType="flex">
       <div nz-col nzXs="24" nzLg="3" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
-        <button nzType="primary" (click)="upload()" nz-button nzBlock><i nz-icon nzType="download"></i>上传</button>
+        <button nzType="primary" (click)="isVisible = true" nz-button nzBlock><i nz-icon
+            nzType="download"></i>上传</button>
       </div>
       <div nz-col nzXs="24" nzLg="3" nzXl="3" nzXXl="2" style="margin-bottom: 1rem;">
         <button nzType="danger" (click)="deletueButton()" nz-button nzBlock><i nz-icon nzType="delete"></i>删除</button>
@@ -30,24 +31,28 @@
 <nz-modal nzWidth="600" [(nzVisible)]="isVisible" nzTitle="上传bin文件" (nzOnCancel)="handleCancel()"
   nzMaskClosable="false">
   <div>
-    <div>
-      <!-- <nz-form-label [nzSpan]="5">添加文件</nz-form-label> -->
-      <nz-upload nzType="drag" [(nzFileList)]="fileList" nzAccept=".bin" [nzBeforeUpload]="beforeUpload">
-        <p class="ant-upload-drag-icon">
-          <i nz-icon nzType="inbox"></i>
-        </p>
-        <p class="ant-upload-text">添加文件</p>
-        <p class="ant-upload-hint">
-        </p>
-        <!-- <button nz-button><i nz-icon nzType="upload"></i><span>Select File</span></button> -->
-      </nz-upload>
-    </div>
+    <form nz-form>
+      <nz-form-item>
+        <nz-form-label [nzSpan]="5" nzRequired nzFor="email">添加文件</nz-form-label>
+        <nz-form-control [nzSpan]="19">
+          <nz-upload class="import-excel" nzAccept=".bin" nzCustomRequest="request($event)" [(nzFileList)]="fileList"
+            [nzBeforeUpload]="beforeUpload" nzSize="10240" nzLimit="1" nzType="drag">
+            <p class="ant-upload-drag-icon">
+              <i nz-icon nzType="inbox"></i>
+            </p>
+            <p class="ant-upload-text">点击或拖拽来添加文件</p>
+            <p class="ant-upload-hint"></p>
+          </nz-upload>
+        </nz-form-control>
+      </nz-form-item>
+    </form>
 
-    <sf #sf [schema]="schema" [ui]="ui" button="none"></sf>
+    <sf #sf [schema]="schema" button="none"></sf>
+    <div *nzModalFooter>
+      <button nz-button type="button" (click)="handleCancel()">关闭</button>
+      <button nz-button nzType="primary" [nzLoading]="http.loading" [disabled]="(!sf.valid)||(fileList.length===0)"
+        (click)="sumbit(sf.value)">上传</button>
+    </div>
   </div>
-  <div *nzModalFooter>
-    <button nz-button type="button" (click)="handleCancel()">关闭</button>
-    <button nz-button type="submit" [disabled]="!sf.valid" [nzType]="'primary'" (click)="submit(sf.value)"
-      [nzLoading]="http.loading">上传</button>
-  </div>
+
 </nz-modal>

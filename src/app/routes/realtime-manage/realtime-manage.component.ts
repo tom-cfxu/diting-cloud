@@ -96,6 +96,30 @@ export class RealtimeManageComponent implements OnInit {
       type: 'checkbox'
     },
     {
+      title: '操作',
+      buttons: [
+        {
+          text: '编辑',
+          click: (e) => {
+            this.isVisible = true;
+            const properties: any = this.schema.properties;
+            properties.dtuId.default = e.dtuId;
+            properties.uuid.default = e.uuid;
+            properties.region.default = e.region;
+            properties.enabled.default = e.enabled;
+            properties.upup_limit.default = e.upup_limit;
+            properties.up_limit.default = e.up_limit;
+            properties.low_limit.default = e.low_limit;
+            properties.lowlow_limit.default = e.lowlow_limit;
+            properties.switch_alarm.default = e.switch_alarm;
+            properties.value.default = e.value;
+            this.sf.refreshSchema();
+
+          }
+        },
+      ]
+    },
+    {
       title: 'DTUID',
       index: 'dtuId',
       sort: {
@@ -152,30 +176,7 @@ export class RealtimeManageComponent implements OnInit {
       title: '当前值',
       index: 'value',
     },
-    {
-      title: '操作',
-      buttons: [
-        {
-          text: '编辑',
-          click: (e) => {
-            this.isVisible = true;
-            const properties: any = this.schema.properties;
-            properties.dtuId.default = e.dtuId;
-            properties.uuid.default = e.uuid;
-            properties.region.default = e.region;
-            properties.enabled.default = e.enabled;
-            properties.upup_limit.default = e.upup_limit;
-            properties.up_limit.default = e.up_limit;
-            properties.low_limit.default = e.low_limit;
-            properties.lowlow_limit.default = e.lowlow_limit;
-            properties.switch_alarm.default = e.switch_alarm;
-            properties.value.default = e.value;
-            this.sf.refreshSchema();
 
-          }
-        },
-      ]
-    },
   ];
 
   // mock 数据
@@ -190,7 +191,7 @@ export class RealtimeManageComponent implements OnInit {
   getRealtimeData() {
     const url = this.require.api.getAllRDB;
     this.require.post(url).subscribe((res: any) => {
-      console.log(res);
+      // console.log(res);
       switch (res.code) {
         case "10005":
           const data = res.data

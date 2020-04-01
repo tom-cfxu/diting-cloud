@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { SFSchema } from '@delon/form';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { SFSchema, SFComponent } from '@delon/form';
 import { RequireService } from '@core/require';
 
 @Component({
@@ -11,6 +11,7 @@ export class PasswordFormComponent implements OnInit {
   constructor(
     private require: RequireService,
   ) { }
+  @ViewChild('sf', { static: false }) sf: SFComponent
   ui = {
     spanLabel: 6,
     spanControl: 6
@@ -53,7 +54,8 @@ export class PasswordFormComponent implements OnInit {
     });
     try {
       this.require.post(url, body).subscribe((res) => {
-        console.log(res)
+        // console.log(res)
+        this.sf.refreshSchema();
       }, (err) => {
 
       })

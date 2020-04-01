@@ -136,12 +136,6 @@ export class UserLoginComponent implements OnDestroy {
           this.tokenService.set({ token: res.data.token });
           // 再发送请求获取用户信息
           this.getUserInfo();
-          // 欢迎用户
-          this.notification.success(
-            `欢迎您:${this.settingsService.user.name}`,
-            '登录成功!',
-            { nzDuration: 1000 }
-          );
           // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
           this.startupSrv.load().then(() => {
             let url = this.tokenService.referrer!.url || '/home';
@@ -150,6 +144,12 @@ export class UserLoginComponent implements OnDestroy {
             }
             this.router.navigateByUrl(url);
           });
+          // 欢迎用户
+          this.notification.success(
+            '登录成功!',
+            `欢迎您:${this.settingsService.user.name}`,
+            { nzDuration: 1000 }
+          );
 
         } else if (res.code === "40001" || res.code === "40002") {
           this.notification.error(

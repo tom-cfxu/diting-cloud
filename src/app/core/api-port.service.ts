@@ -6,7 +6,8 @@ import { Injectable } from '@angular/core';
 export class ApiPortService {
 
   constructor() { }
-  public host = 'http://192.168.0.221:8091';
+  public host = 'http://114.115.139.254:8095';
+  // public host = 'http://192.168.0.221:8091';
   public addAdminDtu = this.host + '/api/v1.0/addAdminDtu' // 添加所属DTU
   public addToMySelection = this.host + '/api/v1.0/addToMySelection' // 添加到自选
   public addUser = this.host + '/api/v1.0/addUser' // 新增管理员
@@ -15,7 +16,7 @@ export class ApiPortService {
   public changepw = this.host + '/api/v1.0/changepw' // 修改管理员密码
   public deleteAdminDtu = this.host + '/api/v1.0/deleteAdminDtu' // 删除所属DTU
   public deleteUser = this.host + '/api/v1.0/deleteUser' // 删除管理员
-  public distributeDtus = this.host + '/api/v1.0/distributeDtus' // 上传所属DTU Excel文件
+  public distributeDtus = this.host + '/api/v1.0/distributeDtus' // 分配DTU
   public downloadFile = this.host + '/api/v1.0/downloadFile' // 下载bin文件
   public editAdminDtu = this.host + '/api/v1.0/editAdminDtu' // 修改所属DTU
   public getAdminDtus = this.host + '/api/v1.0/getAdminDtus' // DTU归属列表
