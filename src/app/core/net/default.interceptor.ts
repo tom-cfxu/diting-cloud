@@ -33,7 +33,7 @@ const CODEMESSAGE = {
   504: '网关超时。',
 };
 const TIME = { nzDuration: 1000 };
-const ERRTIME = { nzDuration: 5000 };
+const ERRTIME = { nzDuration: 1000 };
 const RESPONSE = {
   10001: '登录成功,欢迎您',
   10002: '注销成功!',
@@ -118,9 +118,9 @@ export class DefaultInterceptor implements HttpInterceptor {
             break;
           case "40004":
             this.notification.error(`登录已过期，请重新登录`, ``);
-            //清空 token 信息
-            (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
-            this.goTo('/passport/login');
+            // 清空 token 信息
+            // (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
+            // this.goTo('/passport/login');
             break
           case "10003":
           case "10004":
