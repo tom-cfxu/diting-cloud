@@ -75,6 +75,7 @@ export class UserLoginComponent implements OnDestroy {
   switch(ret: any) {
     this.type = ret.index;
   }
+  // tslint:disable-next-line: member-ordering
   options = {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

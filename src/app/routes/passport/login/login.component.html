@@ -24,7 +24,8 @@
         formControlName="remember">{{ 'app.login.remember-me' | translate }}</label>
     </nz-col>
     <nz-col [nzSpan]="12" class="text-right">
-      <a class="forgot" (click)="msg.error('错误')">{{ 'app.login.forgot-password' | translate }}</a>
+      <a class="forgot" [ngStyle]="{'color':'#fff'}"
+        (click)="msg.error('错误')">{{ 'app.login.forgot-password' | translate }}</a>
     </nz-col>
   </nz-form-item>
   <nz-form-item>
@@ -34,5 +35,6 @@
   </nz-form-item>
 </form>
 <div class="other">
-  <a class="register" routerLink="/passport/register">{{ 'app.login.signup' | translate }}</a>
+  <a class="register" [ngStyle]="{'color':'#fff'}"
+    routerLink="/passport/register">{{ 'app.login.signup' | translate }}</a>
 </div>
