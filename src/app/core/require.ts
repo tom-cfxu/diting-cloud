@@ -51,15 +51,19 @@ export class RequireService {
     };
     // 删除数组中的重复对象
     public deteleObject(obj) {
-        var uniques = [];
-        var stringify = {};
-        for (var i = 0; i < obj.length; i++) {
-            var keys = Object.keys(obj[i]);
+        let uniques = [];
+        // tslint:disable-next-line: prefer-const
+        let stringify = {};
+        // tslint:disable-next-line: prefer-for-of
+        for (let i = 0; i < obj.length; i++) {
+            const keys = Object.keys(obj[i]);
+            // tslint:disable-next-line: only-arrow-functions
             keys.sort(function (a, b) {
                 return (Number(a) - Number(b));
             });
-            var str = '';
-            for (var j = 0; j < keys.length; j++) {
+            let str = '';
+            // tslint:disable-next-line: prefer-for-of
+            for (let j = 0; j < keys.length; j++) {
                 str += JSON.stringify(keys[j]);
                 str += JSON.stringify(obj[i][keys[j]]);
             }
@@ -71,6 +75,7 @@ export class RequireService {
         uniques = uniques;
         return uniques;
     }
+    // tslint:disable-next-line: member-ordering
     public moment = moment;
     // 主界面获取用户信息
     public getUserInfo() {

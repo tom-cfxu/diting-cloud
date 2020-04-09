@@ -8,7 +8,8 @@ export class ApiPortService {
   constructor() { }
   // public host = 'http://114.115.139.254:8095';
   // public host = 'http://192.168.0.221:8091';
-  public host = 'http://114.116.143.91:8080';
+  // public host = 'http://114.116.143.91:8080';
+  public host = 'http://192.168.16.20:8080';
   public addAdminDtu = this.host + '/api/v1.0/addAdminDtu' // 添加所属DTU
   public addToMySelection = this.host + '/api/v1.0/addToMySelection' // 添加到自选
   public addUser = this.host + '/api/v1.0/addUser' // 新增管理员
