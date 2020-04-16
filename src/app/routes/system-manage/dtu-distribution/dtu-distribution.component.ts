@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
+import { _HttpClient, SettingsService } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { STColumn, STPage, STChange, STColumnTag } from '@delon/abc';
@@ -35,6 +35,7 @@ export class DtuDistributionComponent implements OnInit {
   constructor(public http: _HttpClient,
     private message: NzMessageService,
     private require: RequireService,
+    private settingService: SettingsService,
     private api: ApiService) { }
   data = []; // 保存表格信息
   deleteUrl = this.require.api.deleteAdminDtu;
@@ -327,13 +328,27 @@ export class DtuDistributionComponent implements OnInit {
     const url = this.require.api.loadAdminTreeData;
     this.require.post(url).subscribe((res: any) => {
       const data = res.data.adminTreeData;
-
+      // console.log(data);
       let obj;
       // tslint:disable-next-line: forin
       for (const i in data) {
         obj = data[i];
       }
       this.nodes = [this.edit(obj)];
+      // console.log(this.nodes)
+      // this.nodes = [];
+      // const user = this.settingService.user;
+      // console.log(user)
+      // 如果节点为空,设默认管理员
+      if (this.nodes.length === 0) {
+        // tslint:disable-next-line: no-shadowed-variable
+        const user = this.settingService.user;
+        // console.log(user)
+        this.schema.properties.userName.default = user.name;
+        this.schema2.properties.userName.default = user.name;
+        this.sf.refreshSchema();
+        this.sf2.refreshSchema();
+      }
       // 设置管理员id 和 默认userName
       this.adminId = this.adminId === null ? this.nodes[0].id : this.adminId;
       this.schema.properties.userName.default = this.schema.properties.userName.default === '' ? this.nodes[0].title : this.schema.properties.userName.default;
