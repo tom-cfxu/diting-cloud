@@ -334,21 +334,14 @@ export class DtuDistributionComponent implements OnInit {
       for (const i in data) {
         obj = data[i];
       }
+      // 设置管理员id 和 默认userName
+      this.adminId = this.adminId === null ? this.nodes[0].id : this.adminId;
       this.nodes = [this.edit(obj)];
-      console.log(this.nodes)
-      // this.nodes = [];
-      // const user = this.settingService.user;
       const user = this.settingService.user;
       this.schema.properties.userName.default = user.name;
       this.schema2.properties.userName.default = user.name;
       this.sf.refreshSchema();
       this.sf2.refreshSchema();
-      // 设置管理员id 和 默认userName
-      this.adminId = this.adminId === null ? this.nodes[0].id : this.adminId;
-      // this.schema.properties.userName.default = this.schema.properties.userName.default === '' ? this.nodes[0].title : this.schema.properties.userName.default;
-      // this.schema2.properties.userName.default = this.schema2.properties.userName.default === '' ? this.nodes[0].title : this.schema2.properties.userName.default;
-      // this.sf.refreshSchema();
-      // this.sf2.refreshSchema();
       this.getData();
     }, (err) => {
 
@@ -600,6 +593,11 @@ export class DtuDistributionComponent implements OnInit {
   }
 
   ngOnInit() {
+    const user = this.settingService.user;
+    this.schema.properties.userName.default = user.name;
+    this.schema2.properties.userName.default = user.name;
+    this.sf.refreshSchema();
+    this.sf2.refreshSchema();
     this.getNode();
   }
 
