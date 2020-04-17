@@ -19,6 +19,7 @@ import { AlarmManagerModule } from './alarm-manager/alarm-manager.module';
 import { DataQueryComponent } from './data-query/data-query.component';
 import { OperateDataComponent } from './operate-data/operate-data.component';
 import { SearchModalComponent } from './component/search-modal';
+import { NgxEchartsModule } from 'ngx-echarts';
 
 const COMPONENTS = [
   DashboardComponent,
@@ -38,7 +39,7 @@ const COMPONENTS = [
 const COMPONENTS_NOROUNT = [SearchModalComponent];
 
 @NgModule({
-  imports: [SharedModule, RouteRoutingModule, SystemManageModule, DtuManageModule, LibaryFileModule, AlarmManagerModule],
+  imports: [SharedModule, NgxEchartsModule, RouteRoutingModule, SystemManageModule, DtuManageModule, LibaryFileModule, AlarmManagerModule],
   declarations: [
     ...COMPONENTS,
     ...COMPONENTS_NOROUNT,

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
-import { _HttpClient } from '@delon/theme';
+import { _HttpClient, SettingsService } from '@delon/theme';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { STColumn, STPage, STChange } from '@delon/abc';
 import { RequireService } from '@core/require';
@@ -12,7 +12,7 @@ import { resolve } from 'url';
   styles: []
 })
 export class DtuOnlineComponent implements OnInit {
-  constructor(http: _HttpClient, private api: ApiService, private require: RequireService) { this.http = http }
+  constructor(http: _HttpClient, private api: ApiService, private require: RequireService, private settingService: SettingsService, ) { this.http = http }
   http;
   // 主表格配置
   data = [] // 保存表格信息
@@ -20,7 +20,7 @@ export class DtuOnlineComponent implements OnInit {
   pi = 1; // 表格页码
   ps = 10;// 表格每页数量
   total; // 总数据数量
-  adminId;
+  adminId = this.settingService.user.id;
   // 分页配置
   pages: STPage = {
     total: '',
@@ -231,6 +231,7 @@ export class DtuOnlineComponent implements OnInit {
       Object.keys(obj).forEach((key) => {
         const arr = [];
         obj.selected = obj.additionalParameters.itemSelected;
+        // tslint:disable-next-line: forin
         for (const i in obj.additionalParameters.children) {
           arr.push(obj.additionalParameters.children[i])
           this.edit(obj.additionalParameters.children[i]);
@@ -249,6 +250,7 @@ export class DtuOnlineComponent implements OnInit {
     this.require.post(url).subscribe((res: any) => {
       const data = res.data.adminTreeData;
       let obj;
+      // tslint:disable-next-line: forin
       for (const i in data) {
         obj = data[i];
       }
@@ -356,7 +358,7 @@ export class DtuOnlineComponent implements OnInit {
     }
   }
 
-  //查找设备所有属性
+  // 查找设备所有属性
   getPropertiesWithEquip(id) {
     const url = this.require.api.getPropertiesWithEquip;
     const body = this.require.encodeObject({
@@ -365,7 +367,7 @@ export class DtuOnlineComponent implements OnInit {
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          console.log(res);
+          // console.log(res);
           const data = res.data;
           if (data.properties.length > 0) {
             this.data3 = data.properties.map((e) => {
@@ -436,7 +438,6 @@ export class DtuOnlineComponent implements OnInit {
     }
   }
   ngOnInit() {
-    this.adminId = this.require.settingsService.user.id;
     this.getNode();
   }
 

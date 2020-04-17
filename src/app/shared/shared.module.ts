@@ -13,8 +13,9 @@ import { TranslateModule } from '@ngx-translate/core';
 
 // #region third libs
 import { NgZorroAntdModule } from 'ng-zorro-antd';
-import { NzFormModule } from 'ng-zorro-antd/form';
+// import { NzFormModule } from 'ng-zorro-antd/form';
 import { CountdownModule } from 'ngx-countdown';
+import { NgxEchartsModule } from 'ngx-echarts'
 const THIRDMODULES = [NgZorroAntdModule, CountdownModule];
 // #endregion
 
@@ -42,8 +43,9 @@ const DIRECTIVES = [
     DelonACLModule,
     DelonFormModule,
     NzTableModule,
+    NgxEchartsModule,
     NgZorroAntdModule,
-    NzFormModule,
+    // NzFormModule,
     DelonChartModule,
     // third libs
     ...THIRDMODULES,
@@ -65,7 +67,7 @@ const DIRECTIVES = [
     NgZorroAntdModule,
     NzTableModule,
     DelonChartModule,
-    NzFormModule,
+    // NzFormModule,
     // i18n
     TranslateModule,
     // third libs

@@ -3,7 +3,7 @@ import { _HttpClient, SettingsService } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { NzFormatEmitEvent, NzTreeNodeOptions } from 'ng-zorro-antd/core';
 import { STColumn, STPage, STChange, STColumnTag } from '@delon/abc';
-import { SFSchema, SFComponent, SFRadioWidgetSchema, SFTextWidgetSchema, SFGridSchema, SFUploadWidgetSchema, SFDateWidgetSchema } from '@delon/form'
+import { SFSchema, SFComponent, SFRadioWidgetSchema, SFGridSchema, SFDateWidgetSchema } from '@delon/form'
 import { NzMessageService, UploadFile } from 'ng-zorro-antd';
 import { delay } from 'rxjs/operators';
 import { of } from 'rxjs';
@@ -45,7 +45,7 @@ export class DtuDistributionComponent implements OnInit {
   ps = 10;// 表格每页数量
   total; // 总数据数量
   checked = []; // 表格选中
-  adminId = null;// 当前选中节点id 
+  adminId = this.settingService.user.id;// 当前选中节点id 
   // 分页配置
   pages: STPage = {
     total: '',
@@ -206,7 +206,7 @@ export class DtuDistributionComponent implements OnInit {
       userName: {
         type: 'string',
         title: '所属管理员',
-        default: '',
+        default: this.settingService.user.username,
         readOnly: true,
       },
       gatewayNumber: {
@@ -328,20 +328,8 @@ export class DtuDistributionComponent implements OnInit {
     const url = this.require.api.loadAdminTreeData;
     this.require.post(url).subscribe((res: any) => {
       const data = res.data.adminTreeData;
-      // console.log(data);
-      let obj;
-      // tslint:disable-next-line: forin
-      for (const i in data) {
-        obj = data[i];
-      }
-      // 设置管理员id 和 默认userName
-      this.adminId = this.adminId === null ? this.nodes[0].id : this.adminId;
+      const obj = data[0];
       this.nodes = [this.edit(obj)];
-      const user = this.settingService.user;
-      this.schema.properties.userName.default = user.name;
-      this.schema2.properties.userName.default = user.name;
-      this.sf.refreshSchema();
-      this.sf2.refreshSchema();
       this.getData();
     }, (err) => {
 
@@ -593,11 +581,11 @@ export class DtuDistributionComponent implements OnInit {
   }
 
   ngOnInit() {
-    const user = this.settingService.user;
-    this.schema.properties.userName.default = user.name;
-    this.schema2.properties.userName.default = user.name;
-    this.sf.refreshSchema();
-    this.sf2.refreshSchema();
+    // const user = this.settingService.user;
+    // this.schema.properties.userName.default = user.name;
+    // this.schema2.properties.userName.default = user.name;
+    // this.sf.refreshSchema();
+    // this.sf2.refreshSchema();
     this.getNode();
   }
 

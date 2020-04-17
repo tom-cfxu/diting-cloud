@@ -4,9 +4,9 @@ import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
 import { SFSchema, FormProperty, PropertyGroup, SFDateWidgetSchema, SFRadioWidgetSchema, SFComponent, } from '@delon/form';
-import { of } from 'rxjs';
-import { delay } from 'rxjs/operators';
-declare var G2: any;
+// import { of } from 'rxjs';
+// import { delay } from 'rxjs/operators';
+// declare var G2: any;
 @Component({
   selector: 'app-data-query',
   templateUrl: './data-query.component.html',
@@ -22,12 +22,12 @@ export class DataQueryComponent implements OnInit {
   pi = 1; // 表格页码
   ps = 5;// 表格每页数量
   total;
-  gatewayNumber = ""; // 保存趋势图标题
-  gatewayNumber2 = ""; // 保存报表标题
+  option: any;
   radioValue = "range";// 报表查询方式
   @ViewChild('st', { static: false }) st: STComponent;
   // 分页配置
   checked = [];// 选择1
+  labelArr = [] // 标签名数组;
   pages: STPage = {
     showSize: true,
     showQuickJumper: true,
@@ -35,7 +35,7 @@ export class DataQueryComponent implements OnInit {
     placement: 'center',
   }
   // G2图表
-  chartData: any[] = [];
+  // chartData: any[] = [];
   // 自选列表配置
   columns: STColumn[] = [
     {
@@ -111,14 +111,7 @@ export class DataQueryComponent implements OnInit {
   ];
   // 报表配置
   columns2: STColumn[] = [
-    {
-      title: '时间',
-      index: 'x',
-    },
-    {
-      title: 'ND6',
-      index: 'y',
-    }
+    { title: '时间', index: 'time' }
   ];
   @ViewChild('sf2', { static: false }) sf2: SFComponent;
   // 查询表单
@@ -207,18 +200,6 @@ export class DataQueryComponent implements OnInit {
         // tslint:disable-next-line: no-string-literal
         this.schema2.properties.date.ui['hidden'] = false;
         break;
-      // case 'week':
-      //   this.schema2.properties.startTime.ui['hidden'] = true;
-      //   this.schema2.properties.date.ui['hidden'] = true;
-      //   this.schema2.properties.week.ui['hidden'] = false;
-      //   this.schema2.properties.month.ui['hidden'] = true;
-      //   break;
-      // case 'month':
-      //   this.schema2.properties.startTime.ui['hidden'] = true;
-      //   this.schema2.properties.date.ui['hidden'] = true;
-      //   // this.schema2.properties.week.ui['hidden'] = true;
-      //   this.schema2.properties.month.ui['hidden'] = false;
-      //   break;
     }
     this.sf2.refreshSchema();
   }
@@ -240,19 +221,52 @@ export class DataQueryComponent implements OnInit {
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          // console.log(res)
           if (res.data.data.length > 0) {
-            this.gatewayNumber = res.data.data[0].gatewayNumber;
-            const data = res.data.data[0].historyData;
-            this.chartData = data.map((e) => {
-              return {
-                'x': Date.parse(e.time),
-                'y1': e.ND6 === null ? "0.0" : e.ND6
+            // this.gatewayNumber = res.data.data[0].gatewayNumber;
+            const timeArray = []; // 保存时间横轴数据
+            const valueArray = []; // 保存所有标签点的数据
+            for (let i = 0; i <= this.labelArr.length; i++) {
+              valueArray[i] = [];
+            }
+            const data = res.data.data// [0].historyData;
+            // tslint:disable-next-line: prefer-for-of
+            for (const i of data) {
+              const oneData = i;
+              const historyDataArray = oneData.historyData;
+              for (let j = 0; j < historyDataArray.length; j++) {
+                const historyData = historyDataArray[j];
+                // tslint:disable-next-line: prefer-const
+                // tslint:disable-next-line: forin
+                for (const item in historyData) {
+                  // tslint:disable-next-line: triple-equals
+                  if (item == "time") {
+                    timeArray.push(historyData[item]);
+                  }
+                  for (let n = 0; n < this.labelArr.length; n++) {
+                    // tslint:disable-next-line: triple-equals
+                    if (item == this.labelArr[n]) {
+                      valueArray[n][j] = historyData[item] // === null ? 0 : historyData[item];
+                    }
+                  }
+                }
               }
-            })
+            }
+            const objArr = [];
+            for (let t = 0; t < this.labelArr.length; t++) {
+              const obj: any = {};
+              obj.name = this.labelArr[t];
+              obj.data = valueArray[t];
+              obj.type = 'line';
+              objArr.push(obj)
+            }
+            console.log('开始加载表格')
+            this.option.legend.data = this.labelArr
+            this.option.xAxis.data = timeArray;
+            this.option.series = objArr;
+            console.log(this.option)
+            this.option = { ...this.option }
           } else {
-            this.chartData = [];
-            this.gatewayNumber = '';
+            // this.gatewayNumber = '';
             this.require.message.info('数据为空', { nzDuration: 1000 })
           }
           break;
@@ -261,13 +275,83 @@ export class DataQueryComponent implements OnInit {
       }
     })
   }
+  // 趋势图初始化
+  chart() {
+    this.option = {
+      title: {
+        text: '历史数据曲线'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      legend: {
+        data: []
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      toolbox: {
+        feature: {
+          saveAsImage: {}
+        }
+      },
+      xAxis: {
+        type: 'category',
+        boundaryGap: false,
+        data: []
+      },
+      yAxis: {
+        type: 'value'
+      },
+      dataZoom: [
+        {
+          type: 'slider',
+          show: true,
+          start: 0,
+          end: 100,
+          handleSize: 8
+        },
+        {
+          type: 'inside',
+          start: 0,
+          end: 100
+        },
+        {
+          type: 'slider',
+          show: true,
+          yAxisIndex: 0,
+          filterMode: 'empty',
+          width: 12,
+          height: '70%',
+          handleSize: 8,
+          showDataShadow: false,
+          left: '98%'
+        }
+      ],
+      series: []
+    }
+  }
   // 报表查询提交
   submit2(value) {
+    if ((JSON.stringify(value) === "{}")) {
+      return this.require.message.info('请输入查询时间!', { nzDuration: 1000 })
+    }
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids')
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 })
     }
+    const stColumn: STColumn[] = [{ title: '时间', index: 'time' }];
+    for (const i of this.labelArr) {
+      const columns = { title: i, index: i }
+      stColumn.push(columns)
+    }
+    // console.log(stColumn);
+    // this.columns2.push(stColumn)
+    this.columns2 = stColumn;
     const startTime = value.startTime;
     const endTime = value.endTime;
     // const week = value.week;
@@ -298,23 +382,15 @@ export class DataQueryComponent implements OnInit {
     //     endTime: this.require.moment(month).add(1, 'months').format('YYYY-MM-DD 00:00:00')
     //   })
     // }
-    console.log(body);
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          // console.log(res)
           if (res.data.data.length > 0) {
-            this.gatewayNumber2 = res.data.data[0].gatewayNumber;
-            const data = res.data.data[0].historyData;
-            this.data2 = data.map((e) => {
-              return {
-                x: e.time,
-                y: e.ND6 === null ? "null" : e.ND6
-              }
-            })
+
+            // const data = res.data.data[0].historyData;
+
           } else {
             this.data2 = [];
-            this.gatewayNumber2 = '';
             this.require.message.info('数据为空', { nzDuration: 1000 })
           }
           break;
@@ -330,6 +406,7 @@ export class DataQueryComponent implements OnInit {
       this.pi = ret.pi;
       this.ps = ret.ps;
     } else if (ret.type === 'checkbox') {
+      this.labelArr = ret.checkbox.map(e => e.propertySection + e.propertyAddress);
       this.checked = ret.checkbox.map(e => e.id)
     }
   }
@@ -406,5 +483,6 @@ export class DataQueryComponent implements OnInit {
 
   ngOnInit() {
     this.getData();
+    this.chart();
   }
 }

@@ -119,8 +119,8 @@ export class DefaultInterceptor implements HttpInterceptor {
           case "40004":
             this.notification.error(`登录已过期，请重新登录`, ``);
             // 清空 token 信息
-            // (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
-            // this.goTo('/passport/login');
+            (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
+            this.goTo('/passport/login');
             break
           case "10003":
           case "10004":
