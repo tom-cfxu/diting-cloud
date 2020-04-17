@@ -22,7 +22,7 @@
           <nz-collapse-panel [nzActive]="true" nzHeader="DTU列表">
             <st #st [data]="data" [pi]="pi" [expand]="expand" [loading]="http.loading" [page]="pages" [ps]="ps"
               [total]="total" (change)="change($event)" [columns]="columns" virtualScroll virtualItemSize="20"
-              [scroll]="{ x: '1300px',y:'500px'}" expandAccordion>
+              [scroll]="scroll" expandAccordion>
               <ng-template #expand>
                 <!-- 子表格 -->
                 <st #st2 [data]="data2" [loading]="http.loading" [columns]="columns2">

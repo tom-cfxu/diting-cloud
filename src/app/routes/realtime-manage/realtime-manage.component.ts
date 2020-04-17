@@ -122,9 +122,6 @@ export class RealtimeManageComponent implements OnInit {
     {
       title: 'DTUID',
       index: 'dtuId',
-      sort: {
-        compare: (a, b) => a.dtuId - b.dtuId,
-      },
     },
     {
       title: '设备ID',
@@ -196,7 +193,7 @@ export class RealtimeManageComponent implements OnInit {
         case "10005":
           const data = res.data
           if (data.rows.length > 0) {
-            this.data = data.map((e) => {
+            this.data = data.rows.map((e) => {
               return {
                 dtuId: e.dtuId,
                 equipId: e.equipId,

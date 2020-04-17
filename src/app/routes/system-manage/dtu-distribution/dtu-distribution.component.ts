@@ -59,7 +59,6 @@ export class DtuDistributionComponent implements OnInit {
   columns: STColumn[] = [
     {
       type: 'checkbox',
-      width: 50
     },
     {
       title: '操作',
@@ -121,39 +120,39 @@ export class DtuDistributionComponent implements OnInit {
     {
       title: '序号',
       index: 'id',
-      width: 50,
+      width: 100,
       sort: { compare: (a, b) => a.id - b.id }
     },
     {
       title: 'DTU编号',
       index: 'gatewayNumber',
-      width: 450,
+      width: 160,
       // className: 'text-nowrap,text-truncate'
     },
     {
       title: '管理人员',
       index: 'userName',
-      width: 150,
+      width: 120,
     },
     {
       title: '操作人员',
       index: 'handlerName',
-      width: 150,
+      width: 120,
     },
     {
       title: '创建时间',
       index: 'createTime',
-      width: 200,
+      width: 250,
     },
     {
       title: '启用开始时间',
       index: 'startTime',
-      width: 200
+      width: 250
     },
     {
       title: '启用结束时间',
       index: 'endTime',
-      width: 200
+      width: 250
     },
     {
       title: '注册',
@@ -174,7 +173,7 @@ export class DtuDistributionComponent implements OnInit {
       index: 'scanPolicy',
       type: 'tag',
       tag: TAG,
-      width: 100,
+      width: 150,
     },
 
   ]
@@ -216,17 +215,20 @@ export class DtuDistributionComponent implements OnInit {
       },
       startTime: {
         type: 'string',
-        title: '起始-结束时间',
+        title: '开始时间',
         // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           widget: 'date',
-          end: 'endTime', showTime: true
+          placeholder: '选择时间',
+          showTime: true
         } as SFDateWidgetSchema,
       },
       endTime: {
         type: 'string',
+        title: '结束时间',
         ui: {
           widget: 'date',
+          placeholder: '选择时间',
           showTime: true,
         }
       },
@@ -434,6 +436,10 @@ export class DtuDistributionComponent implements OnInit {
     let body;
     const startTime = value.startTime;
     const endTime = value.endTime;
+    const start = Date.parse(value.startTime);
+    const end = Date.parse(value.endTime);
+    const day = (end - start) / (1000 * 60 * 60 * 24);
+    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!')
     switch (mode) {
       case 'edit':
         url = this.require.api.editAdminDtu;// 编辑url

@@ -57,12 +57,12 @@ export class DtuDefaultConfigComponent implements OnInit {
       },
       startTime: {
         type: 'string',
-        title: '开始-结束时间',
+        title: '开始时间',
         // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           widget: 'date',
-          end: 'endTime',
-          showTime: true
+          showTime: true,
+          placeholder: '选择时间',
         } as SFDateWidgetSchema,
         default: '',
       },
@@ -71,6 +71,7 @@ export class DtuDefaultConfigComponent implements OnInit {
         title: '停止时间',
         ui: {
           widget: 'date',
+          placeholder: '选择时间',
           showTime: true,
         },
         default: '',
@@ -258,6 +259,10 @@ export class DtuDefaultConfigComponent implements OnInit {
     const url = this.require.api.editAdminDtu;
     const startTime = value.startTime;
     const endTime = value.endTime;
+    const start = Date.parse(value.startTime);
+    const end = Date.parse(value.endTime);
+    const day = (end - start) / (1000 * 60 * 60 * 24);
+    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!')
     const body = this.require.encodeObject({
       gatewayNumber: value.gatewayNumber,
       id: value.id,

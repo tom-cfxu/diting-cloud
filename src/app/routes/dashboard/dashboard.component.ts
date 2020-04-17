@@ -41,10 +41,11 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.require.post(url).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          // console.log(res.data.rows)
+          console.log(res.data.rows)
           if (res.data.rows.length > 0) {
             this.dtuData = res.data.rows.map((e) => {
               return {
+                gatewayNumber: e.gatewayNumber,
                 provinceName: e.provinceName,
                 cityName: e.cityName,
                 areaName: e.areaName,
@@ -111,7 +112,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         this.map.addOverlay(marker) // 将标注添加到地图中;
         // 窗口内容
         const content = `
-          省:${data.provinceName}
+          Dtu编号:${data.gatewayNumber}
+          <br>省:${data.provinceName}
           <br>市:${data.cityName}
           <br>县:${data.areaName}
           <br>详细地址:${data.detailLocate}

@@ -21,6 +21,7 @@ export class DtuOnlineComponent implements OnInit {
   ps = 10;// 表格每页数量
   total; // 总数据数量
   adminId = this.settingService.user.id;
+  scroll = { x: '1300px', y: '500px' };//
   // 分页配置
   pages: STPage = {
     total: '',
@@ -30,7 +31,7 @@ export class DtuOnlineComponent implements OnInit {
     pageSizes: [10, 20, 30, 40, 50],
     placement: 'center'
   }
-  // 每列项详细
+  // DTU列表
   columns: STColumn[] = [
     {
       title: '序号',
@@ -44,7 +45,7 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: 'DTU编号',
       index: 'gatewayNumber',
-      width: 300,
+      width: 200,
       // className: 'text-nowrap,text-truncate'
 
     },
@@ -68,12 +69,12 @@ export class DtuOnlineComponent implements OnInit {
     {
       title: '详细地址',
       index: 'detailLocate',
-      width: 150,
+      width: 300,
     },
     {
       title: '经度',
       index: 'locateX',
-      width: 50,
+      width: 100,
       // className: 'text-nowrap,text-truncate'
     },
     {

@@ -51,15 +51,20 @@ export class OperateDataComponent implements OnInit {
     properties: {
       startTime: {
         type: 'string',
-        title: '起始-结束时间',
+        title: '开始时间',
         // tslint:disable-next-line: no-object-literal-type-assertion
-        ui: { widget: 'date', end: 'endTime', showTime: true } as SFDateWidgetSchema,
+        ui: {
+          widget: 'date',
+          showTime: true,
+          placeholder: '选择时间'
+        } as SFDateWidgetSchema,
       },
       endTime: {
         type: 'string',
+        title: '结束时间',
         ui: {
           widget: 'date',
-          end: 'endTime',
+          placeholder: '选择时间',
           showTime: true,
         }
       },
@@ -71,6 +76,7 @@ export class OperateDataComponent implements OnInit {
     const end = Date.parse(value.endTime);
     const day = (end - start) / (1000 * 60 * 60 * 24);
     if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
+    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getOperateData;
     const body = this.require.encodeObject({
       rows: this.ps,

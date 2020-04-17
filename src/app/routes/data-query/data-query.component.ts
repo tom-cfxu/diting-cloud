@@ -4,6 +4,7 @@ import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
 import { SFSchema, FormProperty, PropertyGroup, SFDateWidgetSchema, SFRadioWidgetSchema, SFComponent, } from '@delon/form';
+import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 // import { of } from 'rxjs';
 // import { delay } from 'rxjs/operators';
 // declare var G2: any;
@@ -111,7 +112,9 @@ export class DataQueryComponent implements OnInit {
   ];
   // 报表配置
   columns2: STColumn[] = [
-    { title: '时间', index: 'time' }
+    {
+      title: '时间', index: 'time'
+    }
   ];
   @ViewChild('sf2', { static: false }) sf2: SFComponent;
   // 查询表单
@@ -120,17 +123,21 @@ export class DataQueryComponent implements OnInit {
     properties: {
       startTime: {
         type: 'string',
-        title: '起始-结束时间',
+        title: '起始时间',
         ui: {
           widget: 'date',
-          end: 'endTime', showTime: true
+          // end: 'endTime', 
+          showTime: true,
+          placeholder: "选择时间"
         }
       },
       endTime: {
         type: 'string',
+        title: '结束时间',
         ui: {
           widget: 'date',
           showTime: true,
+          placeholder: "选择时间"
         }
       },
     }
@@ -145,58 +152,48 @@ export class DataQueryComponent implements OnInit {
         // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           hidden: true,
+          placeholder: "选择日期",
         }
       },
-      // week: {
-      //   type: 'string',
-      //   title: '选择周',
-      //   format: 'week',
-      //   ui: {
-      //     placeholder: '选择周',
-      //     hidden: true,
-      //   }
-      // },
-      // month: {
-      //   type: 'string',
-      //   title: '选择月',
-      //   format: 'month',
-      //   ui: {
-      //     placeholder: '选择月',
-      //     hidden: true,
-      //   }
-      // },
       startTime: {
         type: 'string',
-        title: '起始-结束时间',
+        title: '开始时间',
         ui: {
           widget: 'date',
-          end: 'endTime',
           showTime: true,
+          placeholder: "选择时间",
           hidden: false,
         },
       },
       endTime: {
         type: 'string',
+        title: '结束时间',
         ui: {
           widget: 'date',
           showTime: true,
-          hidden: true,
+          placeholder: "选择时间",
+          hidden: false,
         }
       },
     }
   };
   // 报表日期搜索方式切换
   searchBy(e) {
-    switch (this.radioValue) {
+    // console.log(e);
+    switch (e) {
       case 'range':
         // tslint:disable-next-line: no-string-literal
         this.schema2.properties.startTime.ui['hidden'] = false;
+        // tslint:disable-next-line: no-string-literal
+        this.schema2.properties.endTime.ui['hidden'] = false;
         // tslint:disable-next-line: no-string-literal
         this.schema2.properties.date.ui['hidden'] = true;
         break;
       case 'date':
         // tslint:disable-next-line: no-string-literal
         this.schema2.properties.startTime.ui['hidden'] = true;
+        // tslint:disable-next-line: no-string-literal
+        this.schema2.properties.endTime.ui['hidden'] = true;
         // tslint:disable-next-line: no-string-literal
         this.schema2.properties.date.ui['hidden'] = false;
         break;
@@ -212,6 +209,7 @@ export class DataQueryComponent implements OnInit {
     const end = Date.parse(value.endTime);
     const day = (end - start) / (1000 * 60 * 60 * 24);
     if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
+    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!')
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids')
     const body = ids + '&' + this.require.encodeObject({
@@ -259,11 +257,11 @@ export class DataQueryComponent implements OnInit {
               obj.type = 'line';
               objArr.push(obj)
             }
-            console.log('开始加载表格')
+            // console.log('开始加载表格')
             this.option.legend.data = this.labelArr
             this.option.xAxis.data = timeArray;
             this.option.series = objArr;
-            console.log(this.option)
+            // console.log(this.option)
             this.option = { ...this.option }
           } else {
             // this.gatewayNumber = '';
@@ -344,25 +342,24 @@ export class DataQueryComponent implements OnInit {
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 })
     }
-    const stColumn: STColumn[] = [{ title: '时间', index: 'time' }];
+    const stColumn: STColumn[] = [{
+      title: '时间', index: 'time'
+    }];
     for (const i of this.labelArr) {
       const columns = { title: i, index: i }
       stColumn.push(columns)
     }
-    // console.log(stColumn);
-    // this.columns2.push(stColumn)
     this.columns2 = stColumn;
     const startTime = value.startTime;
     const endTime = value.endTime;
-    // const week = value.week;
-    // const month = value.month;
     const date = value.date;
     let body = ids + '&';
     if (startTime && endTime) {
       const start = Date.parse(startTime);
       const end = Date.parse(endTime);
       const day = (end - start) / (1000 * 60 * 60 * 24);
-      if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
+      if (day > 3) return this.require.message.error('查询时间范围须在3天及以内!');
+      if (day < 0) return this.require.message.error('结束时间须在开始时间之后!')
       body += this.require.encodeObject({
         startTime,
         endTime
@@ -386,8 +383,15 @@ export class DataQueryComponent implements OnInit {
       switch (res.code) {
         case '10005':
           if (res.data.data.length > 0) {
+            const valueArray = []; // 保存所有标签点的数据
+            for (let i = 0; i <= this.labelArr.length; i++) {
+              valueArray[i] = [];
+            }
+            const data = res.data.data[0].historyData;
+            console.log(data);
+            // tslint:disable-next-line: prefer-for-of
+            this.data2 = data;
 
-            // const data = res.data.data[0].historyData;
 
           } else {
             this.data2 = [];
