@@ -3,7 +3,14 @@ import { STChange, STPage, STColumn, STComponent } from '@delon/abc';
 import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
-import { SFSchema, FormProperty, PropertyGroup, SFDateWidgetSchema, SFRadioWidgetSchema, SFComponent, } from '@delon/form';
+import {
+  SFSchema,
+  FormProperty,
+  PropertyGroup,
+  SFDateWidgetSchema,
+  SFRadioWidgetSchema,
+  SFComponent,
+} from '@delon/form';
 import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 // import { of } from 'rxjs';
 // import { delay } from 'rxjs/operators';
@@ -11,36 +18,35 @@ import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 @Component({
   selector: 'app-data-query',
   templateUrl: './data-query.component.html',
-  styles: []
+  styles: [],
 })
-
 export class DataQueryComponent implements OnInit {
-  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) {}
   getMySelection = this.require.api.getMySelection;
   deleteUrl = this.require.api.selectionDelete;
   data = []; // 保存表格信息
   data2 = []; // 保存报表数据
   pi = 1; // 表格页码
-  ps = 5;// 表格每页数量
+  ps = 5; // 表格每页数量
   total;
   option: any;
-  radioValue = "range";// 报表查询方式
+  radioValue = 'range'; // 报表查询方式
   @ViewChild('st', { static: false }) st: STComponent;
   // 分页配置
-  checked = [];// 选择1
-  labelArr = [] // 标签名数组;
+  checked = []; // 选择1
+  labelArr = []; // 标签名数组;
   pages: STPage = {
     showSize: true,
     showQuickJumper: true,
     pageSizes: [5, 10, 20, 30, 40, 50],
     placement: 'center',
-  }
+  };
   // G2图表
   // chartData: any[] = [];
   // 自选列表配置
   columns: STColumn[] = [
     {
-      type: 'checkbox'
+      type: 'checkbox',
     },
     {
       title: '操作',
@@ -48,27 +54,28 @@ export class DataQueryComponent implements OnInit {
         {
           text: '删除',
           type: 'del',
-          click: (e) => {
+          click: e => {
             let body;
             if (e.id) {
               body = this.require.encodeArray([e.id], 'ids');
             }
-            this.require.post(this.deleteUrl, body).subscribe((res: any) => {
-              switch (res.code) {
-                case '10005':
-                  if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
-                  this.getData();
-                  break;
-                default:
-                  console.log(res);
-                  break;
-              }
-            }, (err) => {
-
-            })
-          }
-        }
-      ]
+            this.require.post(this.deleteUrl, body).subscribe(
+              (res: any) => {
+                switch (res.code) {
+                  case '10005':
+                    if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
+                    this.getData();
+                    break;
+                  default:
+                    console.log(res);
+                    break;
+                }
+              },
+              err => {},
+            );
+          },
+        },
+      ],
     },
     {
       title: 'DTU编号',
@@ -88,22 +95,18 @@ export class DataQueryComponent implements OnInit {
     {
       title: '属性地址',
       index: 'propertyAddress',
-
     },
     {
       title: 'DTU区域',
       index: 'dtuSection',
-
     },
     {
       title: 'DTU地址',
       index: 'dtuAddress',
-
     },
     {
       title: '属性描述',
       index: 'propertyDesc',
-
     },
     {
       title: '属性单位',
@@ -113,8 +116,9 @@ export class DataQueryComponent implements OnInit {
   // 报表配置
   columns2: STColumn[] = [
     {
-      title: '时间', index: 'time'
-    }
+      title: '时间',
+      index: 'time',
+    },
   ];
   @ViewChild('sf2', { static: false }) sf2: SFComponent;
   // 查询表单
@@ -126,10 +130,10 @@ export class DataQueryComponent implements OnInit {
         title: '起始时间',
         ui: {
           widget: 'date',
-          // end: 'endTime', 
+          // end: 'endTime',
           showTime: true,
-          placeholder: "选择时间"
-        }
+          placeholder: '选择时间',
+        },
       },
       endTime: {
         type: 'string',
@@ -137,10 +141,10 @@ export class DataQueryComponent implements OnInit {
         ui: {
           widget: 'date',
           showTime: true,
-          placeholder: "选择时间"
-        }
+          placeholder: '选择时间',
+        },
       },
-    }
+    },
   };
   // 查询报表
   schema2: SFSchema = {
@@ -152,8 +156,8 @@ export class DataQueryComponent implements OnInit {
         // tslint:disable-next-line: no-object-literal-type-assertion
         ui: {
           hidden: true,
-          placeholder: "选择日期",
-        }
+          placeholder: '选择日期',
+        },
       },
       startTime: {
         type: 'string',
@@ -161,7 +165,7 @@ export class DataQueryComponent implements OnInit {
         ui: {
           widget: 'date',
           showTime: true,
-          placeholder: "选择时间",
+          placeholder: '选择时间',
           hidden: false,
         },
       },
@@ -171,11 +175,11 @@ export class DataQueryComponent implements OnInit {
         ui: {
           widget: 'date',
           showTime: true,
-          placeholder: "选择时间",
+          placeholder: '选择时间',
           hidden: false,
-        }
+        },
       },
-    }
+    },
   };
   // 报表日期搜索方式切换
   searchBy(e) {
@@ -203,19 +207,24 @@ export class DataQueryComponent implements OnInit {
   // 趋势图查询提交
   submit(value) {
     if (!(this.checked.length > 0)) {
-      return this.require.message.info('未选择自选记录!', { nzDuration: 1000 })
+      return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
     }
     const start = Date.parse(value.startTime);
     const end = Date.parse(value.endTime);
     const day = (end - start) / (1000 * 60 * 60 * 24);
+    const hour = (end - start) / (1000 * 60 * 60);
+    if (hour < 3) return this.require.message.error('查询时间范围大于3小时!');
     if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
-    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!')
+    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
-    const ids = this.require.encodeArray(this.checked, 'ids')
-    const body = ids + '&' + this.require.encodeObject({
-      startTime: value.startTime,
-      endTime: value.endTime,
-    })
+    const ids = this.require.encodeArray(this.checked, 'ids');
+    const body =
+      ids +
+      '&' +
+      this.require.encodeObject({
+        startTime: value.startTime,
+        endTime: value.endTime,
+      });
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
@@ -226,7 +235,7 @@ export class DataQueryComponent implements OnInit {
             for (let i = 0; i <= this.labelArr.length; i++) {
               valueArray[i] = [];
             }
-            const data = res.data.data// [0].historyData;
+            const data = res.data.data; // [0].historyData;
             // tslint:disable-next-line: prefer-for-of
             for (const i of data) {
               const oneData = i;
@@ -237,13 +246,13 @@ export class DataQueryComponent implements OnInit {
                 // tslint:disable-next-line: forin
                 for (const item in historyData) {
                   // tslint:disable-next-line: triple-equals
-                  if (item == "time") {
+                  if (item == 'time') {
                     timeArray.push(historyData[item]);
                   }
                   for (let n = 0; n < this.labelArr.length; n++) {
                     // tslint:disable-next-line: triple-equals
                     if (item == this.labelArr[n]) {
-                      valueArray[n][j] = historyData[item] // === null ? 0 : historyData[item];
+                      valueArray[n][j] = historyData[item]; // === null ? 0 : historyData[item];
                     }
                   }
                 }
@@ -255,54 +264,59 @@ export class DataQueryComponent implements OnInit {
               obj.name = this.labelArr[t];
               obj.data = valueArray[t];
               obj.type = 'line';
-              objArr.push(obj)
+              objArr.push(obj);
             }
             // console.log('开始加载表格')
-            this.option.legend.data = this.labelArr
+            this.option.legend.data = this.labelArr;
             this.option.xAxis.data = timeArray;
             this.option.series = objArr;
             // console.log(this.option)
-            this.option = { ...this.option }
+            this.option = { ...this.option };
           } else {
             // this.gatewayNumber = '';
-            this.require.message.info('数据为空', { nzDuration: 1000 })
+            this.require.message.info('数据为空', { nzDuration: 1000 });
+            this.option.legend.data = [];
+            this.option.xAxis.data = [];
+            this.option.series = [];
+            // console.log(this.option)
+            this.option = { ...this.option };
           }
           break;
         default:
           break;
       }
-    })
+    });
   }
   // 趋势图初始化
   chart() {
     this.option = {
       title: {
-        text: '历史数据曲线'
+        text: '历史数据曲线',
       },
       tooltip: {
-        trigger: 'axis'
+        trigger: 'axis',
       },
       legend: {
-        data: []
+        data: [],
       },
       grid: {
         left: '3%',
         right: '4%',
         bottom: '3%',
-        containLabel: true
+        containLabel: true,
       },
       toolbox: {
         feature: {
-          saveAsImage: {}
-        }
+          saveAsImage: {},
+        },
       },
       xAxis: {
         type: 'category',
         boundaryGap: false,
-        data: []
+        data: [],
       },
       yAxis: {
-        type: 'value'
+        type: 'value',
       },
       dataZoom: [
         {
@@ -310,12 +324,12 @@ export class DataQueryComponent implements OnInit {
           show: true,
           start: 0,
           end: 100,
-          handleSize: 8
+          handleSize: 8,
         },
         {
           type: 'inside',
           start: 0,
-          end: 100
+          end: 100,
         },
         {
           type: 'slider',
@@ -326,28 +340,31 @@ export class DataQueryComponent implements OnInit {
           height: '70%',
           handleSize: 8,
           showDataShadow: false,
-          left: '98%'
-        }
+          left: '98%',
+        },
       ],
-      series: []
-    }
+      series: [],
+    };
   }
   // 报表查询提交
   submit2(value) {
-    if ((JSON.stringify(value) === "{}")) {
-      return this.require.message.info('请输入查询时间!', { nzDuration: 1000 })
+    if (JSON.stringify(value) === '{}') {
+      return this.require.message.info('请输入查询时间!', { nzDuration: 1000 });
     }
     const url = this.require.api.getHistoryData;
-    const ids = this.require.encodeArray(this.checked, 'ids')
+    const ids = this.require.encodeArray(this.checked, 'ids');
     if (!(this.checked.length > 0)) {
-      return this.require.message.info('未选择自选记录!', { nzDuration: 1000 })
+      return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
     }
-    const stColumn: STColumn[] = [{
-      title: '时间', index: 'time'
-    }];
+    const stColumn: STColumn[] = [
+      {
+        title: '时间',
+        index: 'time',
+      },
+    ];
     for (const i of this.labelArr) {
-      const columns = { title: i, index: i }
-      stColumn.push(columns)
+      const columns = { title: i, index: i };
+      stColumn.push(columns);
     }
     this.columns2 = stColumn;
     const startTime = value.startTime;
@@ -358,20 +375,21 @@ export class DataQueryComponent implements OnInit {
       const start = Date.parse(startTime);
       const end = Date.parse(endTime);
       const day = (end - start) / (1000 * 60 * 60 * 24);
+      const hour = (end - start) / (1000 * 60 * 60);
       if (day > 3) return this.require.message.error('查询时间范围须在3天及以内!');
-      if (day < 0) return this.require.message.error('结束时间须在开始时间之后!')
+      if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
+      if (hour < 3) return this.require.message.error('查询时间范围大于3小时!');
       body += this.require.encodeObject({
         startTime,
-        endTime
-      })
+        endTime,
+      });
       // } else if (week) {
       //   // console.log(this.require.moment().subtract(week+7-1, 'days').format('YY-ww'))
-    }
-    else if (date) {
+    } else if (date) {
       body += this.require.encodeObject({
         startTime: this.require.moment(date).format('YYYY-MM-DD 00:00:00'),
-        endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59')
-      })
+        endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59'),
+      });
     }
     // else if (month) {
     //   body += this.require.encodeObject({
@@ -391,17 +409,15 @@ export class DataQueryComponent implements OnInit {
             console.log(data);
             // tslint:disable-next-line: prefer-for-of
             this.data2 = data;
-
-
           } else {
             this.data2 = [];
-            this.require.message.info('数据为空', { nzDuration: 1000 })
+            this.require.message.info('数据为空', { nzDuration: 1000 });
           }
           break;
         default:
           break;
       }
-    })
+    });
   }
   // 监听变化
   change(ret: STChange) {
@@ -411,7 +427,7 @@ export class DataQueryComponent implements OnInit {
       this.ps = ret.ps;
     } else if (ret.type === 'checkbox') {
       this.labelArr = ret.checkbox.map(e => e.propertySection + e.propertyAddress);
-      this.checked = ret.checkbox.map(e => e.id)
+      this.checked = ret.checkbox.map(e => e.id);
     }
   }
   // 删除多选数据
@@ -422,67 +438,70 @@ export class DataQueryComponent implements OnInit {
         nzContent: '确定删除所选的记录吗?',
         nzOnOk: () => {
           const body = this.require.encodeArray(this.checked, 'ids');
-          this.require.post(this.deleteUrl, body).subscribe((res: any) => {
-            switch (res.code) {
-              case '10005':
-                if (this.total % this.ps === 1 && this.pi > 1 || this.checked.length === (this.total % this.ps)) this.pi--;
-                this.getData();
-                this.checked = [];
-                break;
-              default:
-                console.log(res);
-                break;
-            }
-          }, (err) => {
-
-          })
+          this.require.post(this.deleteUrl, body).subscribe(
+            (res: any) => {
+              switch (res.code) {
+                case '10005':
+                  if ((this.total % this.ps === 1 && this.pi > 1) || this.checked.length === this.total % this.ps)
+                    this.pi--;
+                  this.getData();
+                  this.checked = [];
+                  break;
+                default:
+                  console.log(res);
+                  break;
+              }
+            },
+            err => {},
+          );
         },
-      })
+      });
     } else {
-      this.api.message.info('未选中记录!')
+      this.api.message.info('未选中记录!');
       return 0;
     }
   }
   // 获取历史数据
   getData() {
     const url = this.require.api.getMySelection;
-    this.require.post(url).subscribe((res: any) => {
-      switch (res.code) {
-        case "10005":
-          const data = res.data.properties;
-          if (data.length > 0) {
-            this.data = data.map((e) => {
-              return {
-                id: e.id,
-                equipListId: e.equipListId,
-                propertyType: e.propertyType,
-                propertySection: e.propertySection,
-                propertyAddress: e.propertyAddress,
-                propertyDesc: e.propertyDesc,
-                propertyUnit: e.propertyUnit,
-                propertyRW: e.propertyRW,
-                dtuSection: e.dtuSection,
-                dtuAddress: e.dtuAddress,
-                uploadMode: e.uploadMode,
-                uploadParam1: e.uploadParam1,
-                uploadParam2: e.uploadParam2,
-                uploadParam3: e.uploadParam3,
-                createTime: e.createTime,
-                updateTime: e.updateTime,
-              }
-            })
-          } else {
-            this.data = [];
-            this.api.message.info('数据为空', { nzDuration: 1000 })
-          }
-          break;
-        default:
-          console.log(res)
-          break;
-      }
-    }, (err) => {
-
-    })
+    this.require.post(url).subscribe(
+      (res: any) => {
+        switch (res.code) {
+          case '10005':
+            const data = res.data.properties;
+            if (data.length > 0) {
+              this.data = data.map(e => {
+                return {
+                  id: e.id,
+                  equipListId: e.equipListId,
+                  propertyType: e.propertyType,
+                  propertySection: e.propertySection,
+                  propertyAddress: e.propertyAddress,
+                  propertyDesc: e.propertyDesc,
+                  propertyUnit: e.propertyUnit,
+                  propertyRW: e.propertyRW,
+                  dtuSection: e.dtuSection,
+                  dtuAddress: e.dtuAddress,
+                  uploadMode: e.uploadMode,
+                  uploadParam1: e.uploadParam1,
+                  uploadParam2: e.uploadParam2,
+                  uploadParam3: e.uploadParam3,
+                  createTime: e.createTime,
+                  updateTime: e.updateTime,
+                };
+              });
+            } else {
+              this.data = [];
+              this.api.message.info('数据为空', { nzDuration: 1000 });
+            }
+            break;
+          default:
+            console.log(res);
+            break;
+        }
+      },
+      err => {},
+    );
   }
 
   ngOnInit() {
