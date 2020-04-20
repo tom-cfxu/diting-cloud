@@ -9,7 +9,7 @@ declare var BMapLib: any;
   styleUrls: ['./dashboard.component.less'],
 })
 export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
-  constructor(public http: _HttpClient, private require: RequireService) { }
+  constructor(public http: _HttpClient, private require: RequireService) {}
   // 创建地图实例
   map;
   point;
@@ -41,9 +41,9 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.require.post(url).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          console.log(res.data.rows)
+          // console.log(res.data.rows)
           if (res.data.rows.length > 0) {
-            this.dtuData = res.data.rows.map((e) => {
+            this.dtuData = res.data.rows.map(e => {
               return {
                 gatewayNumber: e.gatewayNumber,
                 provinceName: e.provinceName,
@@ -53,15 +53,15 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
                 locateX: e.locateX,
                 locateY: e.locateY,
                 status: e.status,
-              }
+              };
             });
-            this.data = res.data.rows.map((e) => {
+            this.data = res.data.rows.map(e => {
               return {
                 geometry: {
                   type: 'POINT',
-                  coordinates: [e.locateX, e.locateY]
-                }
-              }
+                  coordinates: [e.locateX, e.locateY],
+                },
+              };
             });
             this.showInfo(this.dtuData);
           }
@@ -69,15 +69,15 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
         default:
           break;
       }
-    })
+    });
   }
   // 设置信息窗口样式相关配置
   // tslint:disable-next-line: member-ordering
   opts = {
-    width: 380,     // 信息窗口宽度
-    height: 220,     // 信息窗口高度
+    width: 380, // 信息窗口宽度
+    height: 220, // 信息窗口高度
     title: `<h1>DTU信息</h1>`, // 信息窗口标题
-    enableMessage: false // 设置允许信息窗发送短息
+    enableMessage: false, // 设置允许信息窗发送短息
   };
   // 开启窗口信息
   openInfo(content, e) {
@@ -86,30 +86,28 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     // tslint:disable-next-line: prefer-const
     let point = new BMap.Point(p.getPosition().lng, p.getPosition().lat);
     // tslint:disable-next-line: prefer-const
-    let infoWindow = new BMap.InfoWindow(content, this.opts);  // 创建信息窗口对象 
+    let infoWindow = new BMap.InfoWindow(content, this.opts); // 创建信息窗口对象
     this.map.openInfoWindow(infoWindow, point); // 开启信息窗口
   }
   // 监听标注点击
   addClickHandler(content, marker) {
     const that = this;
     // tslint:disable-next-line: only-arrow-functions
-    marker.addEventListener("click", function (e) {
-      that.openInfo(content, e)
-    }
-    );
+    marker.addEventListener('click', function(e) {
+      that.openInfo(content, e);
+    });
   }
   // 创建标注、类聚合、信息窗口,并添加到地图中
   showInfo(arr) {
-    if (typeof (arr) === "undefined") {
+    if (typeof arr === 'undefined') {
       return;
     }
     for (const data of arr) {
-
       if (this.isNumber(data.locateX) && this.isNumber(data.locateY)) {
         const point = new BMap.Point(data.locateX, data.locateY); // 创建坐标点
-        const marker = new BMap.Marker(point);// 创建标注
+        const marker = new BMap.Marker(point); // 创建标注
         this.markers.push(marker);
-        this.map.addOverlay(marker) // 将标注添加到地图中;
+        this.map.addOverlay(marker); // 将标注添加到地图中;
         // 窗口内容
         const content = `
           Dtu编号:${data.gatewayNumber}
@@ -123,9 +121,8 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
           `;
         this.addClickHandler(content, marker); // 将信息窗口添加到地图
       }
-
     }
-    this.markerCluster = new BMapLib.MarkerClusterer(this.map, { markers: this.markers }) // 添加类聚合
+    this.markerCluster = new BMapLib.MarkerClusterer(this.map, { markers: this.markers }); // 添加类聚合
   }
   ngOnInit() {
     this.map = new BMap.Map('map_container');
@@ -135,12 +132,7 @@ export class DashboardComponent implements OnInit, AfterViewInit, OnDestroy {
     this.getAllGateways();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit() {}
 
-  }
-
-  ngOnDestroy(): void {
-
-  }
-
+  ngOnDestroy(): void {}
 }
