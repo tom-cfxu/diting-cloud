@@ -21,7 +21,7 @@ import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
   styles: [],
 })
 export class DataQueryComponent implements OnInit {
-  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) {}
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
   getMySelection = this.require.api.getMySelection;
   deleteUrl = this.require.api.selectionDelete;
   data = []; // 保存表格信息
@@ -71,14 +71,14 @@ export class DataQueryComponent implements OnInit {
                     break;
                 }
               },
-              err => {},
+              err => { },
             );
           },
         },
       ],
     },
     {
-      title: 'DTU编号',
+      title: '属性编号',
       index: 'id',
       sort: {
         compare: (a, b) => a.id - b.id,
@@ -213,7 +213,7 @@ export class DataQueryComponent implements OnInit {
     const end = Date.parse(value.endTime);
     const day = (end - start) / (1000 * 60 * 60 * 24);
     const hour = (end - start) / (1000 * 60 * 60);
-    if (hour < 3) return this.require.message.error('查询时间范围大于3小时!');
+    if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
     if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
     if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
@@ -272,14 +272,16 @@ export class DataQueryComponent implements OnInit {
             this.option.series = objArr;
             // console.log(this.option)
             this.option = { ...this.option };
+            console.log(this.option);
           } else {
             // this.gatewayNumber = '';
             this.require.message.info('数据为空', { nzDuration: 1000 });
             this.option.legend.data = [];
             this.option.xAxis.data = [];
             this.option.series = [];
-            // console.log(this.option)
+            console.log(this.option)
             this.option = { ...this.option };
+
           }
           break;
         default:
@@ -290,11 +292,19 @@ export class DataQueryComponent implements OnInit {
   // 趋势图初始化
   chart() {
     this.option = {
+      color: ['#17c0eb', '#2ecc71', '#f19066', '#e74c3c', '#3498db', '#9b59b6', '#2c3e50', '#c44569', '#3dc1d3', '#f8a5c2'],
       title: {
         text: '历史数据曲线',
       },
       tooltip: {
         trigger: 'axis',
+        formatter: function (params) {
+          var result = '';
+          params.forEach(function (item) {
+            result += item.marker + " " + item.seriesName + " : " + item.value + "</br>";
+          });
+          return result;
+        }
       },
       legend: {
         data: [],
@@ -314,9 +324,21 @@ export class DataQueryComponent implements OnInit {
         type: 'category',
         boundaryGap: false,
         data: [],
+        axisLine: {
+          lineStyle: {
+            color: '#546de5',
+            width: 2,
+          }
+        }
       },
       yAxis: {
         type: 'value',
+        axisLine: {
+          lineStyle: {
+            color: '#546de5',
+            width: 2,
+          }
+        }
       },
       dataZoom: [
         {
@@ -378,7 +400,7 @@ export class DataQueryComponent implements OnInit {
       const hour = (end - start) / (1000 * 60 * 60);
       if (day > 3) return this.require.message.error('查询时间范围须在3天及以内!');
       if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
-      if (hour < 3) return this.require.message.error('查询时间范围大于3小时!');
+      if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
       body += this.require.encodeObject({
         startTime,
         endTime,
@@ -406,7 +428,7 @@ export class DataQueryComponent implements OnInit {
               valueArray[i] = [];
             }
             const data = res.data.data[0].historyData;
-            console.log(data);
+            // console.log(data);
             // tslint:disable-next-line: prefer-for-of
             this.data2 = data;
           } else {
@@ -426,7 +448,7 @@ export class DataQueryComponent implements OnInit {
       this.pi = ret.pi;
       this.ps = ret.ps;
     } else if (ret.type === 'checkbox') {
-      this.labelArr = ret.checkbox.map(e => e.propertySection + e.propertyAddress);
+      this.labelArr = ret.checkbox.map(e => e.dtuSection + e.dtuAddress);
       this.checked = ret.checkbox.map(e => e.id);
     }
   }
@@ -452,7 +474,7 @@ export class DataQueryComponent implements OnInit {
                   break;
               }
             },
-            err => {},
+            err => { },
           );
         },
       });
@@ -500,7 +522,7 @@ export class DataQueryComponent implements OnInit {
             break;
         }
       },
-      err => {},
+      err => { },
     );
   }
 

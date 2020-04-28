@@ -7,6 +7,11 @@
     </div>
   </div>
   <div nz-col nzXs="24">
+    <sf #sf_search mode="search" [loading]="http.loading" [schema]="schema_search" (formReset)="formReset()"
+      (formSubmit)="search($event)">
+    </sf>
+  </div>
+  <div nz-col nzXs="24">
     <nz-collapse>
       <nz-collapse-panel nzHeader="实时数据列表" [nzActive]="true">
         <st #st [data]="data" [page]="pages" [columns]="columns" [loading]="http.loading">

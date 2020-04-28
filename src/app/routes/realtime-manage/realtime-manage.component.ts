@@ -6,8 +6,8 @@ import { ApiService } from '@core/api.service';
 import { SFComponent, SFSchema, SFGridSchema, SFTextWidgetSchema, SFRadioWidgetSchema, SFSliderWidgetSchema } from '@delon/form';
 
 const TAG: STColumnTag = {
-  true: { text: 'true', color: 'blue' },
-  false: { text: 'false', color: '' }
+  true: { text: '启用', color: 'blue' },
+  false: { text: '关闭', color: '' }
 };
 @Component({
   selector: 'app-realtime-manage',
@@ -17,6 +17,7 @@ const TAG: STColumnTag = {
 export class RealtimeManageComponent implements OnInit {
   constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
   data = [];// 保存当前数据
+  search_backup = []; // 备份当前表格数据
   isVisible = false; // 是否显示添加/编辑对话框
   // 分页配置
   pages: STPage = {
@@ -27,6 +28,8 @@ export class RealtimeManageComponent implements OnInit {
   }
   // 表单配置项
   @ViewChild('sf', { static: false }) sf: SFComponent;
+  // 查询表单项其他项隐藏
+  hidden: boolean = true;
   // 添加/编辑表单配置项
   ui = {
     width: 250,
@@ -90,6 +93,35 @@ export class RealtimeManageComponent implements OnInit {
       },
     },
   }
+  schema_search: SFSchema = {
+    properties: {
+      dtuId: {
+        type: 'string',
+        title: 'DTUID',
+        default: ""
+      },
+      equipId: {
+        type: 'string',
+        title: '设备ID',
+        default: ""
+      },
+      region: {
+        type: 'string',
+        title: '区域',
+        default: ""
+      },
+      address: {
+        type: 'string',
+        title: '地址',
+        default: ""
+      },
+      desc: {
+        type: 'string',
+        title: '描述',
+        default: ""
+      },
+    }
+  }
   columns: STColumn[] = [
     {
       title: '选中',
@@ -137,7 +169,7 @@ export class RealtimeManageComponent implements OnInit {
     },
     {
       title: '地址',
-      index: 'adress',
+      index: 'address',
     },
     {
       title: '描述',
@@ -175,15 +207,6 @@ export class RealtimeManageComponent implements OnInit {
     },
 
   ];
-
-  // mock 数据
-  // mockData() {
-  //   const url = 'http://mengxuegu.com:7300/mock/5d8ed6df993a01623de5b51b/getRealtimeData';
-  //   const options = { headers: { 'Content-Type': 'application/json; charset=utf-8' } }
-  //   this.http.post(url, null, null, options).subscribe((res) => {
-  //     this.data = res.data;
-  //   })
-  // }
   // 获取所有实时数据
   getRealtimeData() {
     const url = this.require.api.getAllRDB;
@@ -209,9 +232,11 @@ export class RealtimeManageComponent implements OnInit {
                 switch_alarm: e.switch_alarm,
                 value: e.value,
               }
-            })
+            });
+            this.search_backup = this.data;
           } else {
             this.data = [];
+            this.search_backup = [];
             this.api.message.info('数据为空', { nzDuration: 1000 })
           }
 
@@ -223,6 +248,34 @@ export class RealtimeManageComponent implements OnInit {
     }, (err) => {
 
     })
+  }
+  // 查询按钮
+  search(value) {
+    const keyWord = {};
+    for (const i in value) {
+      if (value[i] !== "") {
+        keyWord[i] = value[i].replace(/\s*/g, '');
+      }
+    }
+    const arr = [];
+    for (const i of this.search_backup) {
+      let index = 0;
+      for (const j in keyWord) {
+        const result = i[j].toLowerCase().indexOf(keyWord[j].toLowerCase())
+        if (result == -1) {
+          index = 1;
+        }
+      }
+      if (index == 0) {
+        arr.push(i);
+      }
+    }
+    this.data = [...arr];
+    // console.log(arr);
+  }
+  // 查询重置
+  formReset() {
+    this.data = [...this.search_backup];
   }
   // 编辑表单提交
   editData(value) {
