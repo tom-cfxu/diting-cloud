@@ -10,6 +10,7 @@ import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
 // declare var G2: any;
 let DESC = [];
 let UNIT = [];
+let DATA = [];
 @Component({
   selector: 'app-data-query',
   templateUrl: './data-query.component.html',
@@ -231,7 +232,6 @@ export class DataQueryComponent implements OnInit {
               valueArray[i] = [];
             }
             const data = res.data.data; // [0].historyData;
-            // tslint:disable-next-line: prefer-for-of
             for (const i of data) {
               const oneData = i;
               const historyDataArray = oneData.historyData;
@@ -261,6 +261,8 @@ export class DataQueryComponent implements OnInit {
               obj.type = 'line';
               objArr.push(obj);
             }
+            // console.log(valueArray);
+            DATA = valueArray;
             // console.log('开始加载表格')
             this.option.legend.data = this.labelArr;
             this.option.xAxis.data = timeArray;
@@ -317,7 +319,11 @@ export class DataQueryComponent implements OnInit {
               typeof item.value === 'undefined' ? '数据为空' : DESC[i]
             }&nbsp;&nbsp;${typeof item.value === 'undefined' ? ' ' : item.value}&nbsp;${
               typeof item.value === 'undefined' ? ' ' : UNIT[i]
-            }<br/>`; //  ${this.desc[i]}
+            }
+            <br/>`; //  ${this.desc[i]}
+            // &nbsp;
+            // ${typeof item.value === 'undefined' ? ' ' : '上限:' + Math.max(...DATA[i])}&nbsp;
+            // ${typeof item.value === 'undefined' ? ' ' : '下限:' + Math.min(...DATA[i])}
             i++;
           });
           return result;

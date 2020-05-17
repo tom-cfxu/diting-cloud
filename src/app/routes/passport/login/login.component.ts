@@ -7,7 +7,7 @@ import { SocialService, SocialOpenType, ITokenService, DA_SERVICE_TOKEN } from '
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { StartupService } from '@core';
-import { SaveUserService } from '@core/save-user.service';
+// import { SaveUserService } from '@core/save-user.service';
 import { LoginControllerService } from '@core/login-controller.service';
 import { RequireService } from '@core/require';
 @Component({
@@ -32,9 +32,8 @@ export class UserLoginComponent implements OnDestroy {
     public msg: NzMessageService,
     private loginControl: LoginControllerService,
     private notification: NzNotificationService,
-    private require: RequireService
-
-  ) {
+  ) // private require: RequireService,
+  {
     this.form = fb.group({
       userName: [null, [Validators.required, Validators.minLength(4)]],
       password: [null, Validators.required],
@@ -59,7 +58,6 @@ export class UserLoginComponent implements OnDestroy {
   get captcha() {
     return this.form.controls.captcha;
   }
-  ;
   form: FormGroup;
   error = '';
   type = 0;
@@ -68,7 +66,6 @@ export class UserLoginComponent implements OnDestroy {
 
   count = 0;
   interval$: any;
-
 
   // #endregion
 
@@ -100,7 +97,7 @@ export class UserLoginComponent implements OnDestroy {
   submit() {
     // const loginUrl = this.url.login;
     const Loginurl = this.loginControl.login;
-    const body = `username=${this.userName.value}&password=${this.password.value}`
+    const body = `username=${this.userName.value}&password=${this.password.value}`;
 
     // const params = {
     //   type: this.type,
@@ -128,9 +125,9 @@ export class UserLoginComponent implements OnDestroy {
     // c0d416c0590c4693bbdc56ecbe65e2f5
     // 默认配置中对所有HTTP请求都会强制 [校验](https://ng-alain.com/auth/getting-started) 用户 Token
     // 然一般来说登录请求不需要校验，因此可以在请求URL加上：`/login?_allow_anonymous=true` 表示不触发用户 Token 校验
-    this.http.post(Loginurl + `?_allow_anonymous=true`, body, null, this.options)
-      .subscribe((res: any) => {
-        if (res.code === "10001") {
+    this.http.post(Loginurl + `?_allow_anonymous=true`, body, null, this.options).subscribe(
+      (res: any) => {
+        if (res.code === '10001') {
           // 清空路由复用信息
           this.reuseTabService.clear();
           // 设置用户Token信息
@@ -146,27 +143,21 @@ export class UserLoginComponent implements OnDestroy {
             this.router.navigateByUrl(url);
           });
           // 欢迎用户
-          this.notification.success(
-            '登录成功!',
-            `欢迎您:${this.settingsService.user.name}`,
-            { nzDuration: 1000 }
-          );
-
-        } else if (res.code === "40001" || res.code === "40002") {
-          this.notification.error(
-            '登录失败',
-            '用户名或密码错误,请检查'
-          );
+          this.notification.success('登录成功!', `欢迎您:${this.settingsService.user.name}`, { nzDuration: 1000 });
+        } else if (res.code === '40001' || res.code === '40002') {
+          this.notification.error('登录失败', '用户名或密码错误,请检查');
         }
-      }, (err) => {
-        console.log(err)
-      });
+      },
+      err => {
+        console.log(err);
+      },
+    );
   }
   // 获取用户信息
   getUserInfo() {
     const url = this.loginControl.getUserInfo;
     const options = this.options;
-    const body = `token=${this.tokenService.get().token}`
+    const body = `token=${this.tokenService.get().token}`;
     this.http.post(url, body, null, options).subscribe((res: any) => {
       const data = res.data;
       const user: any = {
@@ -235,7 +226,6 @@ export class UserLoginComponent implements OnDestroy {
   // #endregion
 
   ngOnDestroy(): void {
-
     if (this.interval$) {
       clearInterval(this.interval$);
     }
