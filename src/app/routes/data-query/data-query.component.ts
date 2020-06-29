@@ -516,7 +516,10 @@ export class DataQueryComponent implements OnInit {
         switch (res.code) {
           case '10005':
             const data = res.data.properties;
-            if (data.length > 0) {
+            if (data === null || data === []) {
+              this.data = [];
+              this.api.message.info('数据为空', { nzDuration: 1000 });
+            } else if (data.length > 0) {
               this.data = data.map(e => {
                 return {
                   id: e.id,
@@ -537,9 +540,6 @@ export class DataQueryComponent implements OnInit {
                   updateTime: e.updateTime,
                 };
               });
-            } else {
-              this.data = [];
-              this.api.message.info('数据为空', { nzDuration: 1000 });
             }
             break;
           default:

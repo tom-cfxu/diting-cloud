@@ -1,21 +1,21 @@
 <div>
-    <div nz-row style="margin-bottom: 1rem;">
-        <sf #sf mode="search" [button]="{search:'查询'}" [loading]="http.loading" [schema]="schema"
-            (formSubmit)="submit($event)">
-        </sf>
-    </div>
-    <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start" nzType="flex">
-        <div nz-col nzXs="24" nzLg="3" nzXXl="2" style="margin-bottom: 1rem;">
+  <div nz-row style="margin-bottom: 1rem;">
+    <sf #sf mode="search" [button]="{search:'查询'}" [loading]="http.loading" [schema]="schema"
+      (formSubmit)="submit($event)">
+    </sf>
+  </div>
+  <div nz-row [nzGutter]="{ xs: 8, sm: 16, md: 16, lg: 16, xl: 16, xxl: 32 }" nzJustify="start" nzType="flex">
+    <!-- <div nz-col nzXs="24" nzLg="3" nzXXl="2" style="margin-bottom: 1rem;">
             <button nzType="default" (click)="st.reload()" nz-button nzBlock><i nz-icon nzType="redo"></i>刷新</button>
-        </div>
-        <div nz-col nzXs="24">
-            <nz-collapse>
-                <nz-collapse-panel nzHeader="操作日志列表" nzActive="true">
-                    <st #st [data]="data" [columns]="columns" [pi]="pi" [ps]="ps" [page]="pages"
-                        [loading]="http.loading" (change)="change($event)" responsiveHideHeaderFooter>
-                    </st>
-                </nz-collapse-panel>
-            </nz-collapse>
-        </div>
+        </div> -->
+    <div nz-col nzXs="24">
+      <nz-collapse>
+        <nz-collapse-panel nzHeader="操作日志列表" nzActive="true">
+          <st #st [data]="data" [columns]="columns" [pi]="pi" [ps]="ps" [page]="pages" [loading]="http.loading"
+            (change)="change($event)" responsiveHideHeaderFooter>
+          </st>
+        </nz-collapse-panel>
+      </nz-collapse>
     </div>
+  </div>
 </div>

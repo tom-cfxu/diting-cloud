@@ -3,20 +3,27 @@ import { STColumn, STChange, STPage, STColumnTag } from '@delon/abc';
 import { _HttpClient, POST } from '@delon/theme';
 import { RequireService } from '@core/require';
 import { ApiService } from '@core/api.service';
-import { SFComponent, SFSchema, SFGridSchema, SFTextWidgetSchema, SFRadioWidgetSchema, SFSliderWidgetSchema } from '@delon/form';
+import {
+  SFComponent,
+  SFSchema,
+  SFGridSchema,
+  SFTextWidgetSchema,
+  SFRadioWidgetSchema,
+  SFSliderWidgetSchema,
+} from '@delon/form';
 
 const TAG: STColumnTag = {
   true: { text: '启用', color: 'blue' },
-  false: { text: '关闭', color: '' }
+  false: { text: '关闭', color: '' },
 };
 @Component({
   selector: 'app-realtime-manage',
   templateUrl: './realtime-manage.component.html',
-  styles: []
+  styles: [],
 })
 export class RealtimeManageComponent implements OnInit {
-  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
-  data = [];// 保存当前数据
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) {}
+  data = []; // 保存当前数据
   search_backup = []; // 备份当前表格数据
   isVisible = false; // 是否显示添加/编辑对话框
   // 分页配置
@@ -24,19 +31,19 @@ export class RealtimeManageComponent implements OnInit {
     showSize: true,
     showQuickJumper: true,
     pageSizes: [10, 20, 30, 40, 50],
-    placement: 'center'
-  }
+    placement: 'center',
+  };
   // 表单配置项
   @ViewChild('sf', { static: false }) sf: SFComponent;
   // 查询表单项其他项隐藏
-  hidden: boolean = true;
+  hidden = true;
   // 添加/编辑表单配置项
   ui = {
     width: 250,
     gird: {
-      gutter: 2
-    }
-  }
+      gutter: 2,
+    },
+  };
   schema: SFSchema = {
     // required: ['gatewayNumber', 'userName', 'startTime', 'endTime', 'alarmPush', 'scanPolicy'],
     properties: {
@@ -49,7 +56,6 @@ export class RealtimeManageComponent implements OnInit {
         type: 'string',
         title: '唯一码',
         readOnly: true,
-
       },
       region: {
         type: 'string',
@@ -59,12 +65,10 @@ export class RealtimeManageComponent implements OnInit {
       upup_limit: {
         type: 'number',
         title: '高高报警',
-
       },
       up_limit: {
         type: 'number',
         title: '高报警',
-
       },
       low_limit: {
         type: 'number',
@@ -92,47 +96,47 @@ export class RealtimeManageComponent implements OnInit {
         title: '启用报警',
       },
     },
-  }
+  };
   schema_search: SFSchema = {
     properties: {
       dtuId: {
         type: 'string',
         title: 'DTUID',
-        default: ""
+        default: '',
       },
       equipId: {
         type: 'string',
         title: '设备ID',
-        default: ""
+        default: '',
       },
       region: {
         type: 'string',
         title: '区域',
-        default: ""
+        default: '',
       },
       address: {
         type: 'string',
         title: '地址',
-        default: ""
+        default: '',
       },
       desc: {
         type: 'string',
         title: '描述',
-        default: ""
+        default: '',
       },
-    }
-  }
+    },
+  };
   columns: STColumn[] = [
     {
       title: '选中',
-      type: 'checkbox'
+      type: 'checkbox',
     },
     {
       title: '操作',
       buttons: [
         {
           text: '编辑',
-          click: (e) => {
+          click: e => {
             this.isVisible = true;
             const properties: any = this.schema.properties;
             properties.dtuId.default = e.dtuId;
@@ -146,10 +150,9 @@ export class RealtimeManageComponent implements OnInit {
             properties.switch_alarm.default = e.switch_alarm;
             properties.value.default = e.value;
             this.sf.refreshSchema();
-
-          }
+          },
         },
-      ]
+      ],
     },
     {
       title: 'DTUID',
@@ -179,7 +182,7 @@ export class RealtimeManageComponent implements OnInit {
       title: '启用警报',
       index: 'enabled',
       type: 'tag',
-      tag: TAG
+      tag: TAG,
     },
     {
       title: '高高报警',
@@ -205,68 +208,70 @@ export class RealtimeManageComponent implements OnInit {
       title: '当前值',
       index: 'value',
     },
-
   ];
   // 获取所有实时数据
   getRealtimeData() {
     const url = this.require.api.getAllRDB;
-    this.require.post(url).subscribe((res: any) => {
-      // console.log(res);
-      switch (res.code) {
-        case "10005":
-          const data = res.data
-          if (data.rows.length > 0) {
-            this.data = data.rows.map((e) => {
-              return {
-                dtuId: e.dtuId,
-                equipId: e.equipId,
-                uuid: e.uuid,
-                region: e.region,
-                address: e.address,
-                desc: e.desc,
-                enabled: e.enabled,
-                upup_limit: e.upup_limit,
-                up_limit: e.up_limit,
-                low_limit: e.low_limit,
-                lowlow_limit: e.lowlow_limit,
-                switch_alarm: e.switch_alarm,
-                value: e.value,
-              }
-            });
-            this.search_backup = this.data;
-          } else {
-            this.data = [];
-            this.search_backup = [];
-            this.api.message.info('数据为空', { nzDuration: 1000 })
-          }
+    this.require.post(url).subscribe(
+      (res: any) => {
+        // console.log(res);
+        switch (res.code) {
+          case '10005':
+            const data = res.data;
+            if (data === null || data.rows === []) {
+              this.data = [];
+              this.search_backup = [];
+              this.api.message.info('数据为空', { nzDuration: 1000 });
+            } else if (data.rows.length > 0) {
+              this.data = data.rows.map(e => {
+                return {
+                  dtuId: e.dtuId,
+                  equipId: e.equipId,
+                  uuid: e.uuid,
+                  region: e.region,
+                  address: e.address,
+                  desc: e.desc,
+                  enabled: e.enabled,
+                  upup_limit: e.upup_limit,
+                  up_limit: e.up_limit,
+                  low_limit: e.low_limit,
+                  lowlow_limit: e.lowlow_limit,
+                  switch_alarm: e.switch_alarm,
+                  value: e.value,
+                };
+              });
+              this.search_backup = this.data;
+            }
 
-          break;
-        case "10006":
-          console.log(res)
-          break;
-      }
-    }, (err) => {
-
-    })
+            break;
+          case '10006':
+            console.log(res);
+            break;
+        }
+      },
+      err => {},
+    );
   }
   // 查询按钮
   search(value) {
     const keyWord = {};
     for (const i in value) {
-      if (value[i] !== "") {
+      if (value[i] !== '') {
         keyWord[i] = value[i].replace(/\s*/g, '');
       }
     }
     const arr = [];
     for (const i of this.search_backup) {
       let index = 0;
+      // tslint:disable-next-line: forin
       for (const j in keyWord) {
-        const result = i[j].toLowerCase().indexOf(keyWord[j].toLowerCase())
+        const result = i[j].toLowerCase().indexOf(keyWord[j].toLowerCase());
+        // tslint:disable-next-line: triple-equals
         if (result == -1) {
           index = 1;
         }
       }
-      if (index == 0) {
+      if (index === 0) {
         arr.push(i);
       }
     }
@@ -280,26 +285,26 @@ export class RealtimeManageComponent implements OnInit {
   // 编辑表单提交
   editData(value) {
     const url = this.require.api.realtimeEdit;
-    const body = this.require.encodeObject(value)
-    this.require.post(url, body).subscribe((res: any) => {
-      switch (res.data) {
-        case "10005":
-          break;
-        default:
-          console.log(res)
-          break;
-      }
-    }, (err) => {
-
-    })
+    const body = this.require.encodeObject(value);
+    this.require.post(url, body).subscribe(
+      (res: any) => {
+        switch (res.data) {
+          case '10005':
+            break;
+          default:
+            console.log(res);
+            break;
+        }
+      },
+      err => {},
+    );
   }
   // 关闭对话框
   handleCancel() {
-    this.isVisible = false
+    this.isVisible = false;
   }
   ngOnInit(): void {
     // this.mockData();
     this.getRealtimeData();
   }
 }
-

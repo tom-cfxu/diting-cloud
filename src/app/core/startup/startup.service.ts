@@ -12,9 +12,64 @@ import { I18NService } from '../i18n/i18n.service';
 import { NzIconService } from 'ng-zorro-antd/icon';
 import { ICONS_AUTO } from '../../../style-icons-auto';
 import { ICONS } from '../../../style-icons';
-import { RequireService } from '@core/require';
-import { ApiPortService } from '@core/api-port.service';
 
+interface MenuIcon {
+  /** Type for icon */
+  type: 'class' | 'icon' | 'iconfont' | 'img';
+  /** Value for the icon, can be set Class Name, nz-icon of `nzType`, image */
+  value?: string;
+  /** Type of the ant design icon, default: `outline` */
+  theme?: 'outline' | 'twotone' | 'fill';
+  /** Rotate icon with animation, default: `false` */
+  spin?: boolean;
+  /** Only support the two-tone icon. Specific the primary color */
+  twoToneColor?: string;
+  /** Type of the icon from iconfont */
+  iconfont?: string;
+}
+interface Menu {
+  [key: string]: any;
+  /** Text of menu item, can be choose one of  `text` or `i18n` (Support HTML) */
+  text?: string;
+  /** I18n key of menu item, can be choose one of  `text` or `i18n` (Support HTML) */
+  i18n?: string;
+  /** Whether to display the group name, default: `true` */
+  group?: boolean;
+  /** Routing for the menu item, can be choose one of `link` or `externalLink` */
+  link?: string;
+  /** External link for the menu item, can be choose one of `link` or `externalLink` */
+  externalLink?: string;
+  /** Specifies `externalLink` where to display the linked URL */
+  target?: '_blank' | '_self' | '_parent' | '_top';
+  /** Icon for the menu item, only valid for the first level menu */
+  icon?: string | MenuIcon | null;
+  /** Badget for the menu item when `group` is `true` */
+  badge?: number;
+  /** Whether to display a red dot instead of `badge` value */
+  badgeDot?: boolean;
+  /** Badge [color](https://ng.ant.design/components/badge/en#nz-badge) */
+  badgeStatus?: string;
+  /** Whether disable for the menu item */
+  disabled?: boolean;
+  /** Whether hidden for the menu item */
+  hide?: boolean;
+  /** Whether hide in breadcrumbs, which are valid when the `page-header` component automatically generates breadcrumbs */
+  hideInBreadcrumb?: boolean;
+  /** ACL configuration, it's equivalent to `ACLService.can(roleOrAbility: ACLCanType)` parameter value */
+  acl?: any;
+  /** Whether shortcut menu item */
+  shortcut?: boolean;
+  /** Wheter shortcut menu root node */
+  shortcutRoot?: boolean;
+  /** Whether to allow reuse, need to cooperate with the `reuse-tab` component */
+  reuse?: boolean;
+  /** Whether to expand, when `checkStrictly` is valid in `sidebar-nav` component */
+  open?: boolean;
+  /** Unique identifier of the menu item, can be used in `getItem`,` setItem` to update a menu */
+  key?: string;
+  /** Children menu of menu item */
+  children?: Menu[];
+}
 /**
  * Used for application startup
  * Generally used to get the basic data of the application, like: Menu Data, User Data, etc.
@@ -23,7 +78,7 @@ import { ApiPortService } from '@core/api-port.service';
 export class StartupService {
   constructor(
     iconSrv: NzIconService,
-    private menuService: MenuService,
+    public menuService: MenuService,
     private translate: TranslateService,
     @Inject(ALAIN_I18N_TOKEN) private i18n: I18NService,
     private settingService: SettingsService,
@@ -32,8 +87,6 @@ export class StartupService {
     @Inject(DA_SERVICE_TOKEN) private tokenService: ITokenService,
     private httpClient: HttpClient,
     private injector: Injector,
-    private require: RequireService,
-    private api: ApiPortService,
     public http: _HttpClient,
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
@@ -113,7 +166,7 @@ export class StartupService {
     // ACL: Set the permissions to full, https://ng-alain.com/acl/getting-started
     this.aclService.setFull(true);
     // Menu data, https://ng-alain.com/theme/menu
-    this.menuService.add([
+    const MENU: Menu[] = [
       {
         group: false,
         text: '首页',
@@ -222,16 +275,33 @@ export class StartupService {
             link: '/home/operate_data',
             icon: { type: 'icon', value: 'line-chart' },
           },
+          {
+            key: 'newMenu',
+            text: '用户自定义',
+            hideInBreadcrumb: true,
+            icon: { type: 'icon', value: 'line-chart' },
+            children: [],
+          },
         ],
       },
-    ]);
+    ];
+
+    const menu = this.settingService.user.menu;
+    for (const i of menu) {
+      MENU[0].children[8].children.push(i);
+    }
+    // console.log(MENU);
+    this.menuService.add(MENU);
     // Can be set page suffix title, https://ng-alain.com/theme/title
     this.titleService.suffix = app.name;
 
+    // this.menuService.setItem('newMenu', newMenu);
+    // console.log(this.menuService.menus);
+    // this.menuService.add(this.menuService.menus);
     resolve({});
   }
 
-  load(): Promise<any> {
+  public load(): Promise<any> {
     // only works with promises
     // https://github.com/angular/angular/issues/15088
     return new Promise((resolve, reject) => {

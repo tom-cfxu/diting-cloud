@@ -1,4 +1,4 @@
-import { SettingsService, _HttpClient } from '@delon/theme';
+import { SettingsService, _HttpClient, MenuService } from '@delon/theme';
 import { Component, OnDestroy, Inject, Optional } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -7,9 +7,7 @@ import { SocialService, SocialOpenType, ITokenService, DA_SERVICE_TOKEN } from '
 import { ReuseTabService } from '@delon/abc';
 import { environment } from '@env/environment';
 import { StartupService } from '@core';
-// import { SaveUserService } from '@core/save-user.service';
 import { LoginControllerService } from '@core/login-controller.service';
-import { RequireService } from '@core/require';
 @Component({
   selector: 'passport-login',
   templateUrl: './login.component.html',
@@ -31,9 +29,8 @@ export class UserLoginComponent implements OnDestroy {
     public http: _HttpClient,
     public msg: NzMessageService,
     private loginControl: LoginControllerService,
-    private notification: NzNotificationService,
-  ) // private require: RequireService,
-  {
+    private notification: NzNotificationService, // private require: RequireService,
+  ) {
     this.form = fb.group({
       userName: [null, [Validators.required, Validators.minLength(4)]],
       password: [null, Validators.required],
@@ -43,7 +40,6 @@ export class UserLoginComponent implements OnDestroy {
     });
     modalSrv.closeAll();
   }
-
   // #region fields
 
   get userName() {
@@ -95,15 +91,8 @@ export class UserLoginComponent implements OnDestroy {
   // #endregion
   // 登录
   submit() {
-    // const loginUrl = this.url.login;
     const Loginurl = this.loginControl.login;
     const body = `username=${this.userName.value}&password=${this.password.value}`;
-
-    // const params = {
-    //   type: this.type,
-    //   username: this.userName.value,
-    //   password: this.password.value
-    // };
     this.error = '';
     if (this.type === 0) {
       this.userName.markAsDirty();
@@ -135,6 +124,19 @@ export class UserLoginComponent implements OnDestroy {
           // 再发送请求获取用户信息
           this.getUserInfo();
           // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
+          // console.log(this.startupSrv.menuService.menus);
+          // const newMenu: Menu[] = [
+          //   {
+          //     key: 'newMenu',
+          //     text: '自定义',
+          //     link: '/home/operate_data',
+          //     icon: { type: 'icon', value: 'line-chart' },
+          //   },
+          // ];
+          // this.startupSrv.menuService.menus[0].children.push(newMenu[0]);
+          // this.startupSrv.menuService.add(this.startupSrv.menuService.menus);
+          // console.log(this.startupSrv.menuService.menus[0]);
+          // this.startupSrv.menuService.setItem('newMenu', newMenu);
           this.startupSrv.load().then(() => {
             let url = this.tokenService.referrer!.url || '/home';
             if (url.includes('/passport')) {
@@ -173,6 +175,16 @@ export class UserLoginComponent implements OnDestroy {
         avatar: './assets/tmp/img/avatar.jpg',
         name: data.username,
         token: this.tokenService.get().token,
+        menu: [
+          {
+            text: '自定义1',
+            link: 'www.baidu.com',
+          },
+          {
+            text: '自定义2',
+            link: 'www.baidu.com',
+          },
+        ],
       };
       this.settingsService.setUser(user);
     });

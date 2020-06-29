@@ -7,30 +7,29 @@ import { STPage, STChange, STColumn } from '@delon/abc';
 @Component({
   selector: 'app-operate-data',
   templateUrl: './operate-data.component.html',
-  styles: []
+  styles: [],
 })
 export class OperateDataComponent implements OnInit {
-
-  constructor(public http: _HttpClient, private require: RequireService) { }
+  constructor(public http: _HttpClient, private require: RequireService) {}
   data = [];
   pi = 1; // 表格页码
-  ps = 10;// 表格每页数量
+  ps = 10; // 表格每页数量
   checked = []; // 表格选中
-  adminId = null;// 当前选中节点id 
+  adminId = null; // 当前选中节点id
   value;
   // 分页配置
   pages: STPage = {
     showSize: true,
     showQuickJumper: true,
     pageSizes: [10, 20, 30, 40, 50],
-    placement: 'center'
-  }
+    placement: 'center',
+  };
   // st表格内容
   columns: STColumn[] = [
     {
       title: 'DTUID',
       index: 'dtuId',
-      sort: { compare: (a, b) => a.dtuId - b.dtuId, }
+      sort: { compare: (a, b) => a.dtuId - b.dtuId },
     },
     {
       title: '状态',
@@ -43,8 +42,8 @@ export class OperateDataComponent implements OnInit {
     {
       title: '时间',
       index: 'time',
-    }
-  ]
+    },
+  ];
   // 查询表单
   schema: SFSchema = {
     required: ['startTime', 'endTime'],
@@ -56,7 +55,7 @@ export class OperateDataComponent implements OnInit {
         ui: {
           widget: 'date',
           showTime: true,
-          placeholder: '选择时间'
+          placeholder: '选择时间',
         } as SFDateWidgetSchema,
       },
       endTime: {
@@ -66,9 +65,9 @@ export class OperateDataComponent implements OnInit {
           widget: 'date',
           placeholder: '选择时间',
           showTime: true,
-        }
+        },
       },
-    }
+    },
   };
   // 提交查询
   submit(value) {
@@ -83,32 +82,30 @@ export class OperateDataComponent implements OnInit {
       startTime: value.startTime,
       endTime: value.endTime,
     });
-    this.require.post(url, body).subscribe((res: any) => {
-      const data = res.data;
-      // tslint:disable-next-line: radix
-      this.pi = parseInt(data.page);
-      if (data.rows.length > 0) {
-        this.data = data.rows.map((e) => {
-          return {
-            dtuId: e.dtuId,
-            time: e.time,
-            status: e.status,
-            value: e.value,
-
-          }
-        })
-      } else {
-        this.data = [];
-        this.require.message.info('数据为空', { nzDuration: 1000 })
-      }
-
-    }, (err) => {
-    })
+    this.require.post(url, body).subscribe(
+      (res: any) => {
+        const data = res.data;
+        // tslint:disable-next-line: radix
+        if (data === null || data.rows === []) {
+          this.require.message.info('数据为空', { nzDuration: 1000 });
+          this.data = [];
+        } else if (data.rows.length > 0) {
+          // tslint:disable-next-line: radix
+          this.pi = parseInt(data.page);
+          this.data = data.rows.map(e => {
+            return {
+              dtuId: e.dtuId,
+              time: e.time,
+              status: e.status,
+              value: e.value,
+            };
+          });
+        }
+      },
+      err => {},
+    );
   }
   // 监听st表格变化
-  change(ret: STChange) {
-  }
-  ngOnInit() {
-  }
-
+  change(ret: STChange) {}
+  ngOnInit() {}
 }
