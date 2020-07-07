@@ -121,7 +121,7 @@ export class StartupService {
           // Can be set page suffix title, https://ng-alain.com/theme/title
           this.titleService.suffix = res.app.name;
         },
-        () => {},
+        () => { },
         () => {
           resolve(null);
         },
@@ -275,21 +275,22 @@ export class StartupService {
             link: '/home/operate_data',
             icon: { type: 'icon', value: 'line-chart' },
           },
-          {
-            key: 'newMenu',
-            text: '用户自定义',
-            hideInBreadcrumb: true,
-            icon: { type: 'icon', value: 'line-chart' },
-            children: [],
-          },
+          // {
+          //   key: 'newMenu',
+          //   text: '用户自定义',
+          //   hideInBreadcrumb: true,
+          //   icon: { type: 'icon', value: 'line-chart' },
+          //   children: [],
+          // },
         ],
       },
     ];
 
-    const menu = this.settingService.user.menu;
-    for (const i of menu) {
-      MENU[0].children[8].children.push(i);
-    }
+    // const menu = this.settingService.user.menu;
+    // console.log(menu)
+    // for (const i of menu) {
+    //   MENU[0].children[8].children.push(i);
+    // }
     // console.log(MENU);
     this.menuService.add(MENU);
     // Can be set page suffix title, https://ng-alain.com/theme/title

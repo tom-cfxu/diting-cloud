@@ -4,7 +4,8 @@ import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
 import { SFSchema, SFComponent } from '@delon/form';
-import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
+// import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
+// import * as moment from 'moment'
 // import { of } from 'rxjs';
 // import { delay } from 'rxjs/operators';
 // declare var G2: any;
@@ -17,7 +18,7 @@ let DATA = [];
   styles: [],
 })
 export class DataQueryComponent implements OnInit {
-  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) {}
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
   getMySelection = this.require.api.getMySelection;
   deleteUrl = this.require.api.selectionDelete;
   data = []; // 保存表格信息
@@ -38,6 +39,13 @@ export class DataQueryComponent implements OnInit {
     placement: 'center',
   };
   // G2图表
+  mock = [
+    {
+      name: 'mock1',
+      type: 'line',
+      data: []
+    }
+  ]
   // chartData: any[] = [];
   // 自选列表配置
   columns: STColumn[] = [
@@ -67,7 +75,7 @@ export class DataQueryComponent implements OnInit {
                     break;
                 }
               },
-              err => {},
+              err => { },
             );
           },
         },
@@ -267,7 +275,7 @@ export class DataQueryComponent implements OnInit {
             this.option.legend.data = this.labelArr;
             this.option.xAxis.data = timeArray;
             this.option.series = objArr;
-            // console.log(this.option)
+            console.log(this.option)
             this.option = { ...this.option };
             // console.log(this.option);
           } else {
@@ -285,6 +293,54 @@ export class DataQueryComponent implements OnInit {
       }
     });
   }
+  //模拟图表测试上限
+  timeFormat(dt) {
+    return (
+      this.spliceZero(dt.getFullYear()) + '-' + this.spliceZero(dt.getMonth() + 1) + '-' + this.spliceZero(dt.getDate())
+      + " " + this.spliceZero(dt.getHours()) + ":" + this.spliceZero(dt.getMinutes()) + ":" + this.spliceZero(dt.getSeconds())
+    );
+  }
+  // 时间格式化、1位数时，前面拼接0
+  spliceZero(i) {
+    if (i.toString().length == 1) {
+
+      i = "0" + i;
+    }
+    return i;
+  }
+  // 模拟图表
+  // mockChart() {
+  //   let dateArray = ['2020-06-01 00:00:00'];
+  //   let startDate = new Date('2020-06-01 00:00:00');
+  //   let endDate = new Date('2020-06-15 23:59:59');
+  //   let endTime = endDate.getTime();
+  //   let startTime = startDate.getTime();
+  //   let mod = endTime - startTime;
+  //   let interval = 1 * 60 * 1000;
+  //   while (mod >= interval) {
+  //     let d = new Date();
+  //     d.setTime(startTime + interval);
+  //     let dS = this.require.moment(d).format('YYYY-MM-DD HH:mm:ss');
+  //     dateArray.push(dS);
+  //     mod = mod - interval;
+  //     startTime = startTime + interval;
+  //   }
+  //   // let end = endDate.getTime();
+  //   // let start = startDate.getTime();
+  //   // dateArray.unshift(new Date(start)); // 插入开头时间
+  //   console.log(dateArray);
+  //   let data = [];
+  //   for (let i = 0; i < 21600; i++) {
+  //     let j = Math.floor(Math.random() * 10);
+  //     data.push(j);
+  //   }
+  //   console.log(data);
+  //   this.mock[0].data = data;
+  //   this.option.legend.data = ['mock1'];
+  //   this.option.xAxis.data = dateArray;
+  //   this.option.series = this.mock;
+  //   this.option = { ...this.option };
+  // }
   // 趋势图初始化
   chart() {
     this.option = {
@@ -317,9 +373,9 @@ export class DataQueryComponent implements OnInit {
           params.forEach(item => {
             result += `${item.marker} ${item.seriesName} : ${
               typeof item.value === 'undefined' ? '数据为空' : DESC[i]
-            }&nbsp;&nbsp;${typeof item.value === 'undefined' ? ' ' : item.value}&nbsp;${
+              }&nbsp;&nbsp;${typeof item.value === 'undefined' ? ' ' : item.value}&nbsp;${
               typeof item.value === 'undefined' ? ' ' : UNIT[i]
-            }
+              }
             <br/>`; //  ${this.desc[i]}
             // &nbsp;
             // ${typeof item.value === 'undefined' ? ' ' : '上限:' + Math.max(...DATA[i])}&nbsp;
@@ -499,7 +555,7 @@ export class DataQueryComponent implements OnInit {
                   break;
               }
             },
-            err => {},
+            err => { },
           );
         },
       });
@@ -547,10 +603,9 @@ export class DataQueryComponent implements OnInit {
             break;
         }
       },
-      err => {},
+      err => { },
     );
   }
-
   ngOnInit() {
     this.getData();
     this.chart();
