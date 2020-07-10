@@ -91,7 +91,6 @@ export class StartupService {
   ) {
     iconSrv.addIcon(...ICONS_AUTO, ...ICONS);
   }
-
   private viaHttp(resolve: any, reject: any) {
     zip(
       this.httpClient.get(`assets/tmp/i18n/${this.i18n.defaultLang}.json`),

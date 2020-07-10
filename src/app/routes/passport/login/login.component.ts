@@ -122,7 +122,20 @@ export class UserLoginComponent implements OnDestroy {
           // 设置用户Token信息
           this.tokenService.set({ token: res.data.token });
           // 再发送请求获取用户信息
-          this.getUserInfo();
+          this.getUserInfo().then((user) => {
+            this.settingsService.setUser(user);
+            user = JSON.stringify(user);
+            localStorage.setItem('user', user);
+            this.startupSrv.load().then(() => {
+              let url = this.tokenService.referrer!.url || '/home';
+              if (url.includes('/passport')) {
+                url = '/home';
+              }
+              this.router.navigateByUrl(url);
+            });
+            // 欢迎用户
+            this.notification.success('登录成功!', `欢迎您:${this.settingsService.user.name}`, { nzDuration: 1000 });
+          })
           // 重新获取 StartupService 内容，我们始终认为应用信息一般都会受当前用户授权范围而影响
           // console.log(this.startupSrv.menuService.menus);
           // const newMenu: Menu[] = [
@@ -137,15 +150,7 @@ export class UserLoginComponent implements OnDestroy {
           // this.startupSrv.menuService.add(this.startupSrv.menuService.menus);
           // console.log(this.startupSrv.menuService.menus[0]);
           // this.startupSrv.menuService.setItem('newMenu', newMenu);
-          this.startupSrv.load().then(() => {
-            let url = this.tokenService.referrer!.url || '/home';
-            if (url.includes('/passport')) {
-              url = '/home';
-            }
-            this.router.navigateByUrl(url);
-          });
-          // 欢迎用户
-          this.notification.success('登录成功!', `欢迎您:${this.settingsService.user.name}`, { nzDuration: 1000 });
+
         } else if (res.code === '40001' || res.code === '40002') {
           this.notification.error('登录失败', '用户名或密码错误,请检查');
         }
@@ -156,38 +161,32 @@ export class UserLoginComponent implements OnDestroy {
     );
   }
   // 获取用户信息
-  getUserInfo() {
-    const url = this.loginControl.getUserInfo;
-    const options = this.options;
-    const body = `token=${this.tokenService.get().token}`;
-    this.http.post(url, body, null, options).subscribe((res: any) => {
-      const data = res.data;
-      const user: any = {
-        id: data.id,
-        username: data.username,
-        password: data.password,
-        email: data.email,
-        phone: data.phone,
-        folderName: data.folderName,
-        roleName: data.roleName,
-        parentId: data.parentId,
-        path: data.path,
-        avatar: './assets/tmp/img/avatar.jpg',
-        name: data.username,
-        token: this.tokenService.get().token,
-        menu: [
-          {
-            text: '自定义1',
-            link: 'www.baidu.com',
-          },
-          {
-            text: '自定义2',
-            link: 'www.baidu.com',
-          },
-        ],
-      };
-      this.settingsService.setUser(user);
-    });
+  getUserInfo(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      const url = this.loginControl.getUserInfo;
+      const options = this.options;
+      const body = `token=${this.tokenService.get().token}`;
+      let user: any;
+      this.http.post(url, body, null, options).subscribe((res: any) => {
+        const data = res.data;
+        user = {
+          id: data.id,
+          username: data.username,
+          password: data.password,
+          email: data.email,
+          phone: data.phone,
+          folderName: data.folderName,
+          roleName: data.roleName,
+          parentId: data.parentId,
+          path: data.path,
+          avatar: './assets/tmp/img/avatar.jpg',
+          name: data.username,
+          token: this.tokenService.get().token,
+        };
+        resolve(user);
+      });
+
+    })
   }
   // #region social
 

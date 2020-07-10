@@ -3,12 +3,7 @@ import { STChange, STPage, STColumn, STComponent } from '@delon/abc';
 import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
-import { SFSchema, SFComponent } from '@delon/form';
-// import { Placeholder } from '@angular/compiler/src/i18n/i18n_ast';
-// import * as moment from 'moment'
-// import { of } from 'rxjs';
-// import { delay } from 'rxjs/operators';
-// declare var G2: any;
+import { SFSchema, SFComponent, SFSelectWidgetSchema } from '@delon/form';
 let DESC = [];
 let UNIT = [];
 let DATA = [];
@@ -38,15 +33,6 @@ export class DataQueryComponent implements OnInit {
     pageSizes: [5, 10, 20, 30, 40, 50],
     placement: 'center',
   };
-  // G2图表
-  mock = [
-    {
-      name: 'mock1',
-      type: 'line',
-      data: []
-    }
-  ]
-  // chartData: any[] = [];
   // 自选列表配置
   columns: STColumn[] = [
     {
@@ -127,7 +113,7 @@ export class DataQueryComponent implements OnInit {
   @ViewChild('sf2', { static: false }) sf2: SFComponent;
   // 查询表单
   schema: SFSchema = {
-    required: ['startTime', 'endTime'],
+    required: ['startTime', 'endTime', 'type'],
     properties: {
       startTime: {
         type: 'string',
@@ -147,6 +133,27 @@ export class DataQueryComponent implements OnInit {
           showTime: true,
           placeholder: '选择时间',
         },
+      },
+      type: {
+        type: 'string',
+        title: '类型',
+        enum: [
+          { label: '默认数据查询', value: '0' },
+          { label: '间隔查询-取区间平均数', value: '1' },
+          { label: '间隔查询-取区间最大值', value: '2' },
+          { label: '间隔查询-取区间最小值', value: '3' },
+          { label: '间隔查询-取区间第一个值', value: '4' },
+          { label: '区间查询-取区间最后一个值', value: '5' },
+        ],
+        default: '0',
+        ui: {
+          widget: 'select',
+          // width: 120,
+          grid: {
+            xs: 4,
+            span: 12
+          }
+        } as SFSelectWidgetSchema,
       },
     },
   };
@@ -210,16 +217,16 @@ export class DataQueryComponent implements OnInit {
   }
   // 趋势图查询提交
   submit(value) {
+
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
     }
     const start = Date.parse(value.startTime);
     const end = Date.parse(value.endTime);
-    const day = (end - start) / (1000 * 60 * 60 * 24);
     const hour = (end - start) / (1000 * 60 * 60);
     if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
-    if (day > 3) return this.require.message.error('起始-结束时间范围须在3天及以内!');
-    if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
+    if (hour > 5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
+    if (hour < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids');
     const body =
@@ -228,6 +235,7 @@ export class DataQueryComponent implements OnInit {
       this.require.encodeObject({
         startTime: value.startTime,
         endTime: value.endTime,
+        type: value.data
       });
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
@@ -293,54 +301,6 @@ export class DataQueryComponent implements OnInit {
       }
     });
   }
-  //模拟图表测试上限
-  timeFormat(dt) {
-    return (
-      this.spliceZero(dt.getFullYear()) + '-' + this.spliceZero(dt.getMonth() + 1) + '-' + this.spliceZero(dt.getDate())
-      + " " + this.spliceZero(dt.getHours()) + ":" + this.spliceZero(dt.getMinutes()) + ":" + this.spliceZero(dt.getSeconds())
-    );
-  }
-  // 时间格式化、1位数时，前面拼接0
-  spliceZero(i) {
-    if (i.toString().length == 1) {
-
-      i = "0" + i;
-    }
-    return i;
-  }
-  // 模拟图表
-  // mockChart() {
-  //   let dateArray = ['2020-06-01 00:00:00'];
-  //   let startDate = new Date('2020-06-01 00:00:00');
-  //   let endDate = new Date('2020-06-15 23:59:59');
-  //   let endTime = endDate.getTime();
-  //   let startTime = startDate.getTime();
-  //   let mod = endTime - startTime;
-  //   let interval = 1 * 60 * 1000;
-  //   while (mod >= interval) {
-  //     let d = new Date();
-  //     d.setTime(startTime + interval);
-  //     let dS = this.require.moment(d).format('YYYY-MM-DD HH:mm:ss');
-  //     dateArray.push(dS);
-  //     mod = mod - interval;
-  //     startTime = startTime + interval;
-  //   }
-  //   // let end = endDate.getTime();
-  //   // let start = startDate.getTime();
-  //   // dateArray.unshift(new Date(start)); // 插入开头时间
-  //   console.log(dateArray);
-  //   let data = [];
-  //   for (let i = 0; i < 21600; i++) {
-  //     let j = Math.floor(Math.random() * 10);
-  //     data.push(j);
-  //   }
-  //   console.log(data);
-  //   this.mock[0].data = data;
-  //   this.option.legend.data = ['mock1'];
-  //   this.option.xAxis.data = dateArray;
-  //   this.option.series = this.mock;
-  //   this.option = { ...this.option };
-  // }
   // 趋势图初始化
   chart() {
     this.option = {
@@ -484,20 +444,12 @@ export class DataQueryComponent implements OnInit {
         startTime,
         endTime,
       });
-      // } else if (week) {
-      //   // console.log(this.require.moment().subtract(week+7-1, 'days').format('YY-ww'))
     } else if (date) {
       body += this.require.encodeObject({
         startTime: this.require.moment(date).format('YYYY-MM-DD 00:00:00'),
         endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59'),
       });
     }
-    // else if (month) {
-    //   body += this.require.encodeObject({
-    //     startTime: this.require.moment(month).format('YYYY-MM-DD 00:00:00'),
-    //     endTime: this.require.moment(month).add(1, 'months').format('YYYY-MM-DD 00:00:00')
-    //   })
-    // }
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
@@ -507,8 +459,6 @@ export class DataQueryComponent implements OnInit {
               valueArray[i] = [];
             }
             const data = res.data.data[0].historyData;
-            // console.log(data);
-            // tslint:disable-next-line: prefer-for-of
             this.data2 = data;
           } else {
             this.data2 = [];
@@ -520,7 +470,7 @@ export class DataQueryComponent implements OnInit {
       }
     });
   }
-  // 监听变化
+  // 监听自选列表变化
   change(ret: STChange) {
     this.total = ret.total;
     if (ret.type === 'pi' || ret.type === 'ps') {
@@ -564,7 +514,7 @@ export class DataQueryComponent implements OnInit {
       return 0;
     }
   }
-  // 获取历史数据
+  // 获取自选列表 数据
   getData() {
     const url = this.require.api.getMySelection;
     this.require.post(url).subscribe(
