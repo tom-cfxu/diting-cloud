@@ -33,6 +33,55 @@ export class DataQueryComponent implements OnInit {
     pageSizes: [5, 10, 20, 30, 40, 50],
     placement: 'center',
   };
+  //虚拟数据
+  mock = {
+    "code": "10005",
+    "data":
+    {
+      "equipParam": "1",
+      "equipPort": "2",
+      "equipProtocol": "3",
+      "properties": [
+        {
+          "createTime": "324",
+          "dtuAddress": "345",
+          "dtuSection": "56",
+          "id": "43007",
+          "propertyAddress": "567",
+          "propertyDesc": "2344",
+          "propertyDisplay": "235",
+          "propertyRW": "324",
+          "propertySection": "4235",
+          "propertyType": "234",
+          "propertyUnit": "235",
+          "updateTime": "235",
+          "uploadMode": "235",
+          "uploadParam1": "235",
+          "uploadParam2": "235",
+          "uploadParam3": "235"
+        },
+        {
+          "createTime": "324",
+          "dtuAddress": "345",
+          "dtuSection": "56",
+          "id": "2",
+          "propertyAddress": "567",
+          "propertyDesc": "2344",
+          "propertyDisplay": "235",
+          "propertyRW": "324",
+          "propertySection": "4235",
+          "propertyType": "234",
+          "propertyUnit": "235",
+          "updateTime": "235",
+          "uploadMode": "235",
+          "uploadParam1": "235",
+          "uploadParam2": "235",
+          "uploadParam3": "235"
+        },
+      ]
+    },
+    "msg": ""
+  };
   // 自选列表配置
   columns: STColumn[] = [
     {
@@ -103,15 +152,15 @@ export class DataQueryComponent implements OnInit {
       index: 'propertyUnit',
     },
   ];
-  // 报表配置
+  // 报表st配置
   columns2: STColumn[] = [
     {
       title: '时间',
       index: 'time',
     },
   ];
-  @ViewChild('sf2', { static: false }) sf2: SFComponent;
-  // 查询表单
+  // @ViewChild('sf2', { static: false }) sf2: SFComponent;
+  // 日期查询表单
   schema: SFSchema = {
     required: ['startTime', 'endTime', 'type'],
     properties: {
@@ -151,6 +200,7 @@ export class DataQueryComponent implements OnInit {
           // width: 120,
           grid: {
             xs: 4,
+            gutter: 1,
             span: 12
           }
         } as SFSelectWidgetSchema,
@@ -158,69 +208,81 @@ export class DataQueryComponent implements OnInit {
     },
   };
   // 查询报表
-  schema2: SFSchema = {
-    properties: {
-      date: {
-        type: 'string',
-        title: '选择日期',
-        format: 'date',
-        // tslint:disable-next-line: no-object-literal-type-assertion
-        ui: {
-          hidden: true,
-          placeholder: '选择日期',
-        },
-      },
-      startTime: {
-        type: 'string',
-        title: '开始时间',
-        ui: {
-          widget: 'date',
-          showTime: true,
-          placeholder: '选择时间',
-          hidden: false,
-        },
-      },
-      endTime: {
-        type: 'string',
-        title: '结束时间',
-        ui: {
-          widget: 'date',
-          showTime: true,
-          placeholder: '选择时间',
-          hidden: false,
-        },
-      },
-    },
-  };
+  // schema2: SFSchema = {
+  //   properties: {
+  //     date: {
+  //       type: 'string',
+  //       title: '选择日期',
+  //       format: 'date',
+  //       // tslint:disable-next-line: no-object-literal-type-assertion
+  //       ui: {
+  //         hidden: true,
+  //         placeholder: '选择日期',
+  //       },
+  //     },
+  //     startTime: {
+  //       type: 'string',
+  //       title: '开始时间',
+  //       ui: {
+  //         widget: 'date',
+  //         showTime: true,
+  //         placeholder: '选择时间',
+  //         hidden: false,
+  //       },
+  //     },
+  //     endTime: {
+  //       type: 'string',
+  //       title: '结束时间',
+  //       ui: {
+  //         widget: 'date',
+  //         showTime: true,
+  //         placeholder: '选择时间',
+  //         hidden: false,
+  //       },
+  //     },
+  //   },
+  // };
   // 报表日期搜索方式切换
-  searchBy(e) {
-    // console.log(e);
-    switch (e) {
-      case 'range':
-        // tslint:disable-next-line: no-string-literal
-        this.schema2.properties.startTime.ui['hidden'] = false;
-        // tslint:disable-next-line: no-string-literal
-        this.schema2.properties.endTime.ui['hidden'] = false;
-        // tslint:disable-next-line: no-string-literal
-        this.schema2.properties.date.ui['hidden'] = true;
-        break;
-      case 'date':
-        // tslint:disable-next-line: no-string-literal
-        this.schema2.properties.startTime.ui['hidden'] = true;
-        // tslint:disable-next-line: no-string-literal
-        this.schema2.properties.endTime.ui['hidden'] = true;
-        // tslint:disable-next-line: no-string-literal
-        this.schema2.properties.date.ui['hidden'] = false;
-        break;
-    }
-    this.sf2.refreshSchema();
-  }
-  // 趋势图查询提交
-  submit(value) {
+  // searchBy(e) {
+  //   // console.log(e);
+  //   switch (e) {
+  //     case 'range':
+  //       // tslint:disable-next-line: no-string-literal
+  //       this.schema2.properties.startTime.ui['hidden'] = false;
+  //       // tslint:disable-next-line: no-string-literal
+  //       this.schema2.properties.endTime.ui['hidden'] = false;
+  //       // tslint:disable-next-line: no-string-literal
+  //       this.schema2.properties.date.ui['hidden'] = true;
+  //       break;
+  //     case 'date':
+  //       // tslint:disable-next-line: no-string-literal
+  //       this.schema2.properties.startTime.ui['hidden'] = true;
+  //       // tslint:disable-next-line: no-string-literal
+  //       this.schema2.properties.endTime.ui['hidden'] = true;
+  //       // tslint:disable-next-line: no-string-literal
+  //       this.schema2.properties.date.ui['hidden'] = false;
+  //       break;
+  //   }
+  //   this.sf2.refreshSchema();
+  // }
 
+  // 趋势图查询
+  submit(value) { //查询日志数据
+    console.log(value)
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
     }
+    const stColumn: STColumn[] = [
+      {
+        title: '时间',
+        index: 'time',
+      },
+    ];
+    for (const i of this.labelArr) {
+      const columns = { title: i, index: i };
+      stColumn.push(columns);
+    }
+    this.columns2 = [...stColumn];
     const start = Date.parse(value.startTime);
     const end = Date.parse(value.endTime);
     const hour = (end - start) / (1000 * 60 * 60);
@@ -235,33 +297,31 @@ export class DataQueryComponent implements OnInit {
       this.require.encodeObject({
         startTime: value.startTime,
         endTime: value.endTime,
-        type: value.data
+        type: value.type
       });
     this.require.post(url, body).subscribe((res: any) => {
+
       switch (res.code) {
         case '10005':
           if (res.data.data.length > 0) {
-            // this.gatewayNumber = res.data.data[0].gatewayNumber;
+            this.data2 = res.data.data[0].historyData; //报表数据
             const timeArray = []; // 保存时间横轴数据
             const valueArray = []; // 保存所有标签点的数据
             for (let i = 0; i <= this.labelArr.length; i++) {
               valueArray[i] = [];
             }
+            // console.log()
             const data = res.data.data; // [0].historyData;
             for (const i of data) {
               const oneData = i;
               const historyDataArray = oneData.historyData;
               for (let j = 0; j < historyDataArray.length; j++) {
                 const historyData = historyDataArray[j];
-                // tslint:disable-next-line: prefer-const
-                // tslint:disable-next-line: forin
                 for (const item in historyData) {
-                  // tslint:disable-next-line: triple-equals
                   if (item == 'time') {
                     timeArray.push(historyData[item]);
                   }
                   for (let n = 0; n < this.labelArr.length; n++) {
-                    // tslint:disable-next-line: triple-equals
                     if (item == this.labelArr[n]) {
                       valueArray[n][j] = historyData[item]; // === null ? 0 : historyData[item];
                     }
@@ -277,22 +337,17 @@ export class DataQueryComponent implements OnInit {
               obj.type = 'line';
               objArr.push(obj);
             }
-            // console.log(valueArray);
             DATA = valueArray;
-            // console.log('开始加载表格')
             this.option.legend.data = this.labelArr;
             this.option.xAxis.data = timeArray;
             this.option.series = objArr;
             console.log(this.option)
             this.option = { ...this.option };
-            // console.log(this.option);
           } else {
-            // this.gatewayNumber = '';
             this.require.message.info('数据为空', { nzDuration: 1000 });
             this.option.legend.data = [];
             this.option.xAxis.data = [];
             this.option.series = [];
-            // console.log(this.option)
             this.option = { ...this.option };
           }
           break;
@@ -336,10 +391,7 @@ export class DataQueryComponent implements OnInit {
               }&nbsp;&nbsp;${typeof item.value === 'undefined' ? ' ' : item.value}&nbsp;${
               typeof item.value === 'undefined' ? ' ' : UNIT[i]
               }
-            <br/>`; //  ${this.desc[i]}
-            // &nbsp;
-            // ${typeof item.value === 'undefined' ? ' ' : '上限:' + Math.max(...DATA[i])}&nbsp;
-            // ${typeof item.value === 'undefined' ? ' ' : '下限:' + Math.min(...DATA[i])}
+            <br/>`;
             i++;
           });
           return result;
@@ -364,8 +416,9 @@ export class DataQueryComponent implements OnInit {
         boundaryGap: false,
         data: [],
         axisLine: {
+          symbol: ['none', 'arrow'],
           lineStyle: {
-            color: '#cfcfcf',
+            color: '#1890ff',
             width: 2,
           },
         },
@@ -373,8 +426,9 @@ export class DataQueryComponent implements OnInit {
       yAxis: {
         type: 'value',
         axisLine: {
+          symbol: ['none', 'arrow'],
           lineStyle: {
-            color: '#cfcfcf',
+            color: '#1890ff',
             width: 2,
           },
         },
@@ -402,74 +456,79 @@ export class DataQueryComponent implements OnInit {
           handleSize: 8,
           showDataShadow: false,
           left: '98%',
+          dataBackground: {
+            areaStyle: {
+              color: "rgba(24, 144, 255, 1)"
+            }
+          }
         },
       ],
       series: [],
     };
   }
-  // 报表查询提交
-  submit2(value) {
-    if (JSON.stringify(value) === '{}') {
-      return this.require.message.info('请输入查询时间!', { nzDuration: 1000 });
-    }
-    const url = this.require.api.getHistoryData;
-    const ids = this.require.encodeArray(this.checked, 'ids');
-    if (!(this.checked.length > 0)) {
-      return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
-    }
-    const stColumn: STColumn[] = [
-      {
-        title: '时间',
-        index: 'time',
-      },
-    ];
-    for (const i of this.labelArr) {
-      const columns = { title: i, index: i };
-      stColumn.push(columns);
-    }
-    this.columns2 = stColumn;
-    const startTime = value.startTime;
-    const endTime = value.endTime;
-    const date = value.date;
-    let body = ids + '&';
-    if (startTime && endTime) {
-      const start = Date.parse(startTime);
-      const end = Date.parse(endTime);
-      const day = (end - start) / (1000 * 60 * 60 * 24);
-      const hour = (end - start) / (1000 * 60 * 60);
-      if (day > 3) return this.require.message.error('查询时间范围须在3天及以内!');
-      if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
-      if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
-      body += this.require.encodeObject({
-        startTime,
-        endTime,
-      });
-    } else if (date) {
-      body += this.require.encodeObject({
-        startTime: this.require.moment(date).format('YYYY-MM-DD 00:00:00'),
-        endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59'),
-      });
-    }
-    this.require.post(url, body).subscribe((res: any) => {
-      switch (res.code) {
-        case '10005':
-          if (res.data.data.length > 0) {
-            const valueArray = []; // 保存所有标签点的数据
-            for (let i = 0; i <= this.labelArr.length; i++) {
-              valueArray[i] = [];
-            }
-            const data = res.data.data[0].historyData;
-            this.data2 = data;
-          } else {
-            this.data2 = [];
-            this.require.message.info('数据为空', { nzDuration: 1000 });
-          }
-          break;
-        default:
-          break;
-      }
-    });
-  }
+  // // 报表查询按钮
+  // submit2(value) {
+  //   if (JSON.stringify(value) === '{}') {
+  //     return this.require.message.info('请输入查询时间!', { nzDuration: 1000 });
+  //   }
+  //   const url = this.require.api.getHistoryData;
+  //   const ids = this.require.encodeArray(this.checked, 'ids');
+  //   if (!(this.checked.length > 0)) {
+  //     return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
+  //   }
+  //   const stColumn: STColumn[] = [
+  //     {
+  //       title: '时间',
+  //       index: 'time',
+  //     },
+  //   ];
+  //   for (const i of this.labelArr) {
+  //     const columns = { title: i, index: i };
+  //     stColumn.push(columns);
+  //   }
+  //   this.columns2 = stColumn;
+  //   const startTime = value.startTime;
+  //   const endTime = value.endTime;
+  //   const date = value.date;
+  //   let body = ids + '&';
+  //   if (startTime && endTime) {
+  //     const start = Date.parse(startTime);
+  //     const end = Date.parse(endTime);
+  //     const day = (end - start) / (1000 * 60 * 60 * 24);
+  //     const hour = (end - start) / (1000 * 60 * 60);
+  //     if (hour > 5) return this.require.message.error('查询时间范围须在5小时以内!');
+  //     if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
+  //     if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
+  //     body += this.require.encodeObject({
+  //       startTime,
+  //       endTime,
+  //     });
+  //   } else if (date) {
+  //     body += this.require.encodeObject({
+  //       startTime: this.require.moment(date).format('YYYY-MM-DD 00:00:00'),
+  //       endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59'),
+  //     });
+  //   }
+  //   this.require.post(url, body).subscribe((res: any) => {
+  //     switch (res.code) {
+  //       case '10005':
+  //         if (res.data.data.length > 0) {
+  //           const valueArray = []; // 保存所有标签点的数据
+  //           for (let i = 0; i <= this.labelArr.length; i++) {
+  //             valueArray[i] = [];
+  //           }
+  //           console.log(valueArray);
+  //           this.data2 = res.data.data[0].historyData;
+  //         } else {
+  //           this.data2 = [];
+  //           this.require.message.info('数据为空', { nzDuration: 1000 });
+  //         }
+  //         break;
+  //       default:
+  //         break;
+  //     }
+  //   });
+  // }
   // 监听自选列表变化
   change(ret: STChange) {
     this.total = ret.total;
@@ -517,8 +576,12 @@ export class DataQueryComponent implements OnInit {
   // 获取自选列表 数据
   getData() {
     const url = this.require.api.getMySelection;
+
     this.require.post(url).subscribe(
       (res: any) => {
+        //模拟数据,上线需删除
+        res = this.mock;
+        // console.log(res);
         switch (res.code) {
           case '10005':
             const data = res.data.properties;
