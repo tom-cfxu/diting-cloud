@@ -3,6 +3,7 @@ import { STChange, STPage, STColumn, STComponent } from '@delon/abc';
 import { RequireService } from '@core/require';
 import { _HttpClient } from '@delon/theme';
 import { ApiService } from '@core/api.service';
+import axios from 'axios'
 import { SFSchema, SFComponent, SFSelectWidgetSchema } from '@delon/form';
 let DESC = [];
 let UNIT = [];
@@ -14,7 +15,6 @@ let DATA = [];
 })
 export class DataQueryComponent implements OnInit {
   constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
-  getMySelection = this.require.api.getMySelection;
   deleteUrl = this.require.api.selectionDelete;
   data = []; // 保存表格信息
   data2 = []; // 保存报表数据
@@ -61,22 +61,23 @@ export class DataQueryComponent implements OnInit {
           "uploadParam3": "235"
         },
         {
-          "createTime": "324",
-          "dtuAddress": "345",
-          "dtuSection": "56",
-          "id": "2",
-          "propertyAddress": "567",
-          "propertyDesc": "2344",
-          "propertyDisplay": "235",
-          "propertyRW": "324",
-          "propertySection": "4235",
-          "propertyType": "234",
-          "propertyUnit": "235",
-          "updateTime": "235",
-          "uploadMode": "235",
-          "uploadParam1": "235",
-          "uploadParam2": "235",
-          "uploadParam3": "235"
+          "id": 43007,
+          "propertyType": 'DIN',
+          "propertySection": 'DO',
+          "propertyAddress": 1,
+          "propertyDisplay": null,
+          "propertyDesc": 'DO1',
+          "propertyUnit": 'none',
+          "propertyRw": 'RW',
+          "dtuSection": 'DO',
+          "dtuAddress": 1,
+          "uploadMode": 1,
+          "uploadParam1": 60,
+          "uploadParam2": 'N',
+          "uploadParam3": '-1',
+          "createTime": '2020-06-28 03:14:35',
+          "updateTime": null,
+
         },
       ]
     },
@@ -103,7 +104,7 @@ export class DataQueryComponent implements OnInit {
                 switch (res.code) {
                   case '10005':
                     if (this.total % this.ps === 1 && this.pi > 1) this.pi--;
-                    this.getData();
+                    this.getMySelection();
                     break;
                   default:
                     console.log(res);
@@ -187,14 +188,14 @@ export class DataQueryComponent implements OnInit {
         type: 'string',
         title: '类型',
         enum: [
-          { label: '默认数据查询', value: '0' },
-          { label: '间隔查询-取区间平均数', value: '1' },
-          { label: '间隔查询-取区间最大值', value: '2' },
-          { label: '间隔查询-取区间最小值', value: '3' },
-          { label: '间隔查询-取区间第一个值', value: '4' },
-          { label: '区间查询-取区间最后一个值', value: '5' },
+          { label: '默认数据查询', value: 0 },
+          { label: '间隔查询-取区间平均数', value: 1 },
+          { label: '间隔查询-取区间最大值', value: 2 },
+          { label: '间隔查询-取区间最小值', value: 3 },
+          { label: '间隔查询-取区间第一个值', value: 4 },
+          { label: '区间查询-取区间最后一个值', value: 5 },
         ],
-        default: '0',
+        default: 0,
         ui: {
           widget: 'select',
           // width: 120,
@@ -207,67 +208,9 @@ export class DataQueryComponent implements OnInit {
       },
     },
   };
-  // 查询报表
-  // schema2: SFSchema = {
-  //   properties: {
-  //     date: {
-  //       type: 'string',
-  //       title: '选择日期',
-  //       format: 'date',
-  //       // tslint:disable-next-line: no-object-literal-type-assertion
-  //       ui: {
-  //         hidden: true,
-  //         placeholder: '选择日期',
-  //       },
-  //     },
-  //     startTime: {
-  //       type: 'string',
-  //       title: '开始时间',
-  //       ui: {
-  //         widget: 'date',
-  //         showTime: true,
-  //         placeholder: '选择时间',
-  //         hidden: false,
-  //       },
-  //     },
-  //     endTime: {
-  //       type: 'string',
-  //       title: '结束时间',
-  //       ui: {
-  //         widget: 'date',
-  //         showTime: true,
-  //         placeholder: '选择时间',
-  //         hidden: false,
-  //       },
-  //     },
-  //   },
-  // };
-  // 报表日期搜索方式切换
-  // searchBy(e) {
-  //   // console.log(e);
-  //   switch (e) {
-  //     case 'range':
-  //       // tslint:disable-next-line: no-string-literal
-  //       this.schema2.properties.startTime.ui['hidden'] = false;
-  //       // tslint:disable-next-line: no-string-literal
-  //       this.schema2.properties.endTime.ui['hidden'] = false;
-  //       // tslint:disable-next-line: no-string-literal
-  //       this.schema2.properties.date.ui['hidden'] = true;
-  //       break;
-  //     case 'date':
-  //       // tslint:disable-next-line: no-string-literal
-  //       this.schema2.properties.startTime.ui['hidden'] = true;
-  //       // tslint:disable-next-line: no-string-literal
-  //       this.schema2.properties.endTime.ui['hidden'] = true;
-  //       // tslint:disable-next-line: no-string-literal
-  //       this.schema2.properties.date.ui['hidden'] = false;
-  //       break;
-  //   }
-  //   this.sf2.refreshSchema();
-  // }
 
   // 趋势图查询
-  submit(value) { //查询日志数据
+  getHistoryData(value) {
     console.log(value)
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
@@ -287,23 +230,37 @@ export class DataQueryComponent implements OnInit {
     const end = Date.parse(value.endTime);
     const hour = (end - start) / (1000 * 60 * 60);
     if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
-    if (hour > 5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
+    // if (hour > 5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
     if (hour < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids');
-    const body =
-      ids +
-      '&' +
-      this.require.encodeObject({
-        startTime: value.startTime,
-        endTime: value.endTime,
-        type: value.type
-      });
-    this.require.post(url, body).subscribe((res: any) => {
+    const body = `ids=43007&type=0&startTime=2020-07-15 10:45:33&endTime=2020-07-16 10:45:34`;
+    // ids +
+    // '&' +
+    // this.require.encodeObject({
+    //   type: value.type,
+    //   startTime: value.startTime,
+    //   endTime: value.endTime,
+    // });
+    // const option = {
+    //   headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
+    // };
+    console.log(body);
+    // const config = {
+    //   method: 'post',
+    //   url: 'http://114.116.143.91:8080/api/v1.0/getHistoryData',
+    //   headers: {
+    //     'Content-Type': 'application/x-www-form-urlencoded'
+    //   },
+    //   data: body
+    // };
+    // axios.post(config).then(res => { 
 
+    // })
+    this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
-          if (res.data.data.length > 0) {
+          if (res.data != null && res.data.data.length > 0) {
             this.data2 = res.data.data[0].historyData; //报表数据
             const timeArray = []; // 保存时间横轴数据
             const valueArray = []; // 保存所有标签点的数据
@@ -358,6 +315,7 @@ export class DataQueryComponent implements OnInit {
   }
   // 趋势图初始化
   chart() {
+    const lineColor = "#ADADAD";
     this.option = {
       // color: ['#66b7f2', '#79e095', '#fad183', '#fc9e90', '#7edad3', '#999ab4', '#7a9ae5', '#f1a867', '#f1e289', '#9f8cd6'],
       // color: ['#fa2c7b', '#ff38e0', '#ffa235', '#04c5f3', '#0066fe', '#8932a5', '#c90444', '#cb9bff', '#434348', '#90ed7d', '#f7a35c', '#8085e9'],
@@ -418,7 +376,7 @@ export class DataQueryComponent implements OnInit {
         axisLine: {
           symbol: ['none', 'arrow'],
           lineStyle: {
-            color: '#1890ff',
+            color: lineColor,
             width: 2,
           },
         },
@@ -428,7 +386,7 @@ export class DataQueryComponent implements OnInit {
         axisLine: {
           symbol: ['none', 'arrow'],
           lineStyle: {
-            color: '#1890ff',
+            color: lineColor,
             width: 2,
           },
         },
@@ -466,69 +424,6 @@ export class DataQueryComponent implements OnInit {
       series: [],
     };
   }
-  // // 报表查询按钮
-  // submit2(value) {
-  //   if (JSON.stringify(value) === '{}') {
-  //     return this.require.message.info('请输入查询时间!', { nzDuration: 1000 });
-  //   }
-  //   const url = this.require.api.getHistoryData;
-  //   const ids = this.require.encodeArray(this.checked, 'ids');
-  //   if (!(this.checked.length > 0)) {
-  //     return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
-  //   }
-  //   const stColumn: STColumn[] = [
-  //     {
-  //       title: '时间',
-  //       index: 'time',
-  //     },
-  //   ];
-  //   for (const i of this.labelArr) {
-  //     const columns = { title: i, index: i };
-  //     stColumn.push(columns);
-  //   }
-  //   this.columns2 = stColumn;
-  //   const startTime = value.startTime;
-  //   const endTime = value.endTime;
-  //   const date = value.date;
-  //   let body = ids + '&';
-  //   if (startTime && endTime) {
-  //     const start = Date.parse(startTime);
-  //     const end = Date.parse(endTime);
-  //     const day = (end - start) / (1000 * 60 * 60 * 24);
-  //     const hour = (end - start) / (1000 * 60 * 60);
-  //     if (hour > 5) return this.require.message.error('查询时间范围须在5小时以内!');
-  //     if (day < 0) return this.require.message.error('结束时间须在开始时间之后!');
-  //     if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
-  //     body += this.require.encodeObject({
-  //       startTime,
-  //       endTime,
-  //     });
-  //   } else if (date) {
-  //     body += this.require.encodeObject({
-  //       startTime: this.require.moment(date).format('YYYY-MM-DD 00:00:00'),
-  //       endTime: this.require.moment(date).format('YYYY-MM-DD 23:59:59'),
-  //     });
-  //   }
-  //   this.require.post(url, body).subscribe((res: any) => {
-  //     switch (res.code) {
-  //       case '10005':
-  //         if (res.data.data.length > 0) {
-  //           const valueArray = []; // 保存所有标签点的数据
-  //           for (let i = 0; i <= this.labelArr.length; i++) {
-  //             valueArray[i] = [];
-  //           }
-  //           console.log(valueArray);
-  //           this.data2 = res.data.data[0].historyData;
-  //         } else {
-  //           this.data2 = [];
-  //           this.require.message.info('数据为空', { nzDuration: 1000 });
-  //         }
-  //         break;
-  //       default:
-  //         break;
-  //     }
-  //   });
-  // }
   // 监听自选列表变化
   change(ret: STChange) {
     this.total = ret.total;
@@ -556,7 +451,7 @@ export class DataQueryComponent implements OnInit {
                 case '10005':
                   if ((this.total % this.ps === 1 && this.pi > 1) || this.checked.length === this.total % this.ps)
                     this.pi--;
-                  this.getData();
+                  this.getMySelection();
                   this.checked = [];
                   break;
                 default:
@@ -574,7 +469,7 @@ export class DataQueryComponent implements OnInit {
     }
   }
   // 获取自选列表 数据
-  getData() {
+  getMySelection() {
     const url = this.require.api.getMySelection;
 
     this.require.post(url).subscribe(
@@ -589,26 +484,27 @@ export class DataQueryComponent implements OnInit {
               this.data = [];
               this.api.message.info('数据为空', { nzDuration: 1000 });
             } else if (data.length > 0) {
-              this.data = data.map(e => {
-                return {
-                  id: e.id,
-                  equipListId: e.equipListId,
-                  propertyType: e.propertyType,
-                  propertySection: e.propertySection,
-                  propertyAddress: e.propertyAddress,
-                  propertyDesc: e.propertyDesc,
-                  propertyUnit: e.propertyUnit,
-                  propertyRW: e.propertyRW,
-                  dtuSection: e.dtuSection,
-                  dtuAddress: e.dtuAddress,
-                  uploadMode: e.uploadMode,
-                  uploadParam1: e.uploadParam1,
-                  uploadParam2: e.uploadParam2,
-                  uploadParam3: e.uploadParam3,
-                  createTime: e.createTime,
-                  updateTime: e.updateTime,
-                };
-              });
+              this.data = data
+              //   (e => {
+              //   return {
+              //     id: e.id,
+              //     equipListId: e.equipListId,
+              //     propertyType: e.propertyType,
+              //     propertySection: e.propertySection,
+              //     propertyAddress: e.propertyAddress,
+              //     propertyDesc: e.propertyDesc,
+              //     propertyUnit: e.propertyUnit,
+              //     propertyRW: e.propertyRW,
+              //     dtuSection: e.dtuSection,
+              //     dtuAddress: e.dtuAddress,
+              //     uploadMode: e.uploadMode,
+              //     uploadParam1: e.uploadParam1,
+              //     uploadParam2: e.uploadParam2,
+              //     uploadParam3: e.uploadParam3,
+              //     createTime: e.createTime,
+              //     updateTime: e.updateTime,
+              //   };
+              // });
             }
             break;
           default:
@@ -620,7 +516,7 @@ export class DataQueryComponent implements OnInit {
     );
   }
   ngOnInit() {
-    this.getData();
+    this.getMySelection();
     this.chart();
   }
 }

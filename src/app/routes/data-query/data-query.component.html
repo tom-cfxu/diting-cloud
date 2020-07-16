@@ -32,7 +32,7 @@
         <nz-card nzTitle="历史数据图表">
             <div nz-row>
                 <sf #sf layout="inline" mode="search" [button]="{search:'查询'}" [loading]="http.loading"
-                    [schema]="schema" (formSubmit)="submit($event)">
+                    [schema]="schema" (formSubmit)="getHistoryData($event)">
                 </sf>
             </div>
             <nz-tabset>
