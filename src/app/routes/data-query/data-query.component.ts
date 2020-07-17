@@ -230,7 +230,7 @@ export class DataQueryComponent implements OnInit {
     const end = Date.parse(value.endTime);
     const hour = (end - start) / (1000 * 60 * 60);
     if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
-    // if (hour > 5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
+    if (hour > 5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
     if (hour < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids');
