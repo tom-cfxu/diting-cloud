@@ -10,6 +10,7 @@ export class HostService {
   // public host = 'https://114.116.143.91';
   // public host = 'http://218.86.96.55:443';
   // public host = 'https://www.fzditing.com';
-  public host = 'http://114.116.143.91:8080';
+  // public host = 'http://114.116.143.91:8080';
+  public host = 'http://192.168.5.102:8090';
   constructor() { }
 }

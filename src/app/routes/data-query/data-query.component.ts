@@ -211,7 +211,7 @@ export class DataQueryComponent implements OnInit {
 
   // 趋势图查询
   getHistoryData(value) {
-    console.log(value)
+    // console.log(value)
     if (!(this.checked.length > 0)) {
       return this.require.message.info('未选择自选记录!', { nzDuration: 1000 });
     }
@@ -234,29 +234,14 @@ export class DataQueryComponent implements OnInit {
     if (hour < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids');
-    const body = `ids=43007&type=0&startTime=2020-07-15 10:45:33&endTime=2020-07-16 10:45:34`;
-    // ids +
-    // '&' +
-    // this.require.encodeObject({
-    //   type: value.type,
-    //   startTime: value.startTime,
-    //   endTime: value.endTime,
-    // });
-    // const option = {
-    //   headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
-    // };
-    console.log(body);
-    // const config = {
-    //   method: 'post',
-    //   url: 'http://114.116.143.91:8080/api/v1.0/getHistoryData',
-    //   headers: {
-    //     'Content-Type': 'application/x-www-form-urlencoded'
-    //   },
-    //   data: body
-    // };
-    // axios.post(config).then(res => { 
-
-    // })
+    const body =
+      ids +
+      '&' +
+      this.require.encodeObject({
+        type: value.type,
+        startTime: value.startTime,
+        endTime: value.endTime,
+      });
     this.require.post(url, body).subscribe((res: any) => {
       switch (res.code) {
         case '10005':
@@ -298,7 +283,7 @@ export class DataQueryComponent implements OnInit {
             this.option.legend.data = this.labelArr;
             this.option.xAxis.data = timeArray;
             this.option.series = objArr;
-            console.log(this.option)
+            // console.log(this.option)
             this.option = { ...this.option };
           } else {
             this.require.message.info('数据为空', { nzDuration: 1000 });
@@ -317,9 +302,6 @@ export class DataQueryComponent implements OnInit {
   chart() {
     const lineColor = "#ADADAD";
     this.option = {
-      // color: ['#66b7f2', '#79e095', '#fad183', '#fc9e90', '#7edad3', '#999ab4', '#7a9ae5', '#f1a867', '#f1e289', '#9f8cd6'],
-      // color: ['#fa2c7b', '#ff38e0', '#ffa235', '#04c5f3', '#0066fe', '#8932a5', '#c90444', '#cb9bff', '#434348', '#90ed7d', '#f7a35c', '#8085e9'],
-      // color: ['#00a8e1', '#99cc00', '#e30039', '#fcd300', '#800080', '#00994e', '#ff6600', '#808000', '#db00c2', '#008080', '#0000ff', '#c8cc00'],
       color: [
         '#0e72cc',
         '#6ca30f',
@@ -474,9 +456,6 @@ export class DataQueryComponent implements OnInit {
 
     this.require.post(url).subscribe(
       (res: any) => {
-        //模拟数据,上线需删除
-        res = this.mock;
-        // console.log(res);
         switch (res.code) {
           case '10005':
             const data = res.data.properties;
@@ -485,26 +464,6 @@ export class DataQueryComponent implements OnInit {
               this.api.message.info('数据为空', { nzDuration: 1000 });
             } else if (data.length > 0) {
               this.data = data
-              //   (e => {
-              //   return {
-              //     id: e.id,
-              //     equipListId: e.equipListId,
-              //     propertyType: e.propertyType,
-              //     propertySection: e.propertySection,
-              //     propertyAddress: e.propertyAddress,
-              //     propertyDesc: e.propertyDesc,
-              //     propertyUnit: e.propertyUnit,
-              //     propertyRW: e.propertyRW,
-              //     dtuSection: e.dtuSection,
-              //     dtuAddress: e.dtuAddress,
-              //     uploadMode: e.uploadMode,
-              //     uploadParam1: e.uploadParam1,
-              //     uploadParam2: e.uploadParam2,
-              //     uploadParam3: e.uploadParam3,
-              //     createTime: e.createTime,
-              //     updateTime: e.updateTime,
-              //   };
-              // });
             }
             break;
           default:

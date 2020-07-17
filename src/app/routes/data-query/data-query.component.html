@@ -6,7 +6,8 @@
                         nzType="delete"></i>删除</button>
             </div>
             <div nz-col nzXs="24" nzLg="3" nzXXl="2" style="margin-bottom: 1rem;">
-                <button nzType="default" (click)="getData()" nz-button nzBlock><i nz-icon nzType="redo"></i>刷新</button>
+                <button nzType="default" (click)="getMySelection()" nz-button nzBlock><i nz-icon
+                        nzType="redo"></i>刷新</button>
             </div>
         </div>
     </div>
@@ -20,15 +21,6 @@
         </nz-collapse>
     </div>
     <div nz-col nzXs="24">
-        <!-- <div>
-            <nz-radio-group [(ngModel)]="radioValue" (ngModelChange)="searchBy($event)" [nzButtonStyle]="'solid'">
-                <label nz-radio-button nzValue="range">起始时间查询</label>
-                <label nz-radio-button nzValue="date">按天查询</label>
-            </nz-radio-group>
-        </div>
-        <sf #sf2 mode="search" [button]="{search:'查询'}" [loading]="http.loading" [schema]="schema2"
-            (formSubmit)="submit2($event)">
-        </sf> -->
         <nz-card nzTitle="历史数据图表">
             <div nz-row>
                 <sf #sf layout="inline" mode="search" [button]="{search:'查询'}" [loading]="http.loading"
@@ -37,7 +29,6 @@
             </div>
             <nz-tabset>
                 <nz-tab nzTitle="趋势图">
-                    <!-- Content of Tab Pane 1 -->
                     <div nz-row>
                         <div echarts [options]="option"></div>
                     </div>

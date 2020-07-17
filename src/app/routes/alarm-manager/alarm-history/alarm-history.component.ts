@@ -28,13 +28,8 @@ export class AlarmHistoryComponent implements OnInit {
     pageSizes: [10, 20, 30, 40, 50],
     placement: 'center'
   }
+  //st表格配置
   columns: STColumn[] = [
-    {
-      title: 'checkbox',
-      index: 'uuid',
-      type: 'checkbox',
-
-    },
     {
       title: 'DTUID',
       index: 'dtuId',
@@ -73,16 +68,6 @@ export class AlarmHistoryComponent implements OnInit {
       index: 'alarmProcessTime',
     },
   ]
-  // 监听变化
-  change(ret: STChange) {
-    if (ret.type === 'pi' || ret.type === 'ps') {
-      this.pi = this.pi > 1 ? ret.pi : 1;
-      this.ps = ret.ps;
-      this.getData();
-    } else if (ret.type === 'checkbox') {
-      this.checked = ret.checkbox.map(e => e.id)
-    }
-  }
   // 请求主数据
   getData() {
     const body = this.require.encodeObject({
@@ -122,6 +107,15 @@ export class AlarmHistoryComponent implements OnInit {
       console.log(err)
     })
   }
+  // 监听变化
+  change(ret: STChange) {
+    if (ret.type === 'pi' || ret.type === 'ps') {
+      this.pi = ret.pi;
+      this.ps = ret.ps;
+      this.getData();
+    }
+  }
+
   ngOnInit() {
     this.getData()
   }
