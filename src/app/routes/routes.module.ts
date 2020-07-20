@@ -20,6 +20,8 @@ import { DataQueryComponent } from './data-query/data-query.component';
 import { OperateDataComponent } from './operate-data/operate-data.component';
 import { SearchModalComponent } from './component/search-modal';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { UserPageComponent } from './user-page/user-page.component';
+// import { RoutesUserPageComponent } from './user-page/user-page/user-page.component';
 
 const COMPONENTS = [
   DashboardComponent,
@@ -33,9 +35,7 @@ const COMPONENTS = [
   RealtimeManageComponent,
   DataQueryComponent,
   OperateDataComponent,
-  SearchModalComponent,
-
-];
+  SearchModalComponent];
 const COMPONENTS_NOROUNT = [SearchModalComponent];
 
 @NgModule({
@@ -43,6 +43,7 @@ const COMPONENTS_NOROUNT = [SearchModalComponent];
   declarations: [
     ...COMPONENTS,
     ...COMPONENTS_NOROUNT,
+    UserPageComponent,
   ],
   entryComponents: COMPONENTS_NOROUNT
 })

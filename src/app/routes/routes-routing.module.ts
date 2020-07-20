@@ -17,6 +17,7 @@ import { UserLockComponent } from './passport/lock/lock.component';
 import { RealtimeManageComponent } from './realtime-manage/realtime-manage.component';
 import { DataQueryComponent } from './data-query/data-query.component';
 import { OperateDataComponent } from './operate-data/operate-data.component';
+import { UserPageComponent } from './user-page/user-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'passport', pathMatch: 'full' },
   {
@@ -33,6 +34,7 @@ const routes: Routes = [
       { path: 'alarm', loadChildren: () => import('./alarm-manager/alarm-manager.module').then(m => m.AlarmManagerModule), data: { title: '报警管理' } },
       { path: 'data_query', component: DataQueryComponent, data: { title: '历史数据' } },
       { path: 'operate_data', component: OperateDataComponent, data: { title: '操作日志' } },
+      { path: 'user_page', component: UserPageComponent, data: { title: '自定义页面' } },
       // 业务子模块
       // { path: 'widgets', loadChildren: () => import('./widgets/widgets.module').then(m => m.WidgetsModule) },
     ]
@@ -59,8 +61,7 @@ const routes: Routes = [
   // 单页不包裹Layout
   { path: 'callback/:type', component: CallbackComponent },
   { path: 'exception', loadChildren: () => import('./exception/exception.module').then(m => m.ExceptionModule) },
-  { path: '**', redirectTo: 'exception/404' },
-];
+  { path: '**', redirectTo: 'exception/404' }];
 
 @NgModule({
   imports: [
