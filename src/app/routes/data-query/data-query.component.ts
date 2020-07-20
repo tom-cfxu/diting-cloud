@@ -34,55 +34,55 @@ export class DataQueryComponent implements OnInit {
     placement: 'center',
   };
   //虚拟数据
-  mock = {
-    "code": "10005",
-    "data":
-    {
-      "equipParam": "1",
-      "equipPort": "2",
-      "equipProtocol": "3",
-      "properties": [
-        {
-          "createTime": "324",
-          "dtuAddress": "345",
-          "dtuSection": "56",
-          "id": "43007",
-          "propertyAddress": "567",
-          "propertyDesc": "2344",
-          "propertyDisplay": "235",
-          "propertyRW": "324",
-          "propertySection": "4235",
-          "propertyType": "234",
-          "propertyUnit": "235",
-          "updateTime": "235",
-          "uploadMode": "235",
-          "uploadParam1": "235",
-          "uploadParam2": "235",
-          "uploadParam3": "235"
-        },
-        {
-          "id": 43007,
-          "propertyType": 'DIN',
-          "propertySection": 'DO',
-          "propertyAddress": 1,
-          "propertyDisplay": null,
-          "propertyDesc": 'DO1',
-          "propertyUnit": 'none',
-          "propertyRw": 'RW',
-          "dtuSection": 'DO',
-          "dtuAddress": 1,
-          "uploadMode": 1,
-          "uploadParam1": 60,
-          "uploadParam2": 'N',
-          "uploadParam3": '-1',
-          "createTime": '2020-06-28 03:14:35',
-          "updateTime": null,
+  // mock = {
+  //   "code": "10005",
+  //   "data":
+  //   {
+  //     "equipParam": "1",
+  //     "equipPort": "2",
+  //     "equipProtocol": "3",
+  //     "properties": [
+  //       {
+  //         "createTime": "324",
+  //         "dtuAddress": "345",
+  //         "dtuSection": "56",
+  //         "id": "43007",
+  //         "propertyAddress": "567",
+  //         "propertyDesc": "2344",
+  //         "propertyDisplay": "235",
+  //         "propertyRW": "324",
+  //         "propertySection": "4235",
+  //         "propertyType": "234",
+  //         "propertyUnit": "235",
+  //         "updateTime": "235",
+  //         "uploadMode": "235",
+  //         "uploadParam1": "235",
+  //         "uploadParam2": "235",
+  //         "uploadParam3": "235"
+  //       },
+  //       {
+  //         "id": 43007,
+  //         "propertyType": 'DIN',
+  //         "propertySection": 'DO',
+  //         "propertyAddress": 1,
+  //         "propertyDisplay": null,
+  //         "propertyDesc": 'DO1',
+  //         "propertyUnit": 'none',
+  //         "propertyRw": 'RW',
+  //         "dtuSection": 'DO',
+  //         "dtuAddress": 1,
+  //         "uploadMode": 1,
+  //         "uploadParam1": 60,
+  //         "uploadParam2": 'N',
+  //         "uploadParam3": '-1',
+  //         "createTime": '2020-06-28 03:14:35',
+  //         "updateTime": null,
 
-        },
-      ]
-    },
-    "msg": ""
-  };
+  //       },
+  //     ]
+  //   },
+  //   "msg": ""
+  // };
   // 自选列表配置
   columns: STColumn[] = [
     {
@@ -193,7 +193,7 @@ export class DataQueryComponent implements OnInit {
           { label: '间隔查询-取区间最大值', value: 2 },
           { label: '间隔查询-取区间最小值', value: 3 },
           { label: '间隔查询-取区间第一个值', value: 4 },
-          { label: '区间查询-取区间最后一个值', value: 5 },
+          { label: '间隔查询-取区间最后一个值', value: 5 },
         ],
         default: 0,
         ui: {
@@ -230,7 +230,7 @@ export class DataQueryComponent implements OnInit {
     const end = Date.parse(value.endTime);
     const hour = (end - start) / (1000 * 60 * 60);
     if (hour < 3) return this.require.message.error('查询时间范围须大于3小时!');
-    if (hour > 5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
+    if (value.type == '0' && hour > 5.5) return this.require.message.error('起始-结束时间范围须在5小时以内!');
     if (hour < 0) return this.require.message.error('结束时间须在开始时间之后!');
     const url = this.require.api.getHistoryData;
     const ids = this.require.encodeArray(this.checked, 'ids');
@@ -459,7 +459,7 @@ export class DataQueryComponent implements OnInit {
         switch (res.code) {
           case '10005':
             const data = res.data.properties;
-            if (data === null || data === []) {
+            if (data === null || data.length == 0) {
               this.data = [];
               this.api.message.info('数据为空', { nzDuration: 1000 });
             } else if (data.length > 0) {
