@@ -22,7 +22,7 @@ const TAG: STColumnTag = {
   styles: [],
 })
 export class RealtimeManageComponent implements OnInit {
-  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) {}
+  constructor(private require: RequireService, public http: _HttpClient, private api: ApiService) { }
   data = []; // 保存当前数据
   search_backup = []; // 备份当前表格数据
   isVisible = false; // 是否显示添加/编辑对话框
@@ -218,7 +218,7 @@ export class RealtimeManageComponent implements OnInit {
         switch (res.code) {
           case '10005':
             const data = res.data;
-            if (data === null || data.rows === []) {
+            if (data === null || data.rows.length == 0) {
               this.data = [];
               this.search_backup = [];
               this.api.message.info('数据为空', { nzDuration: 1000 });
@@ -249,7 +249,7 @@ export class RealtimeManageComponent implements OnInit {
             break;
         }
       },
-      err => {},
+      err => { },
     );
   }
   // 查询按钮
@@ -296,7 +296,7 @@ export class RealtimeManageComponent implements OnInit {
             break;
         }
       },
-      err => {},
+      err => { },
     );
   }
   // 关闭对话框

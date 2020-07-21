@@ -81,7 +81,7 @@ export class AlarmHistoryComponent implements OnInit {
           const data = res.data;
           this.pi = data.page;
           this.total = data.records;
-          if (data.list !== null && data.list.length > 0) {
+          if (res.data && data.list !== null && data.list.length > 0) {
             this.data = data.list.map((e) => {
               return {
                 dtuId: e.dtuId,
