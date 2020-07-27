@@ -278,7 +278,7 @@ export class StartupService {
             // key: 'newMenu',
             text: '用户自定义',
             // hideInBreadcrumb: true,
-            icon: { type: 'icon', value: 'line-chart' },
+            icon: { type: 'icon', value: 'edit' },
             link: '/home/user_page',
             // children: [],
           },

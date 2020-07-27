@@ -40,6 +40,13 @@ export class ApiPortService {
   public userEdit = this.hostService.host + '/api/v1.0/userEdit' // 修改管理员信息
   public getUserInfo = this.hostService.host + '/api/v1.0/getUserInfo' // 获取管理员信息
   public getAllGateways = this.hostService.host + '/api/v1.0/getAllGateways' // 获取所有DTU
+  public uploadHtml = this.hostService.host + '/api/v1.0/uploadHtml' // 上传所属自定义html文件2
+  public uploadHtml2 = this.hostService.host + '/api/v1.0/uploadHtml2' // 上传所属自定义html文件2
+  public getHtmlNames = this.hostService.host + '/api/v1.0/getHtmlNames' // 获取自定义html文件名
+  public getHtmlContent = this.hostService.host + '/api/v1.0/getHtmlContent' // 获取自定义html文件内容
+  public getHtmlContent2 = this.hostService.host + '/api/v1.0/getHtmlContent2' // 获取自定义html文件内容2
+  public deleteHtmlFile = this.hostService.host + '/api/v1.0/deleteHtmlFile' // 删除html文件
+  public deleteHtmlFile2 = this.hostService.host + '/api/v1.0/deleteHtmlFile2' // 删除html文件2
   public options = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
   }

@@ -94,6 +94,7 @@ export class DefaultInterceptor implements HttpInterceptor {
   }
   private handleData(ev: HttpResponseBase): Observable<any> {
     // 可能会因为 `throw` 导出无法执行 `_HttpClient` 的 `end()` 操作
+    // console.log(ev);
     if (ev.status > 0) {
       this.injector.get(_HttpClient).end();
     }
@@ -101,8 +102,17 @@ export class DefaultInterceptor implements HttpInterceptor {
     // 业务处理：一些通用操作
     switch (ev.status) {
       case 200:
+        // console.log(ev);
+        // console.log((ev as any).body);
+        // if ((ev as any).body === undefined) {
+        //   return;
+        // }
         const res = (ev as any).body;
+        // console.log(res);
+
+
         const responsetext = RESPONSE[res.code] || ev.statusText;
+
         switch (res.code) {
           case "10002":
             break;
@@ -121,7 +131,7 @@ export class DefaultInterceptor implements HttpInterceptor {
             // 清空 token 信息
             (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
             this.goTo('/passport/login');
-            break
+            break;
           case "10003":
           case "10004":
           case "10007":
@@ -151,6 +161,10 @@ export class DefaultInterceptor implements HttpInterceptor {
       default:
         if (ev instanceof HttpErrorResponse) {
           console.warn('未可知错误，大部分是由于后端不支持CORS或无效配置引起', ev);
+          this.notification.error(`登录已过期，请重新登录`, ``);
+          // 清空 token 信息
+          (this.injector.get(DA_SERVICE_TOKEN) as ITokenService).clear();
+          this.goTo('/passport/login');
           // this.notification.error(`登录过期`, `请重新登录`, TIME)
           // this.goTo('/passport/login');
           return throwError(ev);

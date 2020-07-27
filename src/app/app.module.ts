@@ -6,18 +6,18 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 // #region default language
 // Reference: https://ng-alain.com/docs/i18n
-import { default as ngLang } from '@angular/common/locales/zh';
-import { NZ_I18N, zh_CN as zorroLang } from 'ng-zorro-antd';
+// import { default as ngLang, zh } from '@angular/common/locales/zh';
+import { NZ_I18N, zh_CN as zorroLang, NgZorroAntdModule } from 'ng-zorro-antd';
 import { DELON_LOCALE, zh_CN as delonLang } from '@delon/theme';
 const LANG = {
   abbr: 'zh',
-  ng: ngLang,
+  // ng: ngLang,
   zorro: zorroLang,
   delon: delonLang,
 };
 // register angular
 import { registerLocaleData } from '@angular/common';
-registerLocaleData(LANG.ng, LANG.abbr);
+// registerLocaleData(LANG.ng, LANG.abbr);
 const LANG_PROVIDES = [
   { provide: LOCALE_ID, useValue: LANG.abbr },
   { provide: NZ_I18N, useValue: LANG.zorro },
@@ -95,6 +95,7 @@ import { RoutesModule } from './routes/routes.module';
 import { LayoutModule } from './layout/layout.module';
 import { RouteReuseStrategy } from '@angular/router';
 import { ReuseTabStrategy, ReuseTabService } from '@delon/abc';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -112,7 +113,9 @@ import { ReuseTabStrategy, ReuseTabService } from '@delon/abc';
     RoutesModule,
     ...I18NSERVICE_MODULES,
     ...FORM_MODULES,
-    ...GLOBAL_THIRD_MODULES
+    ...GLOBAL_THIRD_MODULES,
+    NgZorroAntdModule,
+    FormsModule
   ],
   providers: [
     ...LANG_PROVIDES,
@@ -124,6 +127,7 @@ import { ReuseTabStrategy, ReuseTabService } from '@delon/abc';
       useClass: ReuseTabStrategy,
       deps: [ReuseTabService],
     }
+    // { provide: NZ_I18N, useValue: zh_CN }
   ],
   bootstrap: [AppComponent]
 })

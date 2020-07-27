@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+// import { NzListModule } from 'ng-zorro-antd/list';
 // delon
 import { AlainThemeModule } from '@delon/theme';
 import { DelonABCModule } from '@delon/abc';
@@ -23,6 +24,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { GenderPipe } from '../pipe/gender.pipe';
 // #region your componets & directives
 const COMPONENTS = [
+  // NzListModule
 ];
 const DIRECTIVES = [
   GenderPipe

@@ -4,6 +4,7 @@
 */
 
 import {
+  EditOutline,
   UploadOutline,
   RollbackOutline,
   AlipayCircleOutline,
@@ -62,7 +63,6 @@ import {
   SwapOutline,
   UserAddOutline,
   DeleteOutline,
-  EditOutline,
   LineChartOutline,
   HistoryOutline,
   PlusSquareOutline,
@@ -74,6 +74,7 @@ import {
 } from '@ant-design/icons-angular/icons';
 
 export const ICONS_AUTO = [
+  EditOutline,
   CloudServerOutline,
   CloudDownloadOutline,
   VerticalAlignBottomOutline,
@@ -137,7 +138,6 @@ export const ICONS_AUTO = [
   SwapOutline,
   UserAddOutline,
   DeleteOutline,
-  EditOutline,
   HistoryOutline,
   PlusSquareOutline,
   MinusSquareOutline,
