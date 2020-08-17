@@ -180,6 +180,11 @@ export class StartupService {
             shortcutRoot: true,
           },
           {
+            text: '个人中心',
+            hide: true,
+            link: '/home/system_manage/user_center',
+          },
+          {
             text: '系统管理',
             hideInBreadcrumb: true,
             icon: { type: 'icon', value: 'setting' },
@@ -189,11 +194,6 @@ export class StartupService {
               {
                 text: '用户管理',
                 link: '/home/system_manage/user_manage',
-              },
-              {
-                text: '个人中心',
-                hide: true,
-                link: '/home/system_manage/user_center',
               },
               {
                 text: '微信用户管理',
@@ -274,14 +274,14 @@ export class StartupService {
             link: '/home/operate_data',
             icon: { type: 'icon', value: 'line-chart' },
           },
-          {
-            // key: 'newMenu',
-            text: '用户自定义',
-            // hideInBreadcrumb: true,
-            icon: { type: 'icon', value: 'edit' },
-            link: '/home/user_page',
-            // children: [],
-          },
+          // {
+          //   // key: 'newMenu',
+          //   text: '用户自定义',
+          //   // hideInBreadcrumb: true,
+          //   icon: { type: 'icon', value: 'edit' },
+          //   link: '/home/user_page',
+          //   // children: [],
+          // },
         ],
       },
     ];
