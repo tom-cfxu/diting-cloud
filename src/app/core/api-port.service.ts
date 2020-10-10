@@ -47,6 +47,7 @@ export class ApiPortService {
   public getHtmlContent2 = this.hostService.host + '/api/v1.0/getHtmlContent2' // 获取自定义html文件内容2
   public deleteHtmlFile = this.hostService.host + '/api/v1.0/deleteHtmlFile' // 删除html文件
   public deleteHtmlFile2 = this.hostService.host + '/api/v1.0/deleteHtmlFile2' // 删除html文件2
+  public getHtmlUrl = this.hostService.host + '/api/v1.0/getHtmlUrl' // 获取自定义html url地址
   public options = {
     headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
   }

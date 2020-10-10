@@ -274,14 +274,14 @@ export class StartupService {
             link: '/home/operate_data',
             icon: { type: 'icon', value: 'line-chart' },
           },
-          // {
-          //   // key: 'newMenu',
-          //   text: '用户自定义',
-          //   // hideInBreadcrumb: true,
-          //   icon: { type: 'icon', value: 'edit' },
-          //   link: '/home/user_page',
-          //   // children: [],
-          // },
+          {
+            // key: 'newMenu',
+            text: '用户自定义',
+            // hideInBreadcrumb: true,
+            icon: { type: 'icon', value: 'edit' },
+            link: '/home/user_page',
+            // children: [],
+          },
         ],
       },
     ];

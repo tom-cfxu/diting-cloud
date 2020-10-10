@@ -17,10 +17,13 @@ import { HttpHeaders } from '@angular/common/http';
       text-align:right;
       color:red
     }
+    .iframe{
+      border:none
+    }
   `]
 })
 export class UserPageComponent implements OnInit {
-  // iframe: SafeResourceUrl;
+  iframe: SafeResourceUrl;
   uploading = false;
   //节点
   htmls = [];
@@ -77,15 +80,30 @@ export class UserPageComponent implements OnInit {
   }
   //渲染网页
   RenderDOM(html, i = 0) {
-    // console.log(html)
     let dom = this.el.nativeElement.querySelector(`#html${i}`);
-    // console.log(dom);
-    // console.log('#html' + i);
-    if (dom != null)
-      dom.innerHTML = html;
+    if (dom != null) {
+      const container = new DOMParser().parseFromString(html, 'text/html');
+      let div = container.querySelector('html');
+      console.log(div);
+      // dom. = div;
+      dom.innerHTML = "";
+      dom.appendChild(div);
+    }
+
     // console.log(dom)
   }
-  //下载网页
+  //加载iframe
+  iframeDOM(url, i = 0) {
+    let dom = this.el.nativeElement.querySelector(`#html${i}`);
+    if (dom != null) {
+      dom.innerHTML = `
+        <iframe marginWidth=0 marginHeight=0 scrolling="auto" frameBorder=0 width="100%" class="iframe"
+            src="${url}" height="600px">
+        </iframe>
+      `
+    }
+  }
+  //下载网页html,加到dom中
   download(item) {
     const url = this.request.api.getHtmlContent2;
     const body = `filename=${item}`
@@ -99,7 +117,6 @@ export class UserPageComponent implements OnInit {
     });
     if (!isRepeat) {
       this.request.post(url, body).subscribe((res: any) => {
-        // console.log(res);
         if (res.data != null) {
           if (!isRepeat) {
             let promise = new Promise((reslove, reject) => {
@@ -108,14 +125,42 @@ export class UserPageComponent implements OnInit {
               reslove('成功')
             })
             promise.then((reslove) => {
-              // console.log(reslove)
               setTimeout(() => {
                 this.RenderDOM(res.data, this.index)
               }, 500)
 
             })
-            // this.RenderDOM(res.data, this.index)
           }
+
+        }
+      })
+    }
+  }
+  //获取网页url,加载到iframe
+  getHtmlUrl(item) {
+    const url = this.request.api.getHtmlUrl;
+    const body = `filename=${item}`
+    let isRepeat = false;
+    this.tabs.forEach((tab, i) => {
+      if (tab == item) {
+        // console.log(i)
+        this.index = i;
+        isRepeat = true;
+      }
+    });
+    if (!isRepeat) {
+      this.request.post(url, body).subscribe((res: any) => {
+        if (res.data != null) {
+          let promise = new Promise((reslove, reject) => {
+            this.tabs.push(item);
+            this.index = this.tabs.length - 1;
+            reslove('成功')
+          })
+          promise.then((reslove) => {
+            setTimeout(() => {
+              this.iframeDOM(res.data.url, this.index)
+            }, 500)
+          })
 
         }
       })
@@ -134,9 +179,6 @@ export class UserPageComponent implements OnInit {
     })
   }
   ngOnInit() {
-    // this.innerHTML = ``;
-    // const src = "https://www.baidu.com";
-    // this.iframe = this.sanitizer.bypassSecurityTrustResourceUrl(src);
     this.getHtmlName();
   }
 

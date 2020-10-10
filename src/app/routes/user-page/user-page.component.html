@@ -6,7 +6,8 @@
         <nz-card nzTitle="自定义网页列表">
             <ul nz-list [nzDataSource]="htmls" nzBordered nzSize="small">
                 <li class="list" nz-list-item *ngFor="let item of htmls let i=index" nzNoFlex>
-                    <a (click)="download(item)">{{ item }}</a>
+                    <!-- <a (click)="download(item)">{{ item }}</a> -->
+                    <a (click)="getHtmlUrl(item)">{{ item }}</a>
                     <a nz-popconfirm nzPopconfirmTitle="确认删除?" nzPopconfirmPlacement="bottom"
                         (nzOnConfirm)="deleteHtml(item)" class="delete-btn" nz-button nzType="link" nzDanger>删除</a>
                 </li>
@@ -16,8 +17,8 @@
             <div nz-row>
                 <div nz-col nzXs="24"
                     style="display:flex;flex-direction:column;justify-content:center;align-items: flex-start;">
-                    <nz-upload class=" import-excel" nzAccept=".html" [(nzFileList)]="fileList"
-                        [nzBeforeUpload]="beforeUpload">
+                    <nz-upload class="import-excel" nzListType="text" nzAccept=".html" [nzHeaders]
+                        [(nzFileList)]="fileList" [nzBeforeUpload]="beforeUpload">
                         <button nz-button nzType="default"><i nz-icon nzType="select"
                                 nzTheme="outline"></i>选择html文件</button>
                     </nz-upload>
@@ -31,6 +32,7 @@
         </div>
     </div>
     <div nz-col nzXs="24" nzSm="17" nzXl="18" nzType="flex" nzJustify="space-around">
+
         <nz-tabset [nzType]="'card'" [nzSelectedIndex]="index">
             <nz-tab *ngFor="let tab of tabs let i=index " [nzTitle]="titleTemplate">
                 <ng-template #titleTemplate>
@@ -43,7 +45,6 @@
                     <div [id]="'html'+i">
                         加载中...
                     </div>
-
                 </nz-card>
             </nz-tab>
         </nz-tabset>
